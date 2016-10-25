@@ -1,0 +1,3 @@
+---- malloc Matches (1 in 1 files) ----
+
+Graphics_lib.c (z:\documents\graphics\lib):    picture = (int *)malloc(pic_size);
