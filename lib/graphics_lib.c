@@ -1,4 +1,4 @@
-/*author: charles cheng 2016-010-22*/
+/*author: charles cheng 2016-10-22*/
 
 #include "graphics_lib.h"
 uint32_t pixel_white_32bit = WHITE_32BIT;
