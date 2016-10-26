@@ -57,9 +57,9 @@ void bmp_open(const char *bmp_file, HBMP_i_t *hbmp_hdl_buf)
 	void *fp = NULL;
 	bmp_file_head_t  file_head;
 	bmp_info_head_t  info_head;
-    uint8_t* pbuf;
-    uint32_t file_len;
-    uint32_t read_len;
+	uint8_t* pbuf;
+	uint32_t file_len;
+	uint32_t read_len;
 
 
 	if(bmp_file == NULL || hbmp_hdl_buf == NULL){
@@ -76,31 +76,29 @@ void bmp_open(const char *bmp_file, HBMP_i_t *hbmp_hdl_buf)
 		return;
 	}
 
-    fseek(fp, 0, SEEK_END);
-    file_len = ftell(fp);
-    __dbg("file_len=%d\n", file_len);
+	fseek(fp, 0, SEEK_END);
+	file_len = ftell(fp);
+	__dbg("file_len=%d\n", file_len);
 	pbuf = malloc(alignment_up(file_len,8));
  
-    fseek(fp, 0, SEEK_SET);
-    read_len = fread(pbuf, 1, file_len, fp);
-    if(read_len != file_len)
-    {
-        __wrn("fread fail..., read_len = %d\n", read_len);
-        hbmp_hdl_buf = NULL;
-        return;
-    }
+	fseek(fp, 0, SEEK_SET);
+	read_len = fread(pbuf, 1, file_len, fp);
+	if(read_len != file_len){
+        	__wrn("fread fail..., read_len = %d\n", read_len);
+        	hbmp_hdl_buf = NULL;
+        	return;
+    	}
 
 
 	/* get bmp file head */	
-    memcpy(&file_head, pbuf, sizeof(file_head));
-	if( file_head.bfType[0] != 'B' || file_head.bfType[1] != 'M' )
-	{
-        hbmp_hdl_buf = NULL;
+	memcpy(&file_head, pbuf, sizeof(file_head));
+	if( file_head.bfType[0] != 'B' || file_head.bfType[1] != 'M' ){
+        	hbmp_hdl_buf = NULL;
 		return;
 	}
 	
 	/* get bmp information head */	
-    memcpy(&info_head, (char*)pbuf+sizeof(file_head), sizeof(info_head));
+    	memcpy(&info_head, (char*)pbuf+sizeof(file_head), sizeof(info_head));
 #if 0
 	__msg("bfType0: %x\n",file_head.bfType[0]);
 	__msg("bfType1: %x\n",file_head.bfType[1]);
@@ -137,17 +135,4 @@ void bmp_open(const char *bmp_file, HBMP_i_t *hbmp_hdl_buf)
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-/* end of bmp_op.c  */
 
