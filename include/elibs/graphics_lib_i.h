@@ -22,6 +22,7 @@ typedef struct _HBMP_i_t
 
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);
 int catmapping(HBMP_i_t* src, HBMP_i_t *dst, uint32_t map_times);
+uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst);
 
 
 #endif
