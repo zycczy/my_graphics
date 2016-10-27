@@ -14,6 +14,7 @@
 #define PIXEL_COLOR		BLACK_32BIT
 
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);
+uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst);
 
 
 #endif
