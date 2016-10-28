@@ -1,8 +1,8 @@
 /*author: charles cheng 2016-010-22*/
 
 #include "epdk.h"
-#define SEPARATE_HEIGHT 32
-#define SEPARATE_WIDTH  32
+#define SEPARATE_HEIGHT 64
+#define SEPARATE_WIDTH  128
 int main(void)
 {
 	HBMP_i_t* hbmp_src = NULL;	
@@ -27,15 +27,18 @@ int main(void)
 	dst = (HBMP_i_t**)malloc(sizeof(HBMP_i_t*)*maritx_copies);
 	for(i=0;i<maritx_copies;i++){
 		dst[i]= (HBMP_i_t*)malloc(sizeof(HBMP_i_t));		
-		dst[i]->rgb_size = separate_size*32;
-		dst[i]->rgb_buffer = malloc(((*dst)+i)->rgb_size); 
+		dst[i]->rgb_size = separate_size*4;
+		dst[i]->rgb_buffer = malloc(dst[i]->rgb_size); 
 		dst[i]->height = SEPARATE_HEIGHT;
 		dst[i]->width  = SEPARATE_WIDTH;
 	}
 	__dbg("start separate\n");
-	separate_maritx(hbmp_src, dst);
+	
+	__dbg("maritx_copies = %d\n", maritx_copies);
+	separate_maritx(hbmp_src, dst);	
+	__dbg("end separate\n");
 	maritx_file = fopen("maritx0.bin","wb+");
-	fwrite(dst[0]->rgb_buffer, 1, dst[0]->rgb_size, maritx_file);
+	fwrite(dst[2]->rgb_buffer, 1, dst[2]->rgb_size, maritx_file);
 
 	free(hbmp_dst);
 	free(hbmp_src);
