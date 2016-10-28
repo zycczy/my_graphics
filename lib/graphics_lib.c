@@ -66,7 +66,7 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst)
 	uint32_t height_copies = hbmp->height / dst[0]->height;
 	uint32_t copies_count = width_copies * height_copies;
 	MARITX_HBMP* maritx;
-	uint32_t i,j,t;
+	uint32_t i,j,t,m;
 	if(hbmp->height%dst[0]->height != 0 && hbmp->width%dst[0]->width != 0){
 		__wrn("cannot separate the picture average!\n");
 		return EPDK_FAIL;
@@ -76,29 +76,43 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst)
 	t = 0;
 	maritx = (MARITX_HBMP *)malloc(sizeof(MARITX_HBMP)*copies_count);
 	while(t<copies_count){
-		for(i=0;i<height_copies;i++){
+		for(m=0;m<height_copies;m++){
 			for(j=0;j<width_copies;j++){
 				maritx[t].hbmp = dst[t];
-				maritx[t].height_coordinate = i;
+				maritx[t].height_coordinate = m;
 				maritx[t].width_coordinate = j;
 				
+				for(i=0;i<maritx[t].hbmp->height;i++){
+					memcpy((uint8_t *)(maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
+						   (uint8_t *)(hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+						   maritx[t].hbmp->width*4);
+					//__dbg("destnate buffer addr: %d\n", (maritx[t].hbmp->width*i));
+					//__dbg("source buffer addr: %d\n", ((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width);
+					
+				}
 				t++;
 			}
 		}
 	}
 	
+#if 0
 	for(t=0;t<copies_count;t++){
 		for(i=0;i<maritx[t].hbmp->height;i++){
 			memcpy((uint8_t *)(maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
-			       (uint8_t *)(hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
-				maritx[t].hbmp->width*4);
+				   (uint8_t *)(hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+				   maritx[t].hbmp->width*4);
 			//__dbg("destnate buffer addr: %d\n", (maritx[t].hbmp->width*i));
 			//__dbg("source buffer addr: %d\n", ((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width);
 			
 		}
 	}
+	for(t=0;t<copies_count;t++){
+		for(i=0;i<dst->height;i++){
+			for(j=0;j<width_copies;j++){
+				memcpy(((*(dst+t))+(dst->width*i)), hbmp->rgb_buffer+)
+			}
+		}
+	}
+	#endif
 	return EPDK_OK;
 }
-
-
-
