@@ -71,15 +71,16 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst)
 		__wrn("cannot separate the picture average!\n");
 		return EPDK_FAIL;
 	}
+	__dbg("copies_count = %d\n", copies_count);
 	//specify the coordinate
 	t = 0;
 	maritx = (MARITX_HBMP *)malloc(sizeof(MARITX_HBMP)*copies_count);
 	while(t<copies_count){
 		for(i=0;i<height_copies;i++){
 			for(j=0;j<width_copies;j++){
-				maritx[copies_count].hbmp = dst[copies_count];
-				maritx[copies_count].height_coordinate = i;
-				maritx[copies_count].width_coordinate = j;
+				maritx[t].hbmp = dst[t];
+				maritx[t].height_coordinate = i;
+				maritx[t].width_coordinate = j;
 				
 				t++;
 			}
@@ -87,21 +88,15 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst)
 	}
 	
 	for(t=0;t<copies_count;t++){
-		for(i=0;i<maritx[copies_count].hbmp->height;i++){
-			memcpy(maritx[copies_count].hbmp->rgb_buffer+(maritx[copies_count].hbmp->width*i),\
-				   hbmp->rgb_buffer+(maritx[copies_count].height_coordinate*t)+maritx[copies_count].width_coordinate*maritx[copies_count].hbmp->width,\
-				   maritx[copies_count].hbmp->width);
+		for(i=0;i<maritx[t].hbmp->height;i++){
+			memcpy((uint8_t *)(maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
+				   (uint8_t *)(hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+				   maritx[t].hbmp->width*4);
+			//__dbg("destnate buffer addr: %d\n", (maritx[t].hbmp->width*i));
+			//__dbg("source buffer addr: %d\n", ((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width);
+			
 		}
 	}
-	#if 0
-	for(t=0;t<copies_count;t++){
-		for(i=0;i<dst->height;i++){
-			for(j=0;j<width_copies;j++){
-				memcpy(((*(dst+t))+(dst->width*i)), hbmp->rgb_buffer+)
-			}
-		}
-	}
-	#endif
 	return EPDK_OK;
 }
 
