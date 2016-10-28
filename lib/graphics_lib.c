@@ -99,8 +99,8 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst)
 	for(t=0;t<copies_count;t++){
 		for(i=0;i<maritx[t].hbmp->height;i++){
 			memcpy((uint8_t *)(maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
-				   (uint8_t *)(hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
-				   maritx[t].hbmp->width*4);
+			       (uint8_t *)(hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+			       maritx[t].hbmp->width*4);
 			//__dbg("destnate buffer addr: %d\n", (maritx[t].hbmp->width*i));
 			//__dbg("source buffer addr: %d\n", ((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width);
 			
