@@ -14,7 +14,7 @@ int main(void)
 	hbmp_dst = (HBMP_i_t*)malloc(sizeof(HBMP_i_t));
 	memcpy(hbmp_dst, hbmp_src, sizeof(HBMP_i_t));
 	hbmp_dst->rgb_buffer = (uint32_t*)malloc(hbmp_dst->rgb_size); 
-	catmapping(hbmp_src, hbmp_dst, 189);
+	catmapping(hbmp_src, hbmp_dst, 152);
 	file = fopen("dst_map.bin","wb+");
 	fwrite(hbmp_dst->rgb_buffer, 1, hbmp_dst->rgb_size, file);
 
