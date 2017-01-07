@@ -2,6 +2,7 @@
 #ifndef WATERMAKR_H
 #define WATERMAKR_H
 #include "epdk.h"
+#include "epdk_inc.h"
 
 int catmapping(HBMP_i_t* src, HBMP_i_t *dst, uint32_t map_times);
 

@@ -1,6 +1,7 @@
 #ifndef BMP_H
 #define BMP_H
 #include "epdk.h"
+#include "epdk_inc.h"
 
 
 #pragma pack(1)

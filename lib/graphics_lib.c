@@ -52,12 +52,7 @@ HBMP_i_t* bmp_parser(char *scr_file, char *dst_file)
 	fclose(file);
 	return hbmp_buf;
 }
-typedef struct _MARITX_HBMP
-{
-	HBMP_i_t* hbmp;
-	uint32_t  height_coordinate;
-	uint32_t  width_coordinate;
-}MARITX_HBMP;
+
 
 
 uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst)
@@ -82,7 +77,6 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst)
 				maritx[t].height_coordinate = m;
 				maritx[t].width_coordinate = j;
 #if 1
-				
 				for(i=0;i<maritx[t].hbmp->height;i++){
 					memcpy((uint8_t *)(maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
 						   (uint8_t *)(hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
@@ -110,6 +104,156 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst)
 		}
 	}
 
-	#endif
+#endif
+	return EPDK_OK;
+}
+static inline void yuv_buffer_init(HBMP_i_t* hbmp)
+{
+	hbmp->yuv_buffer.y_buffer.size = hbmp->width*hbmp->height;	
+	hbmp->yuv_buffer.y_buffer.buffer = malloc(hbmp->yuv_buffer.y_buffer.size);
+	switch(hbmp->yuv_buffer.type)
+	{
+		case YUV420:
+			hbmp->yuv_buffer.u_buffer.size = hbmp->yuv_buffer.y_buffer.size >> 1;			
+			hbmp->yuv_buffer.u_buffer.buffer = malloc(hbmp->yuv_buffer.u_buffer.size);
+			hbmp->yuv_buffer.v_buffer.size = 0;
+			break;
+		case YUV422:
+			hbmp->yuv_buffer.u_buffer.size = hbmp->yuv_buffer.y_buffer.size >> 1;
+			hbmp->yuv_buffer.u_buffer.buffer = malloc(hbmp->yuv_buffer.u_buffer.size);
+			hbmp->yuv_buffer.v_buffer.size = hbmp->yuv_buffer.u_buffer.size;			
+			hbmp->yuv_buffer.v_buffer.buffer = malloc(hbmp->yuv_buffer.v_buffer.size);
+			break;
+		default:	
+		case YUV444:
+			hbmp->yuv_buffer.u_buffer.size = hbmp->yuv_buffer.y_buffer.size;
+			hbmp->yuv_buffer.u_buffer.buffer = malloc(hbmp->yuv_buffer.u_buffer.size);
+			hbmp->yuv_buffer.v_buffer.size = hbmp->yuv_buffer.y_buffer.size;			
+			hbmp->yuv_buffer.v_buffer.buffer = malloc(hbmp->yuv_buffer.v_buffer.size);
+			break;
+	}
+	return ;
+}
+
+
+/*
+do not use this function, the function is only used for reference
+There is something different between YUV and YCrBr(we call it Y'Crbr as below)
+Y = Y' + 16   = 0.257R + 0.504G + 0.098B + 16
+U = Cr + 128 = 0.148R - 0.291G + 0.439B + 128
+V = Br + 128 = 0.439R - 0.368G - 0.071B + 128
+
+B = 1.164(Y - 16) + 2.018(U - 128)
+G = 1.164(Y - 16) - 0.813(V - 128) - 0.391(U - 128)
+R = 1.164(Y - 16) + 1.596(V - 128)
+*/
+static inline void table_init()
+{
+	uint32_t i;
+	uint32_t j;
+	for(i = 0; i < SIZE; i++){
+		Y_R[i] = (i * 1052) >> 12; //Y table
+		Y_G[i] = (i * 2064) >> 12;
+		Y_B[i] = (i * 401) >> 12;
+		U_R[i] = (i * 606) >> 12; //U table
+		U_G[i] = (i * 1192) >> 12;
+		U_B[i] = (i * 1798) >> 12;
+		V_R[i] = (i * 1798) >> 12; //V table
+		V_G[i] = (i * 1507) >> 12;
+		V_B[i] = (i * 291) >> 12;
+	}
+	printf("\n");	
+	printf("Y_R\n");
+	for(i=0;i<16;i++){
+		for(j=0;j<16;j++){
+			printf("0x%x, ", Y_R[i*16+j]);
+		}
+		printf("\\\n");
+	}
+	printf("\n");
+	printf("Y_G\n");
+	for(i=0;i<16;i++){
+		for(j=0;j<16;j++){
+			printf("0x%x, ", Y_G[i*16+j]);
+		}
+		printf("\\\n");
+	}
+	printf("\n");	
+	printf("Y_B\n");
+	for(i=0;i<16;i++){
+		for(j=0;j<16;j++){
+			printf("0x%x, ", Y_B[i*16+j]);
+		}
+		printf("\\\n");
+	}
+	printf("\n");
+	printf("U_R\n");
+	for(i=0;i<16;i++){
+		for(j=0;j<16;j++){
+			printf("0x%x, ", U_R[i*16+j]);
+		}
+		printf("\\\n");
+	}
+	printf("\n");
+	printf("U_G\n");
+	for(i=0;i<16;i++){
+		for(j=0;j<16;j++){
+			printf("0x%x, ", U_G[i*16+j]);
+		}
+		printf("\\\n");
+	}
+	printf("\n");
+	printf("U_B\n");
+	for(i=0;i<16;i++){
+		for(j=0;j<16;j++){
+			printf("0x%x, ", U_B[i*16+j]);
+		}
+		printf("\\\n");
+	}
+	printf("\n");
+	printf("V_R\n");
+	for(i=0;i<16;i++){
+		for(j=0;j<16;j++){
+			printf("0x%x, ", V_R[i*16+j]);
+		}
+		printf("\\\n");
+	}
+	printf("\n");	
+	printf("V_G\n");
+	for(i=0;i<16;i++){
+		for(j=0;j<16;j++){
+			printf("0x%x, ", V_G[i*16+j]);
+		}
+		printf("\\\n");
+	}
+	printf("\n");
+	printf("V_B\n");	
+	for(i=0;i<16;i++){
+		for(j=0;j<16;j++){
+			printf("0x%x, ", V_B[i*16+j]);
+		}
+		printf("\\\n");
+	}
+	printf("\n");
+
+}
+
+int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp)
+{
+	int i;
+	yuv_buffer_init(hbmp);
+	//table_init();
+	__dbg("yuv buffer init finish!\n");
+	
+	if(hbmp->yuv_buffer.type != YUV444){
+		__wrn("Cannot support this type!\n");
+		return EPDK_FAIL;
+	}
+	
+	for(i = 0; i < hbmp->yuv_buffer.y_buffer.size; i++){
+		hbmp->yuv_buffer.y_buffer.buffer[i] = Y_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] + Y_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] + Y_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] + 16; //Y
+		hbmp->yuv_buffer.u_buffer.buffer[i] = U_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] - U_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] - U_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] + 128; //U
+		hbmp->yuv_buffer.v_buffer.buffer[i] = V_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] - V_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] - V_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] + 128; //V
+	}
 	return EPDK_OK;
 }
