@@ -9,8 +9,8 @@
 #include <sys/stat.h>  
 #include <errno.h>  
 #include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
+#include <stdlib.h>
+#include <stdint.h>
 
 #include "./elibs/elibs.h"
 #include "./algorithm/algorithm.h"
@@ -18,9 +18,6 @@
 #define EPDK_OK		 0
 #define EPDK_FAIL 	-1
 
-
-#define alignment_down(a, size) (a & (~(size-1)))
-#define alignment_up(a, size)	((a+size-1) & (~ (size-1)))
 
 
 
