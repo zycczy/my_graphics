@@ -14,6 +14,13 @@ typedef enum _YUV_STORE_TYPE
 	YUV444,
 }YUV_STORE_TYPE;
 
+typedef enum _TYPE_OF_MARITX
+{
+	YUV = 0,
+	RGB32BIT,
+	RGB1BIT,
+}TYPE_OF_MARITX;
+
 typedef struct _YUV_BUFFER
 {
 	EPDK_BUFFER     y_buffer;
@@ -43,8 +50,9 @@ typedef struct _MARITX_HBMP
 
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);
 int catmapping(HBMP_i_t* src, HBMP_i_t *dst, uint32_t map_times);
-uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst);
+uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type);
 int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
+void yuv_buffer_init(HBMP_i_t* hbmp);
 
 
 #endif

@@ -55,7 +55,7 @@ HBMP_i_t* bmp_parser(char *scr_file, char *dst_file)
 
 
 
-uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst)
+uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type)
 {
 	uint32_t width_copies = hbmp->width / dst[0]->width;
 	uint32_t height_copies = hbmp->height / dst[0]->height;
@@ -78,10 +78,23 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst)
 				maritx[t].width_coordinate = j;
 #if 1
 				for(i=0;i<maritx[t].hbmp->height;i++){
-					memcpy((uint8_t *)(maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
-						   (uint8_t *)(hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
-						   maritx[t].hbmp->width*4);
-
+					if(type == RGB32BIT){
+						memcpy((uint8_t *)(maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
+						   	   (uint8_t *)(hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+						        maritx[t].hbmp->width*4);
+					}else if(type == YUV){
+						memcpy((uint8_t *)(maritx[t].hbmp->yuv_buffer.y_buffer.buffer+(maritx[t].hbmp->width*i)),\
+						   	   (uint8_t *)(hbmp->yuv_buffer.y_buffer.buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+						        maritx[t].hbmp->width);						
+						memcpy((uint8_t *)(maritx[t].hbmp->yuv_buffer.u_buffer.buffer+(maritx[t].hbmp->width*i)),\
+						   	   (uint8_t *)(hbmp->yuv_buffer.u_buffer.buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+						        maritx[t].hbmp->width);						
+						memcpy((uint8_t *)(maritx[t].hbmp->yuv_buffer.v_buffer.buffer+(maritx[t].hbmp->width*i)),\
+						   	   (uint8_t *)(hbmp->yuv_buffer.v_buffer.buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+						        maritx[t].hbmp->width);
+					}else if(type == RGB1BIT){
+						//add
+					}
 					//__dbg("destnate buffer addr: %d\n", (maritx[t].hbmp->width*i));
 					//__dbg("source buffer addr: %d\n", ((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width);
 					
@@ -107,7 +120,7 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst)
 #endif
 	return EPDK_OK;
 }
-static inline void yuv_buffer_init(HBMP_i_t* hbmp)
+void yuv_buffer_init(HBMP_i_t* hbmp)
 {
 	hbmp->yuv_buffer.y_buffer.size = hbmp->width*hbmp->height;	
 	hbmp->yuv_buffer.y_buffer.buffer = malloc(hbmp->yuv_buffer.y_buffer.size);
@@ -257,3 +270,5 @@ int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp)
 	}
 	return EPDK_OK;
 }
+
+

@@ -19,7 +19,9 @@
 #define ARGB_PARSE_B(rgb)	(rgb&0x000000ff)	
 
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);
-uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst);
+uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type);
+void yuv_buffer_init(HBMP_i_t* hbmp);
+
 int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
 
 #define SIZE 256
