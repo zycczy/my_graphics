@@ -76,7 +76,6 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type)
 				maritx[t].hbmp = dst[t];
 				maritx[t].height_coordinate = m;
 				maritx[t].width_coordinate = j;
-#if 1
 				for(i=0;i<maritx[t].hbmp->height;i++){
 					if(type == RGB32BIT){
 						memcpy((uint8_t *)(maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
@@ -99,25 +98,12 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type)
 					//__dbg("source buffer addr: %d\n", ((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width);
 					
 				}
-#endif
 				t++;
 			}
 		}
 	}
 	
-#if 0
-	for(t=0;t<copies_count;t++){
-		for(i=0;i<maritx[t].hbmp->height;i++){
-			memcpy((uint8_t *)(maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
-			       (uint8_t *)(hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
-			       maritx[t].hbmp->width*4);
-			//__dbg("destnate buffer addr: %d\n", (maritx[t].hbmp->width*i));
-			//__dbg("source buffer addr: %d\n", ((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width);
-			
-		}
-	}
 
-#endif
 	return EPDK_OK;
 }
 void yuv_buffer_init(HBMP_i_t* hbmp)
@@ -271,4 +257,9 @@ int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp)
 	return EPDK_OK;
 }
 
+
+int32_t DCT_and_Quantization(char *src, short *dst, int quality_scale)
+{
+	
+}
 

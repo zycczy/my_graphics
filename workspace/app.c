@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 				__dbg("start separate\n");
 				__dbg("maritx_copies = %d\n", maritx_copies);
 				
-				if(!strcmp(argv[2], "-Y")){
+				if(!strcmp(argv[2], "-Y")){
 					__dbg("yuv separate!\n");
 					hbmp_src->yuv_buffer.type = YUV444;
 					rgb_tranform_to_yuv(hbmp_src);
