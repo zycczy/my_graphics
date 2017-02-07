@@ -18,12 +18,6 @@
 #define ARGB_PARSE_G(rgb)	((rgb&0x0000ff00)>>8)
 #define ARGB_PARSE_B(rgb)	(rgb&0x000000ff)	
 
-HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);
-uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type);
-void yuv_buffer_init(HBMP_i_t* hbmp);
-
-int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
-
 #define SIZE 256
 #if 1
 unsigned const short Y_R[SIZE] = {0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2, 0x3, 0x3, 0x3, 0x3, \
@@ -183,7 +177,7 @@ unsigned const short V_B[SIZE] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0
 unsigned short Y_R[SIZE],Y_G[SIZE],Y_B[SIZE],U_R[SIZE],U_G[SIZE],U_B[SIZE],V_R[SIZE],V_G[SIZE],V_B[SIZE];
 #endif
 
-const unsigned char Luminance_Quantization_Table[64] = 
+const unsigned char Luma_Quantization_Table[64] = 
 {
 	16,  11,  10,  16,  24,  40,  51,  61,
 	12,  12,  14,  19,  26,  58,  60,  55,
@@ -195,7 +189,7 @@ const unsigned char Luminance_Quantization_Table[64] =
 	72,  92,  95,  98, 112, 100, 103,  99
 };
 
-const unsigned char Chrominance_Quantization_Table[64] = 
+const unsigned char Chroma_Quantization_Table[64] = 
 {
 	17,  18,  24,  47,  99,  99,  99,  99,
 	18,  21,  26,  66,  99,  99,  99,  99,
@@ -206,6 +200,26 @@ const unsigned char Chrominance_Quantization_Table[64] =
 	99,  99,  99,  99,  99,  99,  99,  99,
 	99,  99,  99,  99,  99,  99,  99,  99
 };
+
+const char ZigZag[64] =
+{ 
+	0, 1, 5, 6,14,15,27,28,
+	2, 4, 7,13,16,26,29,42,
+	3, 8,12,17,25,30,41,43,
+	9,11,18,24,31,40,44,53,
+	10,19,23,32,39,45,52,54,
+	20,22,33,38,46,51,55,60,
+	21,34,37,47,50,56,59,61,
+	35,36,48,49,57,58,62,63 
+}; 
+
+uint32_t quantization_Y[64];
+uint32_t quantization_C[64];
+
+HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);
+uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type);
+void yuv_buffer_init(HBMP_i_t* hbmp);
+int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
 
 
 #endif

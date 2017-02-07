@@ -258,8 +258,20 @@ int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp)
 }
 
 
-int32_t DCT_and_Quantization(char *src, short *dst, int quality_scale)
+int32_t DCT_and_Quantization(char *src, short *dst, uint32_t quality_scale)
 {
-	
+	uint32_t i;
+	uint32_t tmp;
+	if(quality_scale > 99){
+		quality_scale = 99;
+	}else if(quality_scale <= 0){
+		quality_scale = 1;
+	}
+	for(i=0;i<64;i++){
+		tmp = (Chroma_Quantization_Table[i] * quality_scale + 50)/100;
+		if(tmp>0xff){
+			tmp = 0xff;
+		}
+	}
 }
 
