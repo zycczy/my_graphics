@@ -20,7 +20,6 @@
 
 
 
-
 //debug level
 #define DEBUG_LEVEL_GATE 3
 #if (DEBUG_LEVEL_GATE == 3)
@@ -50,6 +49,11 @@
 	#define __wrn(...) 
 #endif
 
+#if (DEBUG_LEVEL_GATE > 0)
+	#define show_para(a) __dbg(#a" = %d\n", a)
+#else
+	#define show_para(a) __dbg(#a" = %d\n", a)
+#endif
 
 
 

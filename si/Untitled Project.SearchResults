@@ -1,0 +1,4 @@
+---- switch Matches (3 in 2 files) ----
+App.c (z:\documents\graphics\my_graphics\workspace):		switch (ch) {
+Graphics_lib.c (z:\documents\graphics\my_graphics\lib):	switch(hbmp->yuv_buffer.type)
+Graphics_lib.c (z:\documents\graphics\my_graphics\lib):	switch(hbmp->yuv_buffer.type){

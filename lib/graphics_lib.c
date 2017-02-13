@@ -113,9 +113,10 @@ void yuv_buffer_init(HBMP_i_t* hbmp)
 	switch(hbmp->yuv_buffer.type)
 	{
 		case YUV420:
-			hbmp->yuv_buffer.u_buffer.size = hbmp->yuv_buffer.y_buffer.size >> 1;			
+			hbmp->yuv_buffer.u_buffer.size = hbmp->yuv_buffer.y_buffer.size >> 2;			
 			hbmp->yuv_buffer.u_buffer.buffer = malloc(hbmp->yuv_buffer.u_buffer.size);
-			hbmp->yuv_buffer.v_buffer.size = 0;
+			hbmp->yuv_buffer.v_buffer.size = hbmp->yuv_buffer.u_buffer.size;
+			hbmp->yuv_buffer.v_buffer.buffer = malloc(hbmp->yuv_buffer.v_buffer.size);
 			break;
 		case YUV422:
 			hbmp->yuv_buffer.u_buffer.size = hbmp->yuv_buffer.y_buffer.size >> 1;
@@ -239,20 +240,47 @@ static inline void table_init()
 
 int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp)
 {
-	int i;
+	int i, j, k, cur_row;
 	yuv_buffer_init(hbmp);
 	//table_init();
 	__dbg("yuv buffer init finish!\n");
 	
-	if(hbmp->yuv_buffer.type != YUV444){
-		__wrn("Cannot support this type!\n");
-		return EPDK_FAIL;
-	}
-	
-	for(i = 0; i < hbmp->yuv_buffer.y_buffer.size; i++){
-		hbmp->yuv_buffer.y_buffer.buffer[i] = Y_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] + Y_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] + Y_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] + 16; //Y
-		hbmp->yuv_buffer.u_buffer.buffer[i] = U_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] - U_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] - U_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] + 128; //U
-		hbmp->yuv_buffer.v_buffer.buffer[i] = V_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] - V_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] - V_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] + 128; //V
+	switch(hbmp->yuv_buffer.type)
+	{
+		case YUV444:
+			for(i = 0; i < hbmp->yuv_buffer.y_buffer.size; i++){
+				hbmp->yuv_buffer.y_buffer.buffer[i] = Y_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] + Y_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] + Y_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] + 16; //Y
+				hbmp->yuv_buffer.u_buffer.buffer[i] = U_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] - U_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] - U_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] + 128; //U
+				hbmp->yuv_buffer.v_buffer.buffer[i] = V_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] - V_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] - V_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] + 128; //V
+			}
+			break;
+		case YUV420:
+			for(i = 0, j = 0, k = 0, cur_row = 0; i < hbmp->yuv_buffer.y_buffer.size; i++){				
+				if(i%hbmp->width == 0){
+					cur_row = ~cur_row;
+				}
+				hbmp->yuv_buffer.y_buffer.buffer[i] = Y_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] + Y_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] + Y_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] + 16; //Y
+				if(i%2 == 0 && cur_row == 0){
+					hbmp->yuv_buffer.u_buffer.buffer[j] = U_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] - U_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] - U_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] + 128; //U
+					j++;
+				}else if(i%2 == 1 && cur_row == 0){
+					hbmp->yuv_buffer.v_buffer.buffer[k] = V_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] - V_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] - V_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] + 128; //V
+					k++;
+				}
+			}
+			break;
+		case YUV422:
+			for(i = 0, j = 0, k = 0; i < hbmp->yuv_buffer.y_buffer.size; i++){
+				hbmp->yuv_buffer.y_buffer.buffer[i] = Y_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] + Y_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] + Y_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] + 16; //Y
+				if(i%2 == 0){
+					hbmp->yuv_buffer.u_buffer.buffer[j] = U_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] - U_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] - U_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] + 128; //U
+					j++;
+				}else{				
+					hbmp->yuv_buffer.v_buffer.buffer[k] = V_R[ARGB_PARSE_R(hbmp->rgb_buffer[i])] - V_G[ARGB_PARSE_G(hbmp->rgb_buffer[i])] - V_B[ARGB_PARSE_B(hbmp->rgb_buffer[i])] + 128; //V
+					k++;
+				}
+			}
+			break;
 	}
 	return EPDK_OK;
 }
@@ -273,5 +301,6 @@ int32_t DCT_and_Quantization(char *src, short *dst, uint32_t quality_scale)
 			tmp = 0xff;
 		}
 	}
+	return 0;
 }
 

@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 					dst[i]->height = height;
 					dst[i]->width  = width;
 					
-					dst[i]->yuv_buffer.type = YUV444;
+					dst[i]->yuv_buffer.type = YUV420;
 					yuv_buffer_init(dst[i]);
 				}
 				__dbg("start separate\n");
@@ -107,7 +107,7 @@ int main(int argc, char **argv)
 			{
 				//RGB->YUV
 				FILE *y_file, *u_file, *v_file;
-				hbmp_src->yuv_buffer.type = YUV444;
+				hbmp_src->yuv_buffer.type = YUV420;
 				rgb_tranform_to_yuv(hbmp_src);
 	
 				y_file = fopen("y_file.bin","wb+");
