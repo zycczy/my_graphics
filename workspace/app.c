@@ -90,16 +90,16 @@ int main(int argc, char **argv)
 					fclose(maritx_file);
 				}else if(!strcmp(argv[2], "-R32")){
 					separate_maritx(hbmp_src, dst, RGB32BIT);	
-					
 					maritx_file = fopen("maritx0.bin","wb+");
 					fwrite(dst[0]->rgb_buffer, 1, dst[0]->rgb_size, maritx_file);		
 					fclose(maritx_file);
 				}else if(!strcmp(argv[2], "-R1")){			
 					separate_maritx(hbmp_src, dst, RGB1BIT);	
-					
 					maritx_file = fopen("maritx0.bin","wb+");
 					fwrite(dst[0]->rgb_buffer, 1, dst[0]->rgb_size, maritx_file);		
 					fclose(maritx_file);
+				}else{
+					__wrn("parameter error\n");
 				}
 				break;
 			}

@@ -258,8 +258,6 @@ Y:				U:				V:
 |         |		------			------
 -----------		<h/2*w/2>		<h/2*w/2>		
 <---h*w--->          	
-
-
 */
 int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp)
 {
