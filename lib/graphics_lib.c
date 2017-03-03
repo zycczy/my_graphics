@@ -247,15 +247,15 @@ Y:				U:				V:
 
 YUV422 storage mode:
 Y:				U:				V:
------------	    ------			------
-|         |		|    |			|    |
------------		------			------
+-----------       ------			------
+|               |       |       |			|    |
+-----------       ------			------
 <---h*w--->     <h*w/2>     	<h*w/2>
 
 YUV420 storage mode:
 Y:				U:				V:
------------	    ------			------
-|         |		------			------
+-----------	     ------			------
+|               |       ------			------
 -----------		<h/2*w/2>		<h/2*w/2>		
 <---h*w--->          	
 */
@@ -317,11 +317,13 @@ int32_t DCT_and_Quantization(char *src, short *dst, uint32_t quality_scale)
 		quality_scale = 1;
 	}
 	for(i=0;i<64;i++){
+		tmp = (Luma_Quantization_Table[i] * quality_scale + 50)/100;		
+		real_Y_Quan_Table[ZigZag[i]] = (tmp > 0xff) ? 0xff : tmp;
 		tmp = (Chroma_Quantization_Table[i] * quality_scale + 50)/100;
-		if(tmp>0xff){
-			tmp = 0xff;
-		}
+		real_CbCr_Quan_Table[ZigZag[i]] = (tmp > 0xff) ? 0xff : tmp;
 	}
+
+	
 	return 0;
 }
 

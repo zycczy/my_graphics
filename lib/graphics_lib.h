@@ -177,7 +177,7 @@ unsigned short V_B[SIZE] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x
 unsigned short Y_R[SIZE],Y_G[SIZE],Y_B[SIZE],U_R[SIZE],U_G[SIZE],U_B[SIZE],V_R[SIZE],V_G[SIZE],V_B[SIZE];
 #endif
 
-const unsigned char Luma_Quantization_Table[64] = 
+const uint8_t Luma_Quantization_Table[64] = 
 {
 	16,  11,  10,  16,  24,  40,  51,  61,
 	12,  12,  14,  19,  26,  58,  60,  55,
@@ -189,7 +189,7 @@ const unsigned char Luma_Quantization_Table[64] =
 	72,  92,  95,  98, 112, 100, 103,  99
 };
 
-const unsigned char Chroma_Quantization_Table[64] = 
+const uint8_t Chroma_Quantization_Table[64] = 
 {
 	17,  18,  24,  47,  99,  99,  99,  99,
 	18,  21,  26,  66,  99,  99,  99,  99,
@@ -200,6 +200,7 @@ const unsigned char Chroma_Quantization_Table[64] =
 	99,  99,  99,  99,  99,  99,  99,  99,
 	99,  99,  99,  99,  99,  99,  99,  99
 };
+uint8_t real_Y_Quan_Table[64], real_CbCr_Quan_Table[64];
 
 const char ZigZag[64] =
 { 

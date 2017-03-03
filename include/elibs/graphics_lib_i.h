@@ -9,9 +9,9 @@
 //int set_pixel(int x, int y);
 typedef enum _YUV_STORE_TYPE
 {
-	YUV420 = 0,
-	YUV422,
-	YUV444,
+	YUV420 = 420,
+	YUV422 = 422,
+	YUV444 = 444,
 }YUV_STORE_TYPE;
 
 typedef enum _TYPE_OF_MARITX

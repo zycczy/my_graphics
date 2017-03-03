@@ -4,7 +4,7 @@
 #include <getopt.h>
 #define SEPARATE_HEIGHT 512
 #define SEPARATE_WIDTH  512
-static const char *short_options = "f:yc:s:";
+static const char *short_options = "f:y:c:s:";
 static struct option long_options[] = {	
 	{"catmap",	   HAS_ARG, 0, 'c'},
 	{"rgb32->yuv", NO_ARG,  0, 'y'},
@@ -106,8 +106,10 @@ int main(int argc, char **argv)
 			case 'y':
 			{
 				//RGB->YUV
-				FILE *y_file, *u_file, *v_file;
-				hbmp_src->yuv_buffer.type = YUV420;
+				FILE *y_file, *u_file, *v_file;	
+				
+				hbmp_src->yuv_buffer.type = atoi(optarg);
+				show_para(hbmp_src->yuv_buffer.type);
 				rgb_tranform_to_yuv(hbmp_src);
 	
 				y_file = fopen("y_file.bin","wb+");
