@@ -8,6 +8,7 @@
 #define NO_ARG 0
 #define HAS_ARG 1
 
+#define PI 3.1415926
 typedef struct _EPDK_BUFFER
 {
 	union{

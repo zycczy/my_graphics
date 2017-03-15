@@ -307,7 +307,7 @@ int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp)
 }
 
 
-int32_t DCT_and_Quantization(char *src, short *dst, uint32_t quality_scale)
+void Init_Quantization(char *src, short *dst, uint32_t quality_scale)
 {
 	uint32_t i;
 	uint32_t tmp;
@@ -323,7 +323,56 @@ int32_t DCT_and_Quantization(char *src, short *dst, uint32_t quality_scale)
 		real_CbCr_Quan_Table[ZigZag[i]] = (tmp > 0xff) ? 0xff : tmp;
 	}
 
-	
-	return 0;
+	return ;
 }
+static inline void cos_table_init(void)
+{
+	int i, j;
+	for(i=0;i<16;i++){
+		for(j=0;j<16;j++){
+			cosin_table[i*16+j] = (cos(i*PI/16))*(cos(j*PI/16));	
+			printf("%f, ", cosin_table[i*16+j]);
+		}
+		printf("\\\n");
+	}
+	
+}
+
+void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table)
+{
+	//cos_table_init();
+	
+	int v, u, x, y;
+	for(v=0; v<8; v++)
+	{
+		for(u=0; u<8; u++)
+		{
+			float alpha_u = (u==0) ? 1/sqrt(8.0f) : 0.5f;
+			float alpha_v = (v==0) ? 1/sqrt(8.0f) : 0.5f;
+
+			float temp = 0.f;
+			for(x=0; x<8; x++){
+				for(y=0; y<8; y++){
+					float data = src_data[y*8+x];
+					printf("u:%d location = %d\n", u, (((2*x+1)*u*16)+((2*y+1)*v))%32);
+					//data *= cosin_table[((2*x+1)*u)];
+					//data *= cosin_table[((2*y+1)*v)];
+					//data *= cos((2*x+1)*u*PI/16.0f);
+					//data *= cos((2*y+1)*v*PI/16.0f);
+					temp += data;
+				}
+			}
+
+			temp *= alpha_u*alpha_v;
+			if(quantization_table != NULL){
+				temp = temp / quantization_table[ZigZag[v*8+u]];
+				dct_data[ZigZag[v*8+u]] = (short) ((short)(temp + 16384.5) - 16384);
+			}else{
+				dct_data[v*8+u] = temp;
+			}
+		}
+	}
+}
+
+
 

@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <math.h>
 
 #include "./elibs/elibs.h"
 #include "./algorithm/algorithm.h"
@@ -54,6 +55,19 @@
 #else
 	#define show_para(a) __dbg(#a" = %d\n", a)
 #endif
+
+
+#define show_table(size0, size1, array_name)  {\
+                                               printf("\n");\
+	                                           printf(#array_name"\n");\
+	                                           int i, j;\
+                                               for(i=0;i<size0;i++){\
+	                                               for(j=0;j<size1;j++){\
+		                                               printf("0x%x, ", array_name[i*size0+j]);\
+	                                               }\
+	                                               printf("\\\n");\
+                                               }\
+                                              }
 
 
 

@@ -2,9 +2,9 @@
 
 #include "epdk.h"
 #include <getopt.h>
-#define SEPARATE_HEIGHT 512
-#define SEPARATE_WIDTH  512
-static const char *short_options = "f:y:c:s:";
+#define SEPARATE_HEIGHT 8
+#define SEPARATE_WIDTH  8
+static const char *short_options = "f:y:c:s:j";
 static struct option long_options[] = {	
 	{"catmap",	   HAS_ARG, 0, 'c'},
 	{"rgb32->yuv", NO_ARG,  0, 'y'},
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 					dst[i]->height = height;
 					dst[i]->width  = width;
 					
-					dst[i]->yuv_buffer.type = YUV420;
+					dst[i]->yuv_buffer.type = YUV444;
 					yuv_buffer_init(dst[i]);
 				}
 				__dbg("start separate\n");
@@ -106,8 +106,7 @@ int main(int argc, char **argv)
 			case 'y':
 			{
 				//RGB->YUV
-				FILE *y_file, *u_file, *v_file;	
-				
+				FILE *y_file, *u_file, *v_file;		
 				hbmp_src->yuv_buffer.type = atoi(optarg);
 				show_para(hbmp_src->yuv_buffer.type);
 				rgb_tranform_to_yuv(hbmp_src);
@@ -123,6 +122,17 @@ int main(int argc, char **argv)
 				v_file = fopen("v_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.v_buffer.buffer, 1, hbmp_src->yuv_buffer.v_buffer.size, v_file);
 				fclose(v_file);
+				break;
+			}
+			case 'j':
+			{
+				
+				FILE*      maritx_file;
+				uint8_t y_buffer[64], u_buffer[64], v_buffer[64];
+				short y_dct[64];
+				maritx_file = fopen("maritx0_y.bin","wb+");
+				fread(y_buffer, 1, 64, maritx_file);
+				Forward_DCT(y_buffer, y_dct, NULL);
 				break;
 			}
 			default:

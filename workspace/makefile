@@ -15,8 +15,8 @@ SRC := $(wildcard ./*.c)#wildcard: use * for variable
 OBJ := $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SRC)))
 
 DYNAMIC_LIB := graphics_lib.a
-LIB         := $(SDK_ROOT)/elibs/$(DYNAMIC_LIB)
-
+LIB         := $(SDK_ROOT)/elibs/$(DYNAMIC_LIB) \
+               -lm
 TARGET      := app
 all:
 	$(GCC) $(CFLAGS) $(INC) -c $(SRC) 

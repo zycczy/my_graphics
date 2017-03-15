@@ -53,6 +53,7 @@ int catmapping(HBMP_i_t* src, HBMP_i_t *dst, uint32_t map_times);
 uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type);
 int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
 void yuv_buffer_init(HBMP_i_t* hbmp);
+void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table);
 
 
 #endif
