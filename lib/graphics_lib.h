@@ -20,6 +20,14 @@
 
 #define SIZE 256
 #define DCT_BLOCK_SIZE 8
+
+typedef struct _DCT_coefficient
+{
+	uint8_t i;
+	uint8_t j;
+}DCT_coefficient;
+DCT_coefficient DCT_coefficient_table[] = {};
+
 #if 1
 float cosin_table[SIZE] = {	1.000000, 0.980785, 0.923880, 0.831470, 0.707107, 0.555570, 0.382683, 0.195090, 0.000000, -0.195090, -0.382683, -0.555570, -0.707107, -0.831470, -0.923880, -0.980785,\
 							0.980785, 0.961940, 0.906127, 0.815493, 0.693520, 0.544895, 0.375330, 0.191342, 0.000000, -0.191342, -0.375330, -0.544895, -0.693520, -0.815493, -0.906127, -0.961940,\
@@ -238,14 +246,5 @@ const uint8_t ZigZag[64] =
 
 uint32_t quantization_Y[64];
 uint32_t quantization_C[64];
-
-
-
-HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);
-uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type);
-void yuv_buffer_init(HBMP_i_t* hbmp);
-int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
-void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table);
-
 
 #endif

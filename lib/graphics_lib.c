@@ -241,16 +241,16 @@ static inline void table_init()
 YUV444 storage mode:
 Y:				U:				V:
 -----------		-----------		-----------
-|         |		|         |		|         |
+|               |		|               |		|               |
 -----------		-----------		-----------
-<---h*w--->     <---h*w--->     <---h*w--->
+<---h*w--->      <---h*w--->       <---h*w--->
 
 YUV422 storage mode:
 Y:				U:				V:
 -----------       ------			------
-|               |       |       |			|    |
+|               |       |       |			|       |
 -----------       ------			------
-<---h*w--->     <h*w/2>     	<h*w/2>
+<---h*w--->     <h*w/2>     	      <h*w/2>
 
 YUV420 storage mode:
 Y:				U:				V:
@@ -325,7 +325,7 @@ void Init_Quantization(char *src, short *dst, uint32_t quality_scale)
 
 	return ;
 }
-static inline void cos_table_init(void)
+static void cos_table_init(void)
 {
 	int i, j;
 	for(i=0;i<16;i++){
@@ -343,10 +343,8 @@ void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table)
 	//cos_table_init();
 	
 	int v, u, x, y;
-	for(v=0; v<8; v++)
-	{
-		for(u=0; u<8; u++)
-		{
+	for(v=0; v<8; v++){
+		for(u=0; u<8; u++){
 			float alpha_u = (u==0) ? 1/sqrt(8.0f) : 0.5f;
 			float alpha_v = (v==0) ? 1/sqrt(8.0f) : 0.5f;
 

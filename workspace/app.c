@@ -7,7 +7,7 @@
 static const char *short_options = "f:y:c:s:j";
 static struct option long_options[] = {	
 	{"catmap",	   HAS_ARG, 0, 'c'},
-	{"rgb32->yuv", NO_ARG,  0, 'y'},
+	{"rgb32->yuv", HAS_ARG,  0, 'y'},
 	{"separate",   HAS_ARG, 0, 's'},
 
 };
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 				
 				if(!strcmp(argv[2], "-Y")){
 					__dbg("yuv separate!\n");
-					hbmp_src->yuv_buffer.type = YUV444;
+					hbmp_src->yuv_buffer.type = dst[0]->yuv_buffer.type;
 					rgb_tranform_to_yuv(hbmp_src);
 					separate_maritx(hbmp_src, dst, YUV);
 					
@@ -111,10 +111,10 @@ int main(int argc, char **argv)
 				show_para(hbmp_src->yuv_buffer.type);
 				rgb_tranform_to_yuv(hbmp_src);
 	
+				gamma_correct(hbmp_src, 0.75);
 				y_file = fopen("y_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.y_buffer.buffer, 1, hbmp_src->yuv_buffer.y_buffer.size, y_file);
 				fclose(y_file);
-		
 				u_file = fopen("u_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.u_buffer.buffer, 1, hbmp_src->yuv_buffer.u_buffer.size, u_file);
 				fclose(u_file);
@@ -126,7 +126,6 @@ int main(int argc, char **argv)
 			}
 			case 'j':
 			{
-				
 				FILE*      maritx_file;
 				uint8_t y_buffer[64], u_buffer[64], v_buffer[64];
 				short y_dct[64];

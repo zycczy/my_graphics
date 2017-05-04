@@ -12,7 +12,7 @@
 typedef struct _EPDK_BUFFER
 {
 	union{
-		char *buffer;
+		uint8_t *buffer;
 		uint32_t *buffer_32bit;
 	};
 	uint32_t size;

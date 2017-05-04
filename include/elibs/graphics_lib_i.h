@@ -5,7 +5,6 @@
 
 #include "epdk_inc.h"
 
-
 //int set_pixel(int x, int y);
 typedef enum _YUV_STORE_TYPE
 {
@@ -54,6 +53,7 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type);
 int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
 void yuv_buffer_init(HBMP_i_t* hbmp);
 void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table);
+uint32_t gamma_correct(HBMP_i_t *hbmp_buf, float gamma);
 
 
 #endif
