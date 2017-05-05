@@ -1,3 +1,5 @@
+/*author: charles cheng 2017-05-04*/
+
 #include "bmp.h"
 
 static int get_matrix_32bit(HBMP_i_t *hbmp, void *buf, uint8_t *bmp_buf)

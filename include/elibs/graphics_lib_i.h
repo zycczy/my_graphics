@@ -54,6 +54,7 @@ int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
 void yuv_buffer_init(HBMP_i_t* hbmp);
 void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table);
 uint32_t gamma_correct(HBMP_i_t *hbmp_buf, float gamma);
+int histogram_equalization(HBMP_i_t *src);
 
 
 #endif

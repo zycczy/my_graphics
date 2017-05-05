@@ -1,4 +1,4 @@
-/*author: charles cheng 2016-10-22*/
+/*author: charles cheng 2017-05-04*/
 #include "gamma_correct.h"
 
 uint8_t gamma_table[256];

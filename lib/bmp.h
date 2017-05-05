@@ -1,3 +1,5 @@
+/*author: charles cheng 2017-05-04*/
+
 #ifndef BMP_H
 #define BMP_H
 #include "epdk.h"
