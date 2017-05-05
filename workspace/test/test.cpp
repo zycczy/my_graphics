@@ -48,7 +48,7 @@ int main( int argc, char** argv )
     const char *pstrWindowsHistTitle = "ֱ·½ͼ(http://blog.csdn.net/MoreWindows)";  
   
     // ´ÓļþÖ¼ÓØ­ͼ  
-    IplImage *pSrcImage = cvLoadImage("007.jpg", CV_LOAD_IMAGE_UNCHANGED);  
+    IplImage *pSrcImage = cvLoadImage("src.bmp", CV_LOAD_IMAGE_UNCHANGED);  
     IplImage *pGrayImage = cvCreateImage(cvGetSize(pSrcImage), IPL_DEPTH_8U, 1);  
     // »ҶÈ¼  
     cvCvtColor(pSrcImage, pGrayImage, CV_BGR2GRAY);  
