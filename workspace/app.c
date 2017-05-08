@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 				show_para(hbmp_src->yuv_buffer.type);
 				rgb_tranform_to_yuv(hbmp_src);
 	
-				gamma_correct(hbmp_src, 1.5);
+				gamma_correct(hbmp_src, 2);
 				histogram_equalization(hbmp_src);
 				y_file = fopen("y_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.y_buffer.buffer, 1, hbmp_src->yuv_buffer.y_buffer.size, y_file);
