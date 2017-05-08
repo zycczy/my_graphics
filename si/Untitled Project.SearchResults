@@ -1,1 +1,8 @@
----- BUILD_BROADCOM_WIFI_SDIO_MODULE_AP6359SA Matches (0 in 0 files) ----
+---- luma_gray_table Matches (7 in 1 files) ----
+Histogram.c (d:\workspace\my_graphics\lib):uint8_t a(HBMP_i_t *src, uint32_t *luma_gray_table)
+Histogram.c (d:\workspace\my_graphics\lib):			luma_gray_table[src->yuv_buffer.y_buffer.buffer[i*src->width+j]]++;
+Histogram.c (d:\workspace\my_graphics\lib):	static uint32_t luma_gray_table[256];
+Histogram.c (d:\workspace\my_graphics\lib):	memset(luma_gray_table, sizeof(uint32_t)*256, 0);
+Histogram.c (d:\workspace\my_graphics\lib):			luma_gray_table[src->yuv_buffer.y_buffer.buffer[i*src->width+j]]++;
+Histogram.c (d:\workspace\my_graphics\lib):	a(src, luma_gray_table);
+Histogram.c (d:\workspace\my_graphics\lib):				tmp += ((double)luma_gray_table[t]/(double)src->yuv_buffer.y_buffer.size);				
