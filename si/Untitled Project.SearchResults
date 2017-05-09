@@ -1,8 +1,8 @@
----- luma_gray_table Matches (7 in 1 files) ----
-Histogram.c (d:\workspace\my_graphics\lib):uint8_t a(HBMP_i_t *src, uint32_t *luma_gray_table)
-Histogram.c (d:\workspace\my_graphics\lib):			luma_gray_table[src->yuv_buffer.y_buffer.buffer[i*src->width+j]]++;
-Histogram.c (d:\workspace\my_graphics\lib):	static uint32_t luma_gray_table[256];
-Histogram.c (d:\workspace\my_graphics\lib):	memset(luma_gray_table, sizeof(uint32_t)*256, 0);
-Histogram.c (d:\workspace\my_graphics\lib):			luma_gray_table[src->yuv_buffer.y_buffer.buffer[i*src->width+j]]++;
-Histogram.c (d:\workspace\my_graphics\lib):	a(src, luma_gray_table);
-Histogram.c (d:\workspace\my_graphics\lib):				tmp += ((double)luma_gray_table[t]/(double)src->yuv_buffer.y_buffer.size);				
+---- hbmp_dst Matches (9 in 1 files) ----
+App.c (d:\workspace\my_graphics\workspace):	HBMP_i_t* hbmp_dst = NULL;
+App.c (d:\workspace\my_graphics\workspace):				hbmp_dst = (HBMP_i_t*)malloc(sizeof(HBMP_i_t));
+App.c (d:\workspace\my_graphics\workspace):				memcpy(hbmp_dst, hbmp_src, sizeof(HBMP_i_t));
+App.c (d:\workspace\my_graphics\workspace):				hbmp_dst->rgb_buffer = (uint32_t*)malloc(hbmp_dst->rgb_size); 
+App.c (d:\workspace\my_graphics\workspace):				catmapping(hbmp_src, hbmp_dst, map_count);
+App.c (d:\workspace\my_graphics\workspace):				fwrite(hbmp_dst->rgb_buffer, 1, hbmp_dst->rgb_size, file);
+App.c (d:\workspace\my_graphics\workspace):				free(hbmp_dst);

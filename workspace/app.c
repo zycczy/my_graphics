@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 	HBMP_i_t* hbmp_src = NULL;	
 	HBMP_i_t* hbmp_dst = NULL;
 	int ch, option_index = 0;
-	hbmp_src = bmp_parser("src.bmp", "dst.bin");
+	hbmp_src = bmp_parser("src.bmp", "src.bin");
 
 	while(1){
 		ch = getopt_long(argc, argv, short_options, long_options, &option_index);
@@ -106,20 +106,21 @@ int main(int argc, char **argv)
 			case 'y':
 			{
 				//RGB->YUV
-				FILE *y_file, *u_file, *v_file;		
+				FILE *y_file, *u_file, *v_file;
 				hbmp_src->yuv_buffer.type = atoi(optarg);
 				show_para(hbmp_src->yuv_buffer.type);
 				rgb_tranform_to_yuv(hbmp_src);
-	
+				hbmp_dst = bmp_parser("dst.bmp", "dst.bin");
+				hbmp_dst->yuv_buffer.type = hbmp_src->yuv_buffer.type;
+				rgb_tranform_to_yuv(hbmp_dst);
 				gamma_correct(hbmp_src, 2);
-				histogram_equalization(hbmp_src);
+				histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
 				y_file = fopen("y_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.y_buffer.buffer, 1, hbmp_src->yuv_buffer.y_buffer.size, y_file);
 				fclose(y_file);
 				u_file = fopen("u_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.u_buffer.buffer, 1, hbmp_src->yuv_buffer.u_buffer.size, u_file);
 				fclose(u_file);
-	
 				v_file = fopen("v_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.v_buffer.buffer, 1, hbmp_src->yuv_buffer.v_buffer.size, v_file);
 				fclose(v_file);

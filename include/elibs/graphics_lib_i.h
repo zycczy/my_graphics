@@ -4,6 +4,7 @@
 //int picture_init(int usr_height, int usr_width);
 
 #include "epdk_inc.h"
+#define GRAY_PROGRESSION 256
 
 //int set_pixel(int x, int y);
 typedef enum _YUV_STORE_TYPE
@@ -47,6 +48,14 @@ typedef struct _MARITX_HBMP
 	uint32_t  width_coordinate;
 }MARITX_HBMP;
 
+typedef enum _HISTOGRAM_OP
+{
+	HISTOGRAM_EQUALIZATION = 0,
+	HISTOGRAM_MATCHING,
+}HISTOGRAM_OP;
+
+
+
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);
 int catmapping(HBMP_i_t* src, HBMP_i_t *dst, uint32_t map_times);
 uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type);
@@ -54,7 +63,7 @@ int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
 void yuv_buffer_init(HBMP_i_t* hbmp);
 void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table);
 uint32_t gamma_correct(HBMP_i_t *hbmp_buf, float gamma);
-int histogram_equalization(HBMP_i_t *src);
+int histogram_operation(HBMP_i_t *src, HISTOGRAM_OP operation, void* arg);
 
 
 #endif

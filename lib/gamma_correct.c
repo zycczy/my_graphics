@@ -16,7 +16,7 @@ static void init_gamma_table(float fPrecompensation)
 
 uint32_t gamma_correct(HBMP_i_t *hbmp_buf, float gamma)
 {
-	printf("gamma_correct start\n");
+	__dbg("gamma_correct start\n");
 	int i, j;
 	init_gamma_table(gamma);
 	for(i=0;i<hbmp_buf->height;i++){
