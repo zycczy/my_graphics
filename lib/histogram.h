@@ -3,7 +3,7 @@
 #define HISTOGRAM_H
 #include "epdk.h"
 #include "epdk_inc.h"
-#include "bmp.h"
+
 
 typedef struct _HISTOGRAM_DATA
 {

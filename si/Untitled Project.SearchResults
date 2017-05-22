@@ -1,8 +1,14 @@
----- hbmp_dst Matches (9 in 1 files) ----
-App.c (d:\workspace\my_graphics\workspace):	HBMP_i_t* hbmp_dst = NULL;
-App.c (d:\workspace\my_graphics\workspace):				hbmp_dst = (HBMP_i_t*)malloc(sizeof(HBMP_i_t));
-App.c (d:\workspace\my_graphics\workspace):				memcpy(hbmp_dst, hbmp_src, sizeof(HBMP_i_t));
-App.c (d:\workspace\my_graphics\workspace):				hbmp_dst->rgb_buffer = (uint32_t*)malloc(hbmp_dst->rgb_size); 
-App.c (d:\workspace\my_graphics\workspace):				catmapping(hbmp_src, hbmp_dst, map_count);
-App.c (d:\workspace\my_graphics\workspace):				fwrite(hbmp_dst->rgb_buffer, 1, hbmp_dst->rgb_size, file);
-App.c (d:\workspace\my_graphics\workspace):				free(hbmp_dst);
+---- __wrn Matches (13 in 5 files) ----
+App.c (d:\workspace\my_graphics\workspace):					__wrn("separate parameter error\n");
+App.c (d:\workspace\my_graphics\workspace):					__wrn("parameter error\n");
+App.c (d:\workspace\my_graphics\workspace):				__wrn("parameter error!\n");
+Bmp.c (d:\workspace\my_graphics\lib):		__wrn("Error in hbmp_hdl_buf or bmp_file\n");
+Bmp.c (d:\workspace\my_graphics\lib):		__wrn("Error in open bmp file %s.\n", bmp_file);
+Bmp.c (d:\workspace\my_graphics\lib):        	__wrn("fread fail..., read_len = %d\n", read_len);
+Epdk.h (d:\workspace\my_graphics\include):	#define __wrn(...) printf("[warning]L%d(%s):", __LINE__, __FILE__);\
+Epdk.h (d:\workspace\my_graphics\include):	#define __wrn(...) printf("[warning]L%d(%s):", __LINE__, __FILE__);\
+Epdk.h (d:\workspace\my_graphics\include):	#define __wrn(...) printf("[warning]L%d(%s):", __LINE__, __FILE__);\
+Epdk.h (d:\workspace\my_graphics\include):	#define __wrn(...) 
+Graphics_lib.c (d:\workspace\my_graphics\lib):		__wrn("Cannot support this bit map!\n");
+Graphics_lib.c (d:\workspace\my_graphics\lib):		__wrn("cannot separate the picture average!\n");
+Watermark.c (d:\workspace\my_graphics\lib):		__wrn("rgb buffer is NULL! dst->rgb_buffer = 0x%x, src->rgb_buffer = 0x%x\n", (int)dst->rgb_buffer, (int)src->rgb_buffer);

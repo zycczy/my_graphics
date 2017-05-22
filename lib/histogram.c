@@ -3,7 +3,7 @@
 
 static uint8_t histogram_table_init(HISTOGRAM_DATA *histogram_data)
 {
-	uint32_t i, j, t;
+	uint32_t i, j;
 	uint8_t max = 0;
 	
 	HBMP_i_t *src = histogram_data->src;
@@ -48,7 +48,6 @@ static inline void normal_gray_table(HISTOGRAM_DATA *histogram_data)
 	for(i=0;i<GRAY_PROGRESSION;i++){
 		histogram_data->gray_table[i] = i;
 	}
-
 }
 static int histogram_matching(HISTOGRAM_DATA *src_histogram_data, HISTOGRAM_DATA *dst_histogram_data)
 {
@@ -56,9 +55,7 @@ static int histogram_matching(HISTOGRAM_DATA *src_histogram_data, HISTOGRAM_DATA
 	uint32_t i, j, t;
 	double tmp = 0;
 	uint32_t *dst_CDF_table = dst_histogram_data->CDF_table;
-	HBMP_i_t *src = src_histogram_data->src;
 	HBMP_i_t *dst = dst_histogram_data->src;
-	dst_max = dst_histogram_data->max;	
 	
 	__dbg("histogram_matching start\n");
 	memset(src_histogram_data->gray_table, -1, GRAY_PROGRESSION*sizeof(int16_t));

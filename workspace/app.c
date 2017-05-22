@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 			}
 			case 'j':
 			{
-				FILE*      maritx_file;
+				FILE* maritx_file;
 				uint8_t y_buffer[64], u_buffer[64], v_buffer[64];
 				short y_dct[64];
 				maritx_file = fopen("maritx0_y.bin","wb+");
