@@ -3,20 +3,7 @@
 #define GRAPHICS_LIB_H
 #include "epdk.h"
 #include "bmp.h"
-#include "epdk_inc.h"
-
-
-#define BLACK_1BIT      0x0
-#define WHITE_1BIT		0x1
-
-#define BLACK_32BIT     0xFF000000
-#define WHITE_32BIT		0xFFFFFFFF
-
-#define PIXEL_COLOR		BLACK_32BIT
-
-#define ARGB_PARSE_R(rgb)	((rgb&0x00ff0000)>>16)		
-#define ARGB_PARSE_G(rgb)	((rgb&0x0000ff00)>>8)
-#define ARGB_PARSE_B(rgb)	(rgb&0x000000ff)	
+#include "epdk_inc.h"	
 
 #define SIZE 256
 #define DCT_BLOCK_SIZE 8

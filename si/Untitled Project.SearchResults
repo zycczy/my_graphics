@@ -1,14 +1,13 @@
----- __wrn Matches (13 in 5 files) ----
-App.c (d:\workspace\my_graphics\workspace):					__wrn("separate parameter error\n");
-App.c (d:\workspace\my_graphics\workspace):					__wrn("parameter error\n");
-App.c (d:\workspace\my_graphics\workspace):				__wrn("parameter error!\n");
-Bmp.c (d:\workspace\my_graphics\lib):		__wrn("Error in hbmp_hdl_buf or bmp_file\n");
-Bmp.c (d:\workspace\my_graphics\lib):		__wrn("Error in open bmp file %s.\n", bmp_file);
-Bmp.c (d:\workspace\my_graphics\lib):        	__wrn("fread fail..., read_len = %d\n", read_len);
-Epdk.h (d:\workspace\my_graphics\include):	#define __wrn(...) printf("[warning]L%d(%s):", __LINE__, __FILE__);\
-Epdk.h (d:\workspace\my_graphics\include):	#define __wrn(...) printf("[warning]L%d(%s):", __LINE__, __FILE__);\
-Epdk.h (d:\workspace\my_graphics\include):	#define __wrn(...) printf("[warning]L%d(%s):", __LINE__, __FILE__);\
-Epdk.h (d:\workspace\my_graphics\include):	#define __wrn(...) 
-Graphics_lib.c (d:\workspace\my_graphics\lib):		__wrn("Cannot support this bit map!\n");
-Graphics_lib.c (d:\workspace\my_graphics\lib):		__wrn("cannot separate the picture average!\n");
-Watermark.c (d:\workspace\my_graphics\lib):		__wrn("rgb buffer is NULL! dst->rgb_buffer = 0x%x, src->rgb_buffer = 0x%x\n", (int)dst->rgb_buffer, (int)src->rgb_buffer);
+---- memcpy Matches (12 in 5 files) ----
+App.c (d:\workspace\my_graphics\workspace):				memcpy(hbmp_dst, hbmp_src, sizeof(HBMP_i_t));
+Bmp.c (d:\workspace\my_graphics\lib):        	memcpy(q, pSrc, real_row_size);
+Bmp.c (d:\workspace\my_graphics\lib):       	memcpy(q, pSrc, 1);
+Bmp.c (d:\workspace\my_graphics\lib):	memcpy(&file_head, pbuf, sizeof(file_head));
+Bmp.c (d:\workspace\my_graphics\lib):    	memcpy(&info_head, (char*)pbuf+sizeof(file_head), sizeof(info_head));
+Geometric_transformation.c (d:\workspace\my_graphics\lib):	memcpy(y*src->width+x, )
+Graphics_lib.c (d:\workspace\my_graphics\lib):						memcpy((uint8_t *)(maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
+Graphics_lib.c (d:\workspace\my_graphics\lib):						memcpy((uint8_t *)(maritx[t].hbmp->yuv_buffer.y_buffer.buffer+(maritx[t].hbmp->width*i)),\
+Graphics_lib.c (d:\workspace\my_graphics\lib):						memcpy((uint8_t *)(maritx[t].hbmp->yuv_buffer.u_buffer.buffer+(maritx[t].hbmp->width*i)),\
+Graphics_lib.c (d:\workspace\my_graphics\lib):						memcpy((uint8_t *)(maritx[t].hbmp->yuv_buffer.v_buffer.buffer+(maritx[t].hbmp->width*i)),\
+Watermark.c (d:\workspace\my_graphics\lib):	memcpy(tmp_buffer, src->rgb_buffer, src->rgb_size);
+Watermark.c (d:\workspace\my_graphics\lib):		memcpy(tmp_buffer, dst->rgb_buffer, src->rgb_size);

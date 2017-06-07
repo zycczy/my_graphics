@@ -5,6 +5,19 @@
 
 #include "epdk_inc.h"
 #define GRAY_PROGRESSION 256
+#define BLACK_1BIT      0x0
+#define WHITE_1BIT		0x1
+
+#define BLACK_32BIT     0xFF000000
+#define WHITE_32BIT		0xFFFFFFFF
+
+#define PIXEL_COLOR		BLACK_32BIT
+
+#define ARGB_PARSE_R(rgb)	((rgb&0x00ff0000)>>16)		
+#define ARGB_PARSE_G(rgb)	((rgb&0x0000ff00)>>8)
+#define ARGB_PARSE_B(rgb)	(rgb&0x000000ff)
+
+
 
 //int set_pixel(int x, int y);
 typedef enum _YUV_STORE_TYPE
