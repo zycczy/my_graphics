@@ -34,6 +34,19 @@ typedef enum _TYPE_OF_MARITX
 	RGB1BIT,
 }TYPE_OF_MARITX;
 
+typedef enum _TYPE_OF_MIRROR
+{
+	HORIZONTAL = 0,
+	VERTICAL,
+}TYPE_OF_MIRROR;
+
+typedef enum _WAY_OF_TRANSPOSE
+{
+	NEAREST_NEIGHOR_INTERPOLATION = 0,
+	BILINEAR_INTERPOLATION,
+	BICUBIC_INTERPOLATION,
+}WAY_OF_TRANSPOSE;
+
 typedef struct _YUV_BUFFER
 {
 	EPDK_BUFFER     y_buffer;
@@ -72,11 +85,21 @@ typedef enum _HISTOGRAM_OP
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);
 int catmapping(HBMP_i_t* src, HBMP_i_t *dst, uint32_t map_times);
 uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type);
+
+/*--------------------------------------------------------------------------------*/
 int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
 void yuv_buffer_init(HBMP_i_t* hbmp);
+
+/*--------------------------------------------------------------------------------*/
 void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table);
+
+/*--------------------------------------------------------------------------------*/
 uint32_t gamma_correct(HBMP_i_t *hbmp_buf, float gamma);
 int histogram_operation(HBMP_i_t *src, HISTOGRAM_OP operation, void* arg);
+
+/*--------------------------------------------------------------------------------*/
+int image_transformation(HBMP_i_t *src, int32_t x, int32_t y);
+int image_mirror(HBMP_i_t *src, TYPE_OF_MIRROR type);
 
 
 #endif

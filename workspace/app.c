@@ -36,8 +36,12 @@ int main(int argc, char **argv)
 				memcpy(hbmp_dst, hbmp_src, sizeof(HBMP_i_t));
 				hbmp_dst->rgb_buffer = (uint32_t*)malloc(hbmp_dst->rgb_size); 
 				catmapping(hbmp_src, hbmp_dst, map_count);
+				image_transformation(hbmp_src,-120,-200);
+				image_mirror(hbmp_src, VERTICAL);
+				
+				image_mirror(hbmp_src, 0);
 				file = fopen("dst_map.bin","wb+");
-				fwrite(hbmp_dst->rgb_buffer, 1, hbmp_dst->rgb_size, file);
+				fwrite(hbmp_src->rgb_buffer, 1, hbmp_src->rgb_size, file);
 				free(hbmp_dst);
 				fclose(file);
 				break;

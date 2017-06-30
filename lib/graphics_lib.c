@@ -78,18 +78,18 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type)
 				maritx[t].width_coordinate = j;
 				for(i=0;i<maritx[t].hbmp->height;i++){
 					if(type == RGB32BIT){
-						memcpy((uint8_t *)(maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
-						   	   (uint8_t *)(hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+						memcpy((maritx[t].hbmp->rgb_buffer+(maritx[t].hbmp->width*i)),\
+						   	   (hbmp->rgb_buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
 						        maritx[t].hbmp->width*4);
 					}else if(type == YUV){
-						memcpy((uint8_t *)(maritx[t].hbmp->yuv_buffer.y_buffer.buffer+(maritx[t].hbmp->width*i)),\
-						   	   (uint8_t *)(hbmp->yuv_buffer.y_buffer.buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+						memcpy((maritx[t].hbmp->yuv_buffer.y_buffer.buffer+(maritx[t].hbmp->width*i)),\
+						   	   (hbmp->yuv_buffer.y_buffer.buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
 						        maritx[t].hbmp->width);						
-						memcpy((uint8_t *)(maritx[t].hbmp->yuv_buffer.u_buffer.buffer+(maritx[t].hbmp->width*i)),\
-						   	   (uint8_t *)(hbmp->yuv_buffer.u_buffer.buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+						memcpy((maritx[t].hbmp->yuv_buffer.u_buffer.buffer+(maritx[t].hbmp->width*i)),\
+						   	   (hbmp->yuv_buffer.u_buffer.buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
 						        maritx[t].hbmp->width);						
-						memcpy((uint8_t *)(maritx[t].hbmp->yuv_buffer.v_buffer.buffer+(maritx[t].hbmp->width*i)),\
-						   	   (uint8_t *)(hbmp->yuv_buffer.v_buffer.buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
+						memcpy((maritx[t].hbmp->yuv_buffer.v_buffer.buffer+(maritx[t].hbmp->width*i)),\
+						   	   (hbmp->yuv_buffer.v_buffer.buffer+((maritx[t].height_coordinate*maritx[t].hbmp->height+i)*hbmp->width)+maritx[t].width_coordinate*maritx[t].hbmp->width),\
 						        maritx[t].hbmp->width);
 					}else if(type == RGB1BIT){
 						//add
@@ -370,6 +370,11 @@ void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table)
 			}
 		}
 	}
+}
+
+void Bicubic_interpolation()
+{
+	
 }
 
 
