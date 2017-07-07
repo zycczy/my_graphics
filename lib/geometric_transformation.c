@@ -44,9 +44,19 @@ int image_mirror(HBMP_i_t *src, TYPE_OF_MIRROR type)
 	free(tmp);
 }
 
-static int nearest_neightbor_interpolation()
+static int nearest_neightbor_interpolation(HBMP_i_t *src, uint32_t angle)
 {
-
+	
+	uint32_t* tmp = malloc(src->rgb_size);
+	uint32_t i, j;
+	uint32_t 
+	for(i=0;i<src->height;i++){
+		for(j=0;j<src->width;j++){
+			
+		}
+	}
+	memcpy(src->rgb_buffer, tmp, src->rgb_size);
+	free(tmp);
 }
 
 static int bilinear_interpolation()
