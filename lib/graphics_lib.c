@@ -372,10 +372,7 @@ void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table)
 	}
 }
 
-void Bicubic_interpolation()
-{
-	
-}
+
 
 
 

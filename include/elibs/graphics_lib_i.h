@@ -65,6 +65,7 @@ typedef struct _HBMP_i_t
 	uint32_t   rgb_size;
 	uint32_t   row_size;
 	YUV_BUFFER yuv_buffer;
+	
 }HBMP_i_t;
 
 typedef struct _MARITX_HBMP
@@ -100,6 +101,8 @@ int histogram_operation(HBMP_i_t *src, HISTOGRAM_OP operation, void* arg);
 /*--------------------------------------------------------------------------------*/
 int image_transformation(HBMP_i_t *src, int32_t x, int32_t y);
 int image_mirror(HBMP_i_t *src, TYPE_OF_MIRROR type);
+int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way, void* arg);
+
 
 
 #endif

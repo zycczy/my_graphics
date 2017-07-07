@@ -9,7 +9,7 @@ int image_transformation(HBMP_i_t *src, int32_t x, int32_t y)
 	if(abs(x)>src->width || abs(y)>src->height){
 		__wrn("The value of x or y is too large!\n");
 		return EPDK_FAIL;
-	}
+	}
 	show_para((src->width-abs(x)));
 	for(i=abs(y);i<src->height;i++){
 		if(x>0 && y>0){
@@ -48,13 +48,25 @@ static int nearest_neightbor_interpolation(HBMP_i_t *src, uint32_t angle)
 {
 	
 	uint32_t* tmp = malloc(src->rgb_size);
-	uint32_t i, j;
-	uint32_t 
-	for(i=0;i<src->height;i++){
-		for(j=0;j<src->width;j++){
-			
+	int32_t x, y;
+	int32_t dst_x, dst_y; 
+	for(dst_y=0;dst_y<src->height;dst_y++){
+		for(dst_x=0;dst_x<src->width;dst_x++){
+			x = (int)(cos(angle*PI/180)*dst_x - sin(angle*PI/180)*dst_y - 0.5);
+			y = (int)(cos(angle*PI/180)*dst_x + sin(angle*PI/180)*dst_y - 0.5);
+			if((x<src->width) && (y<src->height) && (y>=0) && (x>=0)){
+				
+				if(dst_y==511){
+					show_para(x);
+					show_para(y);
+				}
+				memcpy(tmp+dst_y*src->width+dst_x, src->rgb_buffer+y*src->width+x, 4);
+			}else{
+				tmp[dst_y*src->width+dst_x] = BLACK_32BIT;
+			}
 		}
 	}
+	__dbg("x:%d\n",(cos(angle*PI/180)*256 - sin(angle*PI/180)*511 + 0.5));
 	memcpy(src->rgb_buffer, tmp, src->rgb_size);
 	free(tmp);
 }
@@ -68,9 +80,18 @@ static int bicubic_interpolation()
 {
 
 }
-int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way)
+
+int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way, void* arg)
 {
-	
+	switch(transpose_way)
+	{
+		case NEAREST_NEIGHOR_INTERPOLATION:
+		{
+			nearest_neightbor_interpolation(src, (uint32_t)arg);
+			break;
+		}
+	}
+	return EPDK_OK;
 }
 
 
