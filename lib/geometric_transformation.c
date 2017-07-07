@@ -55,18 +55,12 @@ static int nearest_neightbor_interpolation(HBMP_i_t *src, uint32_t angle)
 			x = (int)(cos(angle*PI/180)*dst_x - sin(angle*PI/180)*dst_y - 0.5);
 			y = (int)(cos(angle*PI/180)*dst_x + sin(angle*PI/180)*dst_y - 0.5);
 			if((x<src->width) && (y<src->height) && (y>=0) && (x>=0)){
-				
-				if(dst_y==511){
-					show_para(x);
-					show_para(y);
-				}
 				memcpy(tmp+dst_y*src->width+dst_x, src->rgb_buffer+y*src->width+x, 4);
 			}else{
 				tmp[dst_y*src->width+dst_x] = BLACK_32BIT;
 			}
 		}
 	}
-	__dbg("x:%d\n",(cos(angle*PI/180)*256 - sin(angle*PI/180)*511 + 0.5));
 	memcpy(src->rgb_buffer, tmp, src->rgb_size);
 	free(tmp);
 }
