@@ -70,7 +70,7 @@ A simple introduce of bilinear interpolation:
 */
 static int bilinear_interpolation()
 {
-	
+	cgh
 }
 
 static int bicubic_interpolation()
