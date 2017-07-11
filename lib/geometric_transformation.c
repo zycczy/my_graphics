@@ -64,10 +64,13 @@ static int nearest_neightbor_interpolation(HBMP_i_t *src, uint32_t angle)
 	memcpy(src->rgb_buffer, tmp, src->rgb_size);
 	free(tmp);
 }
-
+/*
+A simple introduce of bilinear interpolation:
+	The destination after change always be a float number as: i+u, j+v
+*/
 static int bilinear_interpolation()
 {
-
+	
 }
 
 static int bicubic_interpolation()
