@@ -38,7 +38,6 @@ static int histogram_equalization(HISTOGRAM_DATA *histogram_data)
 			tmp = 0;
 		}
 	}
-	
 	return 0;
 }
 

@@ -16,6 +16,7 @@
 #define ARGB_PARSE_R(rgb)	((rgb&0x00ff0000)>>16)		
 #define ARGB_PARSE_G(rgb)	((rgb&0x0000ff00)>>8)
 #define ARGB_PARSE_B(rgb)	(rgb&0x000000ff)
+#define ARGB_SET_RGB(r, g, b)    (((r<<16) | (g<<8) | (b)) | 0xff000000)
 
 
 
@@ -101,7 +102,7 @@ int histogram_operation(HBMP_i_t *src, HISTOGRAM_OP operation, void* arg);
 /*--------------------------------------------------------------------------------*/
 int image_transformation(HBMP_i_t *src, int32_t x, int32_t y);
 int image_mirror(HBMP_i_t *src, TYPE_OF_MIRROR type);
-int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way, void* arg);
+int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way, uint32_t arg);
 
 
 
