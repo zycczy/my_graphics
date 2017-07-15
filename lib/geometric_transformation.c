@@ -82,8 +82,9 @@ A simple introduce of bilinear interpolation:
 */
 static uint32_t bilinear_interpolation(HBMP_i_t *src, double x, double y)
 {
-	float u = x -(int)x;
-	float v = y -(int)y;
+//need to optimize float as magnifing int
+	float u = x - (int)x;
+	float v = y - (int)y;
 	int int_x = x;
 	int int_y = y;
 	uint32_t dst_pixel_r = (uint32_t)((1-u)*(1-v)*(double)ARGB_PARSE_R(src->rgb_buffer[int_y*src->width+int_x])+ \
@@ -100,7 +101,6 @@ static uint32_t bilinear_interpolation(HBMP_i_t *src, double x, double y)
 				(1-u)*v*(double)ARGB_PARSE_B(src->rgb_buffer[(int_y+1)*src->width+int_x])+ \
 				u*(1-v)*(double)ARGB_PARSE_B(src->rgb_buffer[int_y*src->width+int_x+1])+ \
 				u*v*(double)ARGB_PARSE_B(src->rgb_buffer[(int_y+1)*src->width+int_x+1]));
-
 
 	return ARGB_SET_RGB(dst_pixel_r, dst_pixel_g, dst_pixel_b);
 }
@@ -119,8 +119,8 @@ int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way, uint32_t arg)
 	uint32_t tmp_pixel;
 	for(dst_y=0;dst_y<src->height;dst_y++){
 		for(dst_x=0;dst_x<src->width;dst_x++){
-			tmp_x = (cos((double)arg*PI/180)*(float)dst_x - sin((float)arg*PI/180)*dst_y + 0.5);
-			tmp_y = (cos((double)arg*PI/180)*(float)dst_y + sin((float)arg*PI/180)*dst_x + 0.5);
+			tmp_x = (cos((double)arg*PI/180)*(float)dst_x - sin((double)arg*PI/180)*dst_y + 0.5);
+			tmp_y = (cos((double)arg*PI/180)*(float)dst_y + sin((double)arg*PI/180)*dst_x + 0.5);
 			switch(transpose_way)
 			{
 				case NEAREST_NEIGHOR_INTERPOLATION:

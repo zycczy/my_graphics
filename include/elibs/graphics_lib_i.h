@@ -16,7 +16,7 @@
 #define ARGB_PARSE_R(rgb)	((rgb&0x00ff0000)>>16)		
 #define ARGB_PARSE_G(rgb)	((rgb&0x0000ff00)>>8)
 #define ARGB_PARSE_B(rgb)	(rgb&0x000000ff)
-#define ARGB_SET_RGB(r, g, b)    (((r<<16) | (g<<8) | (b)) | 0xff000000)
+#define ARGB_SET_RGB(r, g, b)    (((r<<16) |(g<<8) |(b)) |0xff000000)
 
 
 
