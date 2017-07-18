@@ -7,6 +7,7 @@
 
 #define SIZE 256
 #define DCT_BLOCK_SIZE 8
+#define whether_cross_edge(a, length) ((a+1)>length?a:(a+1))
 
 typedef struct _DCT_coefficient
 {

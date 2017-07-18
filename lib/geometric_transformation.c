@@ -45,13 +45,6 @@ int image_mirror(HBMP_i_t *src, TYPE_OF_MIRROR type)
 }
 
 
-/*
-	
-*/
-static int bicubic_interpolation()
-{
-	
-}
 
 
 int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way, uint32_t arg)
@@ -79,6 +72,13 @@ int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way, uint32_t arg)
 					x = tmp_x;
 					y = tmp_y;
 					tmp_pixel = bilinear_interpolation(src, tmp_x, tmp_y);
+					break;
+				}
+				case BICUBIC_INTERPOLATION:
+				{
+					x = tmp_x;
+					y = tmp_y;
+					tmp_pixel = bicubic_interpolation(src, tmp_x, tmp_y);
 					break;
 				}
 			}

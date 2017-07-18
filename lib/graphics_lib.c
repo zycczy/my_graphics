@@ -24,7 +24,10 @@ static int transform_1bit_to_32bit(HBMP_i_t *hbmp_buf, FILE* file)
 	}
 	return 0;
 }
-
+static uint32_t get_rbg_value(HBMP_i_t* src, uint32_t x, uint32_t y)
+{
+	return src->rgb_buffer[y*src->width+x];
+}
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file)
 {
 	HBMP_i_t *hbmp_buf = malloc(sizeof(HBMP_i_t));
@@ -50,6 +53,7 @@ HBMP_i_t* bmp_parser(char *scr_file, char *dst_file)
 		__wrn("Cannot support this bit map!\n");
 	}
 	fclose(file);
+	hbmp_buf->get_rbg_value = get_rbg_value;
 	return hbmp_buf;
 }
 
@@ -395,24 +399,81 @@ uint32_t bilinear_interpolation(HBMP_i_t *src, double x, double y)
 	int v = (y - (int)y) * 2048;
 	int int_x = x;
 	int int_y = y;
-	uint32_t dst_pixel_r = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_R(src->rgb_buffer[int_y*src->width+int_x])+ \
-				(2048-u)*v*(double)ARGB_PARSE_R(src->rgb_buffer[(int_y+1)*src->width+int_x])+ \
-				u*(2048-v)*(double)ARGB_PARSE_R(src->rgb_buffer[int_y*src->width+int_x+1])+ \
-				u*v*(double)ARGB_PARSE_R(src->rgb_buffer[(int_y+1)*src->width+int_x+1]))>> 22;
+	uint32_t dst_pixel_r = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_R(src->get_rbg_value(src, int_x, int_y))+ \
+				(2048-u)*v*(double)ARGB_PARSE_R(src->get_rbg_value(src, int_x, whether_cross_edge(int_y, src->height)))+ \
+				u*(2048-v)*(double)ARGB_PARSE_R(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), int_y))+ \
+				u*v*(double)ARGB_PARSE_R(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), whether_cross_edge(int_y, src->height))))>> 22;
 
-	uint32_t dst_pixel_g = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_G(src->rgb_buffer[int_y*src->width+int_x])+ \
-				(2048-u)*v*(double)ARGB_PARSE_G(src->rgb_buffer[(int_y+1)*src->width+int_x])+ \
-				u*(2048-v)*(double)ARGB_PARSE_G(src->rgb_buffer[int_y*src->width+int_x+1])+ \
-				u*v*(double)ARGB_PARSE_G(src->rgb_buffer[(int_y+1)*src->width+int_x+1]))>> 22;
+	uint32_t dst_pixel_g = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_G(src->get_rbg_value(src, int_x, int_y))+ \
+				(2048-u)*v*(double)ARGB_PARSE_G(src->get_rbg_value(src, int_x, whether_cross_edge(int_y, src->height)))+ \
+				u*(2048-v)*(double)ARGB_PARSE_G(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), int_y))+ \
+				u*v*(double)ARGB_PARSE_G(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), whether_cross_edge(int_y, src->height))))>> 22;
 
-	uint32_t dst_pixel_b = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_B(src->rgb_buffer[int_y*src->width+int_x])+ \
-				(2048-u)*v*(double)ARGB_PARSE_B(src->rgb_buffer[(int_y+1)*src->width+int_x])+ \
-				u*(2048-v)*(double)ARGB_PARSE_B(src->rgb_buffer[int_y*src->width+int_x+1])+ \
-				u*v*(double)ARGB_PARSE_B(src->rgb_buffer[(int_y+1)*src->width+int_x+1]))>>22;
+	uint32_t dst_pixel_b = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_B(src->get_rbg_value(src, int_x, int_y))+ \
+				(2048-u)*v*(double)ARGB_PARSE_B(src->get_rbg_value(src, int_x, whether_cross_edge(int_y, src->height)))+ \
+				u*(2048-v)*(double)ARGB_PARSE_B(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), int_y))+ \
+				u*v*(double)ARGB_PARSE_B(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), whether_cross_edge(int_y, src->height))))>> 22;
 
 	return ARGB_SET_RGB(dst_pixel_r, dst_pixel_g, dst_pixel_b);
 }
 
+/*
+	convolution function:
+		for(i=0;i<=3;i++)
+			for(j=0;j<=3;j++)
+				f(x,y) += f(xi, yj)W(x-xi)W(y-yj)
+				
+	convolution kernel: 
+			  ©³(a+2)*|x|^3-(a+3)*|x|^2+1	|x|<=1
+		W(x)={   a*|x|^3-5a*|x|^2+8a|x|-4a	1<|x|<2
+			  ©»0							otherwise
+	a is usually set to -0.5 to -0.75
+*/
+#define BICUBIC_KERNEL_PARA (-0.5)
+static inline double bicubic_kernel(double x)
+{
+	double a = BICUBIC_KERNEL_PARA;
+	double y = 0.000;
+	x = abs(x);
+	
+	#if 1
+	if(x<=1){
+		y = (a+2)*x*x*x - (a+3)*x*x + 1;
+	}else if(x>1 && x<2){
+		y = a*x*x*x - 5*a*x*x + 8*a*x - 4*a;
+	}
+	return y;
+	#else
+	if(x<=1){
+		return x*x*x - 2*x*x + 1;
+	}else if(x>=1 && x<2){
+		return 4 - x*x*x + 5*x*x - 8*x;
+	}else{
+		return 0;
+	}
+	#endif
+}
+uint32_t bicubic_interpolation(HBMP_i_t *src, double x, double y)
+{
+	int i, j;
+	int u = (x - (int)x) ;
+	int v = (y - (int)y) ;
+	uint32_t dst_pixel_r = 0;
+	uint32_t dst_pixel_g = 0;
+	uint32_t dst_pixel_b = 0;
+	int int_x = x;
+	int int_y = y;
+	for(i=-1;i<=2;i++){
+		for(j=-1;j<=2;j++){
+			if(int_x+i<src->width && int_y+j<src->height && int_x+i>=0 && int_y+j>=0){	
+				dst_pixel_r += (double)ARGB_PARSE_R(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);
+				dst_pixel_g += (double)ARGB_PARSE_G(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);			
+				dst_pixel_b += (double)ARGB_PARSE_B(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);
+			}
+		}
+	}	
+	return ARGB_SET_RGB(dst_pixel_r, dst_pixel_g, dst_pixel_b);
+}
 
 
 

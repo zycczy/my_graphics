@@ -66,7 +66,7 @@ typedef struct _HBMP_i_t
 	uint32_t   rgb_size;
 	uint32_t   row_size;
 	YUV_BUFFER yuv_buffer;
-	
+	uint32_t   (*get_rbg_value)(void*, uint32_t, uint32_t);  
 }HBMP_i_t;
 
 typedef struct _MARITX_HBMP
@@ -106,6 +106,7 @@ int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way, uint32_t arg)
 
 /*--------------------------------------------------------------------------------*/
 uint32_t bilinear_interpolation(HBMP_i_t *src, double x, double y);
+uint32_t bicubic_interpolation(HBMP_i_t *src, double x, double y);
 
 
 #endif

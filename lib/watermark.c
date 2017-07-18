@@ -1,6 +1,6 @@
 /*author: charles cheng 2016-10-23*/
 #include "watermark.h"
-#define COORDINATE(array,  width, x, y)  *(array + y*width + x)
+#define COORDINATE(array, width, x, y)  *(array + y*width + x)
 
 /*-------------------------------------------------------
 |Matrix order| 8 | 16 | 32 | 64 | 100 | 128 | 256 | 512 |
