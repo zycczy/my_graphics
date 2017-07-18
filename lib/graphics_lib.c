@@ -427,14 +427,17 @@ uint32_t bilinear_interpolation(HBMP_i_t *src, double x, double y)
 			  ©³(a+2)*|x|^3-(a+3)*|x|^2+1	|x|<=1
 		W(x)={   a*|x|^3-5a*|x|^2+8a|x|-4a	1<|x|<2
 			  ©»0							otherwise
-	a is usually set to -0.5 to -0.75
+	a is usually set to 0 to -0.25
 */
-#define BICUBIC_KERNEL_PARA (-0.5)
+#define BICUBIC_KERNEL_PARA (0)
 static inline double bicubic_kernel(double x)
 {
 	double a = BICUBIC_KERNEL_PARA;
 	double y = 0.000;
-	x = abs(x);
+	
+	if(x<0){
+		x = -x;
+	}
 	
 	#if 1
 	if(x<=1){
@@ -455,9 +458,9 @@ static inline double bicubic_kernel(double x)
 }
 uint32_t bicubic_interpolation(HBMP_i_t *src, double x, double y)
 {
-	int i, j;
-	int u = (x - (int)x) ;
-	int v = (y - (int)y) ;
+	int i, j, t;
+	double u = (x - (int)x) ;
+	double v = (y - (int)y) ;
 	uint32_t dst_pixel_r = 0;
 	uint32_t dst_pixel_g = 0;
 	uint32_t dst_pixel_b = 0;
@@ -466,9 +469,9 @@ uint32_t bicubic_interpolation(HBMP_i_t *src, double x, double y)
 	for(i=-1;i<=2;i++){
 		for(j=-1;j<=2;j++){
 			if(int_x+i<src->width && int_y+j<src->height && int_x+i>=0 && int_y+j>=0){	
-				dst_pixel_r += (double)ARGB_PARSE_R(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);
-				dst_pixel_g += (double)ARGB_PARSE_G(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);			
-				dst_pixel_b += (double)ARGB_PARSE_B(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);
+				dst_pixel_r += ARGB_PARSE_R(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);
+				dst_pixel_g += ARGB_PARSE_G(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);			
+				dst_pixel_b += ARGB_PARSE_B(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);
 			}
 		}
 	}	

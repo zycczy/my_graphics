@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 				//catmapping(hbmp_src, hbmp_dst, map_count);
 				//image_transformation(hbmp_src,-120,-200);
 				//image_mirror(hbmp_src, VERTICAL);
-				image_transpose(hbmp_src, BICUBIC_INTERPOLATION, 10);
+				image_transpose(hbmp_src, BICUBIC_INTERPOLATION, 25);
 				file = fopen("dst_map.bin","wb+");
 				fwrite(hbmp_src->rgb_buffer, 1, hbmp_src->rgb_size, file);
 				free(hbmp_dst);
