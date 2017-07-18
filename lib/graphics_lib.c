@@ -372,6 +372,46 @@ void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table)
 	}
 }
 
+/*
+A simple introduce of bilinear interpolation:
+	The destinate point P after change always be a float number as: i+u and j+v, so 
+	we set 4 point as:
+			q0 = (i, j) 
+			q1 = (i+1, j)
+			q2 = (i, j+1)
+			q3 = (i+1,  j+1)
+	and set 2 point as:
+			r0 = (i+u, j+1)
+			r1 = (i+u, j)
+	do linear between q0 and q1 to get r0 and the same as q2 and q3 to get r1
+	and then also do linear between r0 and r1 to get the destinate point  P(i+u, j+v)
+	So, f(i+u,j+v) = (1-u)(1-v)f(i,j) + (1-u)vf(i,j+1) + u(1-v)f(i+1,j) + uvf(i+1,j+1)
+	f(i, j)means the rgb value on pixel (i, j)
+*/
+uint32_t bilinear_interpolation(HBMP_i_t *src, double x, double y)
+{
+//need to optimize float as magnifing int
+	int u = (x - (int)x) * 2048;
+	int v = (y - (int)y) * 2048;
+	int int_x = x;
+	int int_y = y;
+	uint32_t dst_pixel_r = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_R(src->rgb_buffer[int_y*src->width+int_x])+ \
+				(2048-u)*v*(double)ARGB_PARSE_R(src->rgb_buffer[(int_y+1)*src->width+int_x])+ \
+				u*(2048-v)*(double)ARGB_PARSE_R(src->rgb_buffer[int_y*src->width+int_x+1])+ \
+				u*v*(double)ARGB_PARSE_R(src->rgb_buffer[(int_y+1)*src->width+int_x+1]))>> 22;
+
+	uint32_t dst_pixel_g = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_G(src->rgb_buffer[int_y*src->width+int_x])+ \
+				(2048-u)*v*(double)ARGB_PARSE_G(src->rgb_buffer[(int_y+1)*src->width+int_x])+ \
+				u*(2048-v)*(double)ARGB_PARSE_G(src->rgb_buffer[int_y*src->width+int_x+1])+ \
+				u*v*(double)ARGB_PARSE_G(src->rgb_buffer[(int_y+1)*src->width+int_x+1]))>> 22;
+
+	uint32_t dst_pixel_b = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_B(src->rgb_buffer[int_y*src->width+int_x])+ \
+				(2048-u)*v*(double)ARGB_PARSE_B(src->rgb_buffer[(int_y+1)*src->width+int_x])+ \
+				u*(2048-v)*(double)ARGB_PARSE_B(src->rgb_buffer[int_y*src->width+int_x+1])+ \
+				u*v*(double)ARGB_PARSE_B(src->rgb_buffer[(int_y+1)*src->width+int_x+1]))>>22;
+
+	return ARGB_SET_RGB(dst_pixel_r, dst_pixel_g, dst_pixel_b);
+}
 
 
 
