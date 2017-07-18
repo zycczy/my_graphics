@@ -433,28 +433,17 @@ uint32_t bilinear_interpolation(HBMP_i_t *src, double x, double y)
 static inline double bicubic_kernel(double x)
 {
 	double a = BICUBIC_KERNEL_PARA;
-	double y = 0.000;
-	
+	double y = 0.000;	
 	if(x<0){
 		x = -x;
 	}
-	
-	#if 1
 	if(x<=1){
 		y = (a+2)*x*x*x - (a+3)*x*x + 1;
 	}else if(x>1 && x<2){
 		y = a*x*x*x - 5*a*x*x + 8*a*x - 4*a;
 	}
 	return y;
-	#else
-	if(x<=1){
-		return x*x*x - 2*x*x + 1;
-	}else if(x>=1 && x<2){
-		return 4 - x*x*x + 5*x*x - 8*x;
-	}else{
-		return 0;
-	}
-	#endif
+
 }
 uint32_t bicubic_interpolation(HBMP_i_t *src, double x, double y)
 {
