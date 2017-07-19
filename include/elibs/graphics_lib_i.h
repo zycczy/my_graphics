@@ -66,7 +66,8 @@ typedef struct _HBMP_i_t
 	uint32_t   rgb_size;
 	uint32_t   row_size;
 	YUV_BUFFER yuv_buffer;
-	uint32_t   (*get_rbg_value)(void*, uint32_t, uint32_t);  
+	uint32_t   (*get_rbg_value)(void*, uint32_t, uint32_t);	
+	uint32_t   (*get_y_value)(void*, uint32_t, uint32_t);  
 }HBMP_i_t;
 
 typedef struct _MARITX_HBMP

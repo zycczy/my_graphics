@@ -28,6 +28,12 @@ static uint32_t get_rbg_value(HBMP_i_t* src, uint32_t x, uint32_t y)
 {
 	return src->rgb_buffer[y*src->width+x];
 }
+
+static uint32_t get_y_value(HBMP_i_t* src, uint32_t x, uint32_t y)
+{
+	return src->yuv_buffer.y_buffer.buffer[y*src->width+x];
+}
+
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file)
 {
 	HBMP_i_t *hbmp_buf = malloc(sizeof(HBMP_i_t));
@@ -54,6 +60,7 @@ HBMP_i_t* bmp_parser(char *scr_file, char *dst_file)
 	}
 	fclose(file);
 	hbmp_buf->get_rbg_value = get_rbg_value;
+	hbmp_buf->get_y_value = get_y_value;
 	return hbmp_buf;
 }
 
@@ -433,10 +440,8 @@ uint32_t bilinear_interpolation(HBMP_i_t *src, double x, double y)
 static inline double bicubic_kernel(double x)
 {
 	double a = BICUBIC_KERNEL_PARA;
-	double y = 0.000;	
-	if(x<0){
-		x = -x;
-	}
+	double y = 0.000;
+	x = fabs(x);
 	if(x<=1){
 		y = (a+2)*x*x*x - (a+3)*x*x + 1;
 	}else if(x>1 && x<2){
@@ -455,12 +460,14 @@ uint32_t bicubic_interpolation(HBMP_i_t *src, double x, double y)
 	uint32_t dst_pixel_b = 0;
 	int int_x = x;
 	int int_y = y;
+	double kernel_value;
 	for(i=-1;i<=2;i++){
 		for(j=-1;j<=2;j++){
-			if(int_x+i<src->width && int_y+j<src->height && int_x+i>=0 && int_y+j>=0){	
-				dst_pixel_r += ARGB_PARSE_R(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);
-				dst_pixel_g += ARGB_PARSE_G(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);			
-				dst_pixel_b += ARGB_PARSE_B(src->get_rbg_value(src, int_x+i, int_y+j))*bicubic_kernel(u-i)*bicubic_kernel(v-j);
+			if(int_x+i<src->width && int_y+j<src->height && int_x+i>=0 && int_y+j>=0){
+				kernel_value = bicubic_kernel(u-i)*bicubic_kernel(v-j);
+				dst_pixel_r += ARGB_PARSE_R(src->get_rbg_value(src, int_x+i, int_y+j))*kernel_value;
+				dst_pixel_g += ARGB_PARSE_G(src->get_rbg_value(src, int_x+i, int_y+j))*kernel_value;			
+				dst_pixel_b += ARGB_PARSE_B(src->get_rbg_value(src, int_x+i, int_y+j))*kernel_value;
 			}
 		}
 	}	
