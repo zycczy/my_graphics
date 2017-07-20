@@ -18,7 +18,16 @@
 #define ARGB_PARSE_B(rgb)	(rgb&0x000000ff)
 #define ARGB_SET_RGB(r, g, b)    (((r<<16) |(g<<8) |(b)) |0xff000000)
 
-
+typedef enum _SPATIAL_FILTER_METHOD
+{
+	TEMPLATE_SMOOTH_AVG = 0,
+	TEMPLATE_SMOOTH_GAUSS,
+	TEMPLATE_HSOBLE,
+	TEMPLATE_VSOBLE,
+	TEMPLATE_LOG,
+	TEMPLATE_LAPLACIAN1,
+	TEMPLATE_LAPLACIAN2,
+}SPATIAL_FILTER_METHOD;
 
 //int set_pixel(int x, int y);
 typedef enum _YUV_STORE_TYPE

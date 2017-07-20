@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 				//image_mirror(hbmp_src, VERTICAL);
 				image_transpose(hbmp_src, BICUBIC_INTERPOLATION, 40);
 				file = fopen("dst_map.bin","wb+");
-				fwrite(hbmp_dst->rgb_buffer, 1, hbmp_dst->rgb_size, file);
+				fwrite(hbmp_src->rgb_buffer, 1, hbmp_src->rgb_size, file);
 				free(hbmp_dst);
 				fclose(file);
 				break;
