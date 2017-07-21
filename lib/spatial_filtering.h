@@ -6,7 +6,7 @@
 
 typedef struct _FILTER_TEMPLATE
 {
-	int8_t *filter_array;
+	int32_t *filter_array;
 	uint32_t filter_width;
 	uint32_t filter_height;
 	uint32_t filter_kernel_location;
@@ -16,7 +16,7 @@ typedef struct _FILTER_TEMPLATE
 #define FILTER_HW 3
 #define FILTER_KERNEL_LOCATION (FILTER_HW-1)/2
 
-uint8_t smooth_avg_filter_array[9] = {1, 1, 1, 
+int32_t smooth_avg_filter_array[9] = {1, 1, 1, 
 									  1, 1 ,1,
 									  1, 1 ,1};
 FILTER_TEMPLATE smooth_avg = 
@@ -29,7 +29,7 @@ FILTER_TEMPLATE smooth_avg =
 };
 
 
-uint8_t smooth_gauss_filter_array[9] = {1, 2, 1, 
+int32_t smooth_gauss_filter_array[9] = {1, 2, 1, 
 									  	2, 4, 2,
 									  	1, 2, 1};
 FILTER_TEMPLATE smooth_gauss = 
@@ -41,7 +41,7 @@ FILTER_TEMPLATE smooth_gauss =
 	.filter_coef = 1/16,
 };
 
-int8_t hsobel_filter_array[9] = {-1, 0, 1, 
+int32_t hsobel_filter_array[9] = {-1, 0, 1, 
 								 -2, 0, 2,
 								 -1, 0, 1};
 FILTER_TEMPLATE sharpening_hsobel = 
@@ -53,7 +53,7 @@ FILTER_TEMPLATE sharpening_hsobel =
 	.filter_coef = 1,
 };
 
-int8_t vsobel_filter_array[9] = {-1, -2, -1, 
+int32_t vsobel_filter_array[9] = {-1, -2, -1, 
 								  0,  0,  0,
 								  1,  2,  1};
 FILTER_TEMPLATE sharpening_vsobel = 
@@ -65,11 +65,11 @@ FILTER_TEMPLATE sharpening_vsobel =
 	.filter_coef = 1,
 };
 
-int8_t log_filter_array[25] = {0,  0, -1,  0,  0, 
-							   0, -1, -2, -1,  0,
-							  -1, -2, 16, -2, -1,
-							   0, -1, -2, -1,  0,
-							   0,  0, -1,  0,  0};
+int32_t log_filter_array[25] = {0,  0, -1,  0,  0, 
+							    0, -1, -2, -1,  0,
+							   -1, -2, 16, -2, -1,
+							    0, -1, -2, -1,  0,
+							    0,  0, -1,  0,  0};
 FILTER_TEMPLATE sharpening_log = 
 {
 	.filter_array = log_filter_array,

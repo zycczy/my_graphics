@@ -20,6 +20,7 @@ static uint8_t histogram_table_init(HISTOGRAM_DATA *histogram_data)
 	}
 	return max;
 }
+
 static int histogram_equalization(HISTOGRAM_DATA *histogram_data)
 {
 	uint32_t i, j, t;
@@ -48,6 +49,7 @@ static inline void normal_gray_table(HISTOGRAM_DATA *histogram_data)
 		histogram_data->gray_table[i] = i;
 	}
 }
+
 static int histogram_matching(HISTOGRAM_DATA *src_histogram_data, HISTOGRAM_DATA *dst_histogram_data)
 {
 	uint8_t dst_max;
@@ -81,7 +83,6 @@ int histogram_operation(HBMP_i_t *src, HISTOGRAM_OP operation, void* arg)
 	{
 		case HISTOGRAM_EQUALIZATION:
 		{
-			
 			HISTOGRAM_DATA histogram_data;
 			histogram_data.src = src;
 			histogram_data.max = histogram_table_init(&histogram_data);
@@ -92,11 +93,9 @@ int histogram_operation(HBMP_i_t *src, HISTOGRAM_OP operation, void* arg)
 
 		case HISTOGRAM_MATCHING:
 		{
-			
 			HISTOGRAM_DATA src_histogram_data, dst_histogram_data;
 			src_histogram_data.src = src;
 			src_histogram_data.max = histogram_table_init(&src_histogram_data);
-			
 			dst_histogram_data.src = (HBMP_i_t *)arg;
 			dst_histogram_data.max = histogram_table_init(&dst_histogram_data);
 			histogram_matching(&src_histogram_data, &dst_histogram_data);

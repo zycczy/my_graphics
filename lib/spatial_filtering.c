@@ -35,18 +35,18 @@ static uint8_t *median_filtering(HBMP_i_t *src, uint32_t x, uint32_t y)
 			dst_y_value:src->get_y_value(src, x, y);
 }
 
-static uint8_t *templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t x, uint32_t y)
+static int32_t *templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t x, uint32_t y)
 {
 	uint32_t i, j;	
-	uint8_t dst_y_value;
+	int32_t dst_y_value = 0;
 	for(i=0;i<filter->filter_height;i++){
 		for(j=0;j<filter->filter_width;j++){
-			dst_y_value += src->get_y_value(src, x-filter->filter_kernel_location+i, y-filter->filter_kernel_location+j)*filter->filter_array[i*filter->filter_width+j];
+			dst_y_value += (src->get_y_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)*filter->filter_array[i*filter->filter_width+j]);
 		}
 	}
 	dst_y_value *= filter->filter_coef;
-	dst_y_value  = fdst(dst_y_value);
-	return dst_y_value;
+	dst_y_value  = abs(dst_y_value)/4;
+	return dst_y_value>255?255:dst_y_value;
 }
 
 static FILTER_TEMPLATE *init_filter_array(SPATIAL_FILTER_METHOD filter_method)
@@ -81,9 +81,9 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 {
 	uint32_t i, j;
 	FILTER_TEMPLATE *filter = init_filter_array(filter_method);
-	for(i=filter->filter_kernel_location;i<src->width-filter->filter_kernel_location*2;i++){
-		for(j=filter->filter_kernel_location;j<src->height-filter->filter_kernel_location*2;j++){
-			templete_filter(src, filter, i, j);
+	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
+		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){
+			src->yuv_buffer.y_buffer.buffer[i*src->width+j] = templete_filter(src, filter, j, i);
 		}
 	}
 	return ;

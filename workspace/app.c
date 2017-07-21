@@ -117,7 +117,8 @@ int main(int argc, char **argv)
 				hbmp_dst->yuv_buffer.type = hbmp_src->yuv_buffer.type;
 				rgb_tranform_to_yuv(hbmp_dst);
 				gamma_correct(hbmp_src, 2);
-				histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
+				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
+				spatial_filter(hbmp_src, TEMPLATE_LOG);
 				y_file = fopen("y_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.y_buffer.buffer, 1, hbmp_src->yuv_buffer.y_buffer.size, y_file);
 				fclose(y_file);
