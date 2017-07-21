@@ -23,10 +23,10 @@ static uint8_t *median_filtering(HBMP_i_t *src, uint32_t x, uint32_t y)
 	FILTER_TEMPLATE *filter = malloc(sizeof(FILTER_TEMPLATE));
 	filter->filter_height = filter->filter_width = FILTER_HW;
 	filter->filter_array = malloc(FILTER_HW*FILTER_HW*4);
-	filter->filter_kernel_local = FILTER_KERNEL_LOCATION;
+	filter->filter_kernel_location = FILTER_KERNEL_LOCATION;
 	for(i=0;i<filter->filter_height;i++){
 		for(j=0;j<filter->filter_width;j++){
-			filter->filter_array[i*filter->filter_width+j] = src->get_y_value(src, x-filter->filter_kernel_local+i, y-filter->filter_kernel_local+j);
+			filter->filter_array[i*filter->filter_width+j] = src->get_y_value(src, x-filter->filter_kernel_location+i, y-filter->filter_kernel_location+j);
 		}
 	}
 	dst_y_value = get_median_value(filter->filter_array, FILTER_HW*FILTER_HW-1);
@@ -35,30 +35,56 @@ static uint8_t *median_filtering(HBMP_i_t *src, uint32_t x, uint32_t y)
 			dst_y_value:src->get_y_value(src, x, y);
 }
 
-static uint8_t *templete_filter(HBMP_i_t *src, FILTER_TEMPLATE filter, uint32_t x, uint32_t y)
+static uint8_t *templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t x, uint32_t y)
 {
 	uint32_t i, j;	
 	uint8_t dst_y_value;
-	for(i=0;i<filter.filter_height;i++){
-		for(j=0;j<filter.filter_width;j++){
-			dst_y_value += src->get_y_value(src, x-filter.filter_kernel_local+i, y-filter.filter_kernel_local+j)*filter.filter_array[i*filter.filter_width+j];
+	for(i=0;i<filter->filter_height;i++){
+		for(j=0;j<filter->filter_width;j++){
+			dst_y_value += src->get_y_value(src, x-filter->filter_kernel_location+i, y-filter->filter_kernel_location+j)*filter->filter_array[i*filter->filter_width+j];
 		}
 	}
-	dst_y_value *= filter.filter_coef;
+	dst_y_value *= filter->filter_coef;
 	dst_y_value  = fdst(dst_y_value);
 	return dst_y_value;
 }
+
 static FILTER_TEMPLATE *init_filter_array(SPATIAL_FILTER_METHOD filter_method)
 {
-	
+	switch(filter_method)
+	{
+		case TEMPLATE_SMOOTH_AVG:
+		{
+			return &smooth_avg;
+		}
+		case TEMPLATE_SMOOTH_GAUSS:
+		{
+			return &smooth_gauss;
+		}
+		case TEMPLATE_HSOBLE:
+		{
+			return &sharpening_hsobel;
+		}
+		case TEMPLATE_VSOBLE:
+		{
+			return &sharpening_vsobel;
+		}
+		case TEMPLATE_LOG:
+		{
+			return &sharpening_log;
+		}
+
+	}
 }
+
 void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 {
 	uint32_t i, j;
-	
-	for(i=FILTER_KERNEL_LOCATION;i<src->width-FILTER_KERNEL_LOCATION*2;i++){
-		for(j=FILTER_KERNEL_LOCATION;j<src->width-FILTER_KERNEL_LOCATION*2;j++){
-			templete_filter()
+	FILTER_TEMPLATE *filter = init_filter_array(filter_method);
+	for(i=filter->filter_kernel_location;i<src->width-filter->filter_kernel_location*2;i++){
+		for(j=filter->filter_kernel_location;j<src->height-filter->filter_kernel_location*2;j++){
+			templete_filter(src, filter, i, j);
 		}
 	}
+	return ;
 }

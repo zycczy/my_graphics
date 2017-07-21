@@ -21,36 +21,62 @@ uint8_t smooth_avg_filter_array[9] = {1, 1, 1,
 									  1, 1 ,1};
 FILTER_TEMPLATE smooth_avg = 
 {
-	.filter_array = smooth_avg_filter_array;
-	.filter_width = FILTER_HW;
-	.filter_height = FILTER_HW;
-	.filter_kernel_location = FILTER_KERNEL_LOCATION;
-	.filter_coef = 1/9;
+	.filter_array = smooth_avg_filter_array,
+	.filter_width = 3,
+	.filter_height = 3,
+	.filter_kernel_location = 1,
+	.filter_coef = 1/9,
 };
 
 
 uint8_t smooth_gauss_filter_array[9] = {1, 2, 1, 
 									  	2, 4, 2,
 									  	1, 2, 1};
-FILTER_TEMPLATE smooth_avg = 
+FILTER_TEMPLATE smooth_gauss = 
 {
-	.filter_array = smooth_gauss_filter_array;
-	.filter_width = FILTER_HW;
-	.filter_height = FILTER_HW;
-	.filter_kernel_location = FILTER_KERNEL_LOCATION;
-	.filter_coef = 1/16;
+	.filter_array = smooth_gauss_filter_array,
+	.filter_width = 3,
+	.filter_height = 3,
+	.filter_kernel_location = 1,
+	.filter_coef = 1/16,
 };
 
 int8_t hsobel_filter_array[9] = {-1, 0, 1, 
-								  -2, 0, 2,
-								  -1, 0, 1};
-FILTER_TEMPLATE smooth_avg = 
+								 -2, 0, 2,
+								 -1, 0, 1};
+FILTER_TEMPLATE sharpening_hsobel = 
 {
-	.filter_array = smooth_avg_filter_array;
-	.filter_width = FILTER_HW;
-	.filter_height = FILTER_HW;
-	.filter_kernel_location = FILTER_KERNEL_LOCATION;
-	.filter_coef = 1;
+	.filter_array = hsobel_filter_array,
+	.filter_width = 3,
+	.filter_height = 3,
+	.filter_kernel_location = 1,
+	.filter_coef = 1,
+};
+
+int8_t vsobel_filter_array[9] = {-1, -2, -1, 
+								  0,  0,  0,
+								  1,  2,  1};
+FILTER_TEMPLATE sharpening_vsobel = 
+{
+	.filter_array = vsobel_filter_array,
+	.filter_width = 3,
+	.filter_height = 3,
+	.filter_kernel_location = 1,
+	.filter_coef = 1,
+};
+
+int8_t log_filter_array[25] = {0,  0, -1,  0,  0, 
+							   0, -1, -2, -1,  0,
+							  -1, -2, 16, -2, -1,
+							   0, -1, -2, -1,  0,
+							   0,  0, -1,  0,  0};
+FILTER_TEMPLATE sharpening_log = 
+{
+	.filter_array = log_filter_array,
+	.filter_width = 5,
+	.filter_height = 5,
+	.filter_kernel_location = 2,
+	.filter_coef = 1,
 };
 
 #endif

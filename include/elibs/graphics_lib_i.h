@@ -118,5 +118,6 @@ int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way, uint32_t arg)
 uint32_t bilinear_interpolation(HBMP_i_t *src, double x, double y);
 uint32_t bicubic_interpolation(HBMP_i_t *src, double x, double y);
 
+void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method);
 
 #endif
