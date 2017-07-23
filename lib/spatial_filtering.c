@@ -45,7 +45,7 @@ static int32_t *templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t
 		}
 	}
 	dst_y_value *= filter->filter_coef;
-	dst_y_value  = abs(dst_y_value)/4;
+	dst_y_value  = fabs(dst_y_value);
 	return dst_y_value>255?255:dst_y_value;
 }
 

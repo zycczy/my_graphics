@@ -25,7 +25,7 @@ FILTER_TEMPLATE smooth_avg =
 	.filter_width = 3,
 	.filter_height = 3,
 	.filter_kernel_location = 1,
-	.filter_coef = 1/9,
+	.filter_coef = (float)1/9,
 };
 
 
@@ -38,7 +38,7 @@ FILTER_TEMPLATE smooth_gauss =
 	.filter_width = 3,
 	.filter_height = 3,
 	.filter_kernel_location = 1,
-	.filter_coef = 1/16,
+	.filter_coef =(float)1/16,
 };
 
 int32_t hsobel_filter_array[9] = {-1, 0, 1, 
