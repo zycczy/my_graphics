@@ -80,6 +80,7 @@ static FILTER_TEMPLATE *init_filter_array(SPATIAL_FILTER_METHOD filter_method)
 		}
 	}
 }
+
 #define WEIGHT_COEF 1.6
 void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 {
