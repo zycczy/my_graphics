@@ -46,6 +46,7 @@ static int32_t templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t 
 	}
 	dst_y_value *= filter->filter_coef;
 	dst_y_value  = fabs(dst_y_value);
+
 	return dst_y_value>255?255:dst_y_value;
 }
 
@@ -84,10 +85,15 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 {
 	uint32_t i, j;
 	FILTER_TEMPLATE *filter = init_filter_array(filter_method);
+	uint8_t *tmp = malloc(src->yuv_buffer.y_buffer.size);
+	show_para(src->yuv_buffer.y_buffer.size);
+	memcpy(tmp, src->yuv_buffer.y_buffer.buffer, src->yuv_buffer.y_buffer.size);
 	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
 		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){
-			src->yuv_buffer.y_buffer.buffer[i*src->width+j] = templete_filter(src, filter, j, i);
+			tmp[i*src->width+j] = 1.6*tmp[i*src->width+j] - templete_filter(src, filter, j, i);
 		}
 	}
+	
+	memcpy(src->yuv_buffer.y_buffer.buffer, tmp, src->yuv_buffer.y_buffer.size);
 	return ;
 }

@@ -31,7 +31,9 @@ static uint32_t get_rbg_value(HBMP_i_t* src, uint32_t x, uint32_t y)
 
 static uint8_t get_y_value(HBMP_i_t* src, uint32_t x, uint32_t y)
 {
-	return src->yuv_buffer.y_buffer.buffer[y*src->width+x];
+	uint32_t i = y*src->width+x;
+
+	return src->yuv_buffer.y_buffer.buffer[i];
 }
 
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file)
