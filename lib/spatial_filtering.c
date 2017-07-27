@@ -80,7 +80,7 @@ static FILTER_TEMPLATE *init_filter_array(SPATIAL_FILTER_METHOD filter_method)
 		}
 	}
 }
-
+#define WEIGHT_COEF 1.6
 void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 {
 	uint32_t i, j;
@@ -90,7 +90,7 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 	memcpy(tmp, src->yuv_buffer.y_buffer.buffer, src->yuv_buffer.y_buffer.size);
 	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
 		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){
-			tmp[i*src->width+j] = 1.6*tmp[i*src->width+j] - templete_filter(src, filter, j, i);
+			tmp[i*src->width+j] = WEIGHT_COEF*tmp[i*src->width+j] - templete_filter(src, filter, j, i);
 		}
 	}
 	
