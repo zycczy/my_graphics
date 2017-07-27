@@ -19,8 +19,7 @@
 	graphics_lib.c:The general operations of image processing.
 	
 		Contains:
-			RGB transform yuv	
-			
+			RGB transform yuv
 	gamma_correct.c:The operation for gamma correct
 	
 	histogram.c:The opteration for luma histogram equalization
