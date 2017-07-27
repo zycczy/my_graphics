@@ -79,4 +79,16 @@ FILTER_TEMPLATE sharpening_log =
 	.filter_coef = 1,
 };
 
+int32_t laplacian5_filter_array[9] = {1,   4, 1, 
+								  	  4, -20, 4,
+								  	  1,   4, 1};
+FILTER_TEMPLATE sharpening_laplacian5 = 
+{
+	.filter_array = laplacian5_filter_array,
+	.filter_width = 3,
+	.filter_height = 3,
+	.filter_kernel_location = 1,
+	.filter_coef = 1,
+};
+
 #endif

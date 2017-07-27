@@ -14,7 +14,7 @@
 #include <math.h>
 
 #include "./elibs/elibs.h"
-#include "./algorithm/algorithm.h"
+
 
 #define EPDK_OK		 0
 #define EPDK_FAIL 	-1

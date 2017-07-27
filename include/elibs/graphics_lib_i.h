@@ -26,7 +26,8 @@ typedef enum _SPATIAL_FILTER_METHOD
 	TEMPLATE_VSOBLE,
 	TEMPLATE_LOG,
 	TEMPLATE_LAPLACIAN1,
-	TEMPLATE_LAPLACIAN2,
+	TEMPLATE_LAPLACIAN2,	
+	TEMPLATE_LAPLACIAN5,
 }SPATIAL_FILTER_METHOD;
 
 //int set_pixel(int x, int y);
@@ -76,7 +77,7 @@ typedef struct _HBMP_i_t
 	uint32_t   row_size;
 	YUV_BUFFER yuv_buffer;
 	uint32_t   (*get_rbg_value)(void*, uint32_t, uint32_t);	
-	uint32_t   (*get_y_value)(void*, uint32_t, uint32_t);  
+	uint8_t   (*get_y_value)(void*, uint32_t, uint32_t);  
 }HBMP_i_t;
 
 typedef struct _MARITX_HBMP

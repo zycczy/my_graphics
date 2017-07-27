@@ -29,7 +29,7 @@ static uint32_t get_rbg_value(HBMP_i_t* src, uint32_t x, uint32_t y)
 	return src->rgb_buffer[y*src->width+x];
 }
 
-static uint32_t get_y_value(HBMP_i_t* src, uint32_t x, uint32_t y)
+static uint8_t get_y_value(HBMP_i_t* src, uint32_t x, uint32_t y)
 {
 	return src->yuv_buffer.y_buffer.buffer[y*src->width+x];
 }
@@ -390,7 +390,7 @@ A simple introduce of bilinear interpolation:
 			q0 = (i, j) 
 			q1 = (i+1, j)
 			q2 = (i, j+1)
-			q3 = (i+1,  j+1)
+			q3 = (i+1, j+1)
 	and set 2 point as:
 			r0 = (i+u, j+1)
 			r1 = (i+u, j)
@@ -450,6 +450,7 @@ static inline double bicubic_kernel(double x)
 	return y;
 
 }
+
 uint32_t bicubic_interpolation(HBMP_i_t *src, double x, double y)
 {
 	int i, j, t;

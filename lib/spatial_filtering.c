@@ -35,7 +35,7 @@ static uint8_t *median_filtering(HBMP_i_t *src, uint32_t x, uint32_t y)
 			dst_y_value:src->get_y_value(src, x, y);
 }
 
-static int32_t *templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t x, uint32_t y)
+static int32_t templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t x, uint32_t y)
 {
 	uint32_t i, j;	
 	int32_t dst_y_value = 0;
@@ -73,7 +73,10 @@ static FILTER_TEMPLATE *init_filter_array(SPATIAL_FILTER_METHOD filter_method)
 		{
 			return &sharpening_log;
 		}
-
+		case TEMPLATE_LAPLACIAN5:
+		{
+			return &sharpening_laplacian5;
+		}
 	}
 }
 
