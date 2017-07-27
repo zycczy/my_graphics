@@ -25,7 +25,7 @@ static uint8_t *median_filtering(HBMP_i_t *src, uint32_t x, uint32_t y)
 	filter->filter_array = malloc(FILTER_HW*FILTER_HW*4);
 	filter->filter_kernel_location = FILTER_KERNEL_LOCATION;
 	for(i=0;i<filter->filter_height;i++){
-		for(j=0;j<filter->filter_width;j++){
+		for(j=0;j<filter->filter_width;j++){
 			filter->filter_array[i*filter->filter_width+j] = src->get_y_value(src, x-filter->filter_kernel_location+i, y-filter->filter_kernel_location+j);
 		}
 	}
@@ -40,7 +40,7 @@ static int32_t templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t 
 	uint32_t i, j;	
 	int32_t dst_y_value = 0;
 	for(i=0;i<filter->filter_height;i++){
-		for(j=0;j<filter->filter_width;j++){
+		for(j=0;j<filter->filter_width;j++){
 			dst_y_value += (src->get_y_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)*filter->filter_array[i*filter->filter_width+j]);
 		}
 	}
