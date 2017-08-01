@@ -45,9 +45,14 @@ static int32_t templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t 
 		}
 	}
 	dst_y_value *= filter->filter_coef;
+	#ifndef ENHANCE_FLITER
 	dst_y_value  = fabs(dst_y_value);
-
-	return dst_y_value>255?255:dst_y_value;
+	#endif
+	if(dst_y_value > 255)
+		dst_y_value = 255;
+	if(dst_y_value < -255)
+		dst_y_value = -255;
+	return dst_y_value;
 }
 
 static FILTER_TEMPLATE *init_filter_array(SPATIAL_FILTER_METHOD filter_method)
@@ -80,8 +85,9 @@ static FILTER_TEMPLATE *init_filter_array(SPATIAL_FILTER_METHOD filter_method)
 		}
 	}
 }
-
-#define WEIGHT_COEF 1.6
+int min = 65535;
+int max = 0;
+#define WEIGHT_COEF 2
 void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 {
 	uint32_t i, j;
@@ -90,11 +96,35 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 	show_para(src->yuv_buffer.y_buffer.size);
 	memcpy(tmp, src->yuv_buffer.y_buffer.buffer, src->yuv_buffer.y_buffer.size);
 	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
-		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){
-			tmp[i*src->width+j] = WEIGHT_COEF*tmp[i*src->width+j] - templete_filter(src, filter, j, i);
+		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){	
+			#ifndef ENHANCE_FLITER
+			tmp[i*src->width+j] = templete_filter(src, filter, j, i);
+			#else
+			tmp[i*src->width+j] = WEIGHT_COEF*src->yuv_buffer.y_buffer.buffer[i*src->width+j] - templete_filter(src, filter, j, i);
+
+			if(tmp[i*src->width+j] > max){
+				max = tmp[i*src->width+j];
+			}
+			if(tmp[i*src->width+j] < min){
+				min = tmp[i*src->width+j];
+			}
+			#endif
 		}
 	}
-	
+	#ifdef ENHANCE_FLITER
+	int span = max - min;
+	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
+		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){
+			if(span > 0){
+				tmp[i*src->width+j] = (tmp[i*src->width+j] - min)*255/span;
+			}else if(tmp[i*src->width+j] <= 255){
+			}else{
+				tmp[i*src->width+j] = 255;
+			}
+		}
+	}
+
+	#endif
 	memcpy(src->yuv_buffer.y_buffer.buffer, tmp, src->yuv_buffer.y_buffer.size);
 	return ;
 }
