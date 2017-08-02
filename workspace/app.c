@@ -120,7 +120,7 @@ int main(int argc, char **argv)
 				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
 				spatial_filter(hbmp_src, TEMPLATE_LAPLACIAN5);
 				y_file = fopen("y_file.bin","wb+");
-				fwrite(hbmp_src->yuv_buffer.y_buffer.buffer, 1, hbmp_src->yuv_buffer.y_buffer.size, y_file);
+				fwrite(hbmp_src->rgb_buffer, 1, hbmp_src->rgb_size, y_file);
 				fclose(y_file);
 				u_file = fopen("u_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.u_buffer.buffer, 1, hbmp_src->yuv_buffer.u_buffer.size, u_file);

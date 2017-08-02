@@ -6,7 +6,7 @@
 
 typedef struct _FILTER_TEMPLATE
 {
-	int32_t *filter_array;
+	float *filter_array;
 	uint32_t filter_width;
 	uint32_t filter_height;
 	uint32_t filter_kernel_location;
@@ -79,7 +79,7 @@ FILTER_TEMPLATE sharpening_log =
 	.filter_coef = 1,
 };
 
-int32_t laplacian5_filter_array[9] = {1,   4, 1, 
+float laplacian5_filter_array[9] = {1,   4, 1, 
 								  	  4, -20, 4,
 								  	  1,   4, 1};
 FILTER_TEMPLATE sharpening_laplacian5 = 

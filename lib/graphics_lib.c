@@ -24,7 +24,7 @@ static int transform_1bit_to_32bit(HBMP_i_t *hbmp_buf, FILE* file)
 	}
 	return 0;
 }
-static uint32_t get_rbg_value(HBMP_i_t* src, uint32_t x, uint32_t y)
+static uint32_t get_rgb_value(HBMP_i_t* src, uint32_t x, uint32_t y)
 {
 	return src->rgb_buffer[y*src->width+x];
 }
@@ -61,7 +61,7 @@ HBMP_i_t* bmp_parser(char *scr_file, char *dst_file)
 		__wrn("Cannot support this bit map!\n");
 	}
 	fclose(file);
-	hbmp_buf->get_rbg_value = get_rbg_value;
+	hbmp_buf->get_rgb_value = get_rgb_value;
 	hbmp_buf->get_y_value = get_y_value;
 	return hbmp_buf;
 }
@@ -408,20 +408,20 @@ uint32_t bilinear_interpolation(HBMP_i_t *src, double x, double y)
 	int v = (y - (int)y) * 2048;
 	int int_x = x;
 	int int_y = y;
-	uint32_t dst_pixel_r = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_R(src->get_rbg_value(src, int_x, int_y))+ \
-				(2048-u)*v*(double)ARGB_PARSE_R(src->get_rbg_value(src, int_x, whether_cross_edge(int_y, src->height)))+ \
-				u*(2048-v)*(double)ARGB_PARSE_R(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), int_y))+ \
-				u*v*(double)ARGB_PARSE_R(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), whether_cross_edge(int_y, src->height))))>> 22;
+	uint32_t dst_pixel_r = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_R(src->get_rgb_value(src, int_x, int_y))+ \
+				(2048-u)*v*(double)ARGB_PARSE_R(src->get_rgb_value(src, int_x, whether_cross_edge(int_y, src->height)))+ \
+				u*(2048-v)*(double)ARGB_PARSE_R(src->get_rgb_value(src, whether_cross_edge(int_x, src->width), int_y))+ \
+				u*v*(double)ARGB_PARSE_R(src->get_rgb_value(src, whether_cross_edge(int_x, src->width), whether_cross_edge(int_y, src->height))))>> 22;
 
-	uint32_t dst_pixel_g = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_G(src->get_rbg_value(src, int_x, int_y))+ \
-				(2048-u)*v*(double)ARGB_PARSE_G(src->get_rbg_value(src, int_x, whether_cross_edge(int_y, src->height)))+ \
-				u*(2048-v)*(double)ARGB_PARSE_G(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), int_y))+ \
-				u*v*(double)ARGB_PARSE_G(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), whether_cross_edge(int_y, src->height))))>> 22;
+	uint32_t dst_pixel_g = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_G(src->get_rgb_value(src, int_x, int_y))+ \
+				(2048-u)*v*(double)ARGB_PARSE_G(src->get_rgb_value(src, int_x, whether_cross_edge(int_y, src->height)))+ \
+				u*(2048-v)*(double)ARGB_PARSE_G(src->get_rgb_value(src, whether_cross_edge(int_x, src->width), int_y))+ \
+				u*v*(double)ARGB_PARSE_G(src->get_rgb_value(src, whether_cross_edge(int_x, src->width), whether_cross_edge(int_y, src->height))))>> 22;
 
-	uint32_t dst_pixel_b = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_B(src->get_rbg_value(src, int_x, int_y))+ \
-				(2048-u)*v*(double)ARGB_PARSE_B(src->get_rbg_value(src, int_x, whether_cross_edge(int_y, src->height)))+ \
-				u*(2048-v)*(double)ARGB_PARSE_B(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), int_y))+ \
-				u*v*(double)ARGB_PARSE_B(src->get_rbg_value(src, whether_cross_edge(int_x, src->width), whether_cross_edge(int_y, src->height))))>> 22;
+	uint32_t dst_pixel_b = (uint32_t)((2048-u)*(2048-v)*(double)ARGB_PARSE_B(src->get_rgb_value(src, int_x, int_y))+ \
+				(2048-u)*v*(double)ARGB_PARSE_B(src->get_rgb_value(src, int_x, whether_cross_edge(int_y, src->height)))+ \
+				u*(2048-v)*(double)ARGB_PARSE_B(src->get_rgb_value(src, whether_cross_edge(int_x, src->width), int_y))+ \
+				u*v*(double)ARGB_PARSE_B(src->get_rgb_value(src, whether_cross_edge(int_x, src->width), whether_cross_edge(int_y, src->height))))>> 22;
 
 	return ARGB_SET_RGB(dst_pixel_r, dst_pixel_g, dst_pixel_b);
 }
@@ -468,9 +468,9 @@ uint32_t bicubic_interpolation(HBMP_i_t *src, double x, double y)
 		for(j=-1;j<=2;j++){
 			if(int_x+i<src->width && int_y+j<src->height && int_x+i>=0 && int_y+j>=0){
 				kernel_value = bicubic_kernel(u-i)*bicubic_kernel(v-j);
-				dst_pixel_r += ARGB_PARSE_R(src->get_rbg_value(src, int_x+i, int_y+j))*kernel_value;
-				dst_pixel_g += ARGB_PARSE_G(src->get_rbg_value(src, int_x+i, int_y+j))*kernel_value;			
-				dst_pixel_b += ARGB_PARSE_B(src->get_rbg_value(src, int_x+i, int_y+j))*kernel_value;
+				dst_pixel_r += ARGB_PARSE_R(src->get_rgb_value(src, int_x+i, int_y+j))*kernel_value;
+				dst_pixel_g += ARGB_PARSE_G(src->get_rgb_value(src, int_x+i, int_y+j))*kernel_value;			
+				dst_pixel_b += ARGB_PARSE_B(src->get_rgb_value(src, int_x+i, int_y+j))*kernel_value;
 			}
 		}
 	}	
