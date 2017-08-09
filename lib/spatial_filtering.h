@@ -16,7 +16,7 @@ typedef struct _FILTER_TEMPLATE
 #define FILTER_HW 3
 #define FILTER_KERNEL_LOCATION (FILTER_HW-1)/2
 
-int32_t smooth_avg_filter_array[9] = {1, 1, 1, 
+float smooth_avg_filter_array[9] = {1, 1, 1, 
 									  1, 1 ,1,
 									  1, 1 ,1};
 FILTER_TEMPLATE smooth_avg = 
@@ -29,7 +29,7 @@ FILTER_TEMPLATE smooth_avg =
 };
 
 
-int32_t smooth_gauss_filter_array[9] = {1, 2, 1, 
+float smooth_gauss_filter_array[9] = {1, 2, 1, 
 									  	2, 4, 2,
 									  	1, 2, 1};
 FILTER_TEMPLATE smooth_gauss = 
@@ -41,7 +41,7 @@ FILTER_TEMPLATE smooth_gauss =
 	.filter_coef =(float)1/16,
 };
 
-int32_t hsobel_filter_array[9] = {-1, 0, 1, 
+float hsobel_filter_array[9] = {-1, 0, 1, 
 								 -2, 0, 2,
 								 -1, 0, 1};
 FILTER_TEMPLATE sharpening_hsobel = 
@@ -53,7 +53,7 @@ FILTER_TEMPLATE sharpening_hsobel =
 	.filter_coef = 1,
 };
 
-int32_t vsobel_filter_array[9] = {-1, -2, -1, 
+float vsobel_filter_array[9] = {-1, -2, -1, 
 								  0,  0,  0,
 								  1,  2,  1};
 FILTER_TEMPLATE sharpening_vsobel = 
@@ -65,7 +65,7 @@ FILTER_TEMPLATE sharpening_vsobel =
 	.filter_coef = 1,
 };
 
-int32_t log_filter_array[25] = {0,  0, -1,  0,  0, 
+float log_filter_array[25] = {0,  0, -1,  0,  0, 
 							    0, -1, -2, -1,  0,
 							   -1, -2, 16, -2, -1,
 							    0, -1, -2, -1,  0,

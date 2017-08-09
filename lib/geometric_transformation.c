@@ -24,7 +24,7 @@ int image_transformation(HBMP_i_t *src, int32_t x, int32_t y)
 	}
 	memcpy(src->rgb_buffer, tmp, src->rgb_size);
 	free(tmp);
-	return 0;
+	return EPDK_OK;
 }
 
 int image_mirror(HBMP_i_t *src, TYPE_OF_MIRROR type)
@@ -41,7 +41,8 @@ int image_mirror(HBMP_i_t *src, TYPE_OF_MIRROR type)
 		}
 	}
 	memcpy(src->rgb_buffer, tmp, src->rgb_size);
-	free(tmp);
+	free(tmp);	
+	return EPDK_OK;
 }
 
 
@@ -57,27 +58,23 @@ int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way, uint32_t arg)
 	for(dst_y=0;dst_y<src->height;dst_y++){
 		for(dst_x=0;dst_x<src->width;dst_x++){
 			tmp_x = (cos((double)arg*PI/180)*(float)dst_x - sin((double)arg*PI/180)*dst_y + 0.5);
-			tmp_y = (cos((double)arg*PI/180)*(float)dst_y + sin((double)arg*PI/180)*dst_x + 0.5);
+			tmp_y = (cos((double)arg*PI/180)*(float)dst_y + sin((double)arg*PI/180)*dst_x + 0.5);			
+			x = tmp_x;
+			y = tmp_y;
 			switch(transpose_way)
 			{
 				case NEAREST_NEIGHOR_INTERPOLATION:
 				{
-					x = tmp_x;
-					y = tmp_y;
 					tmp_pixel = src->rgb_buffer[y*src->width+x];
 					break;
 				}
 				case BILINEAR_INTERPOLATION:
 				{
-					x = tmp_x;
-					y = tmp_y;
 					tmp_pixel = bilinear_interpolation(src, tmp_x, tmp_y);
 					break;
 				}
 				case BICUBIC_INTERPOLATION:
 				{
-					x = tmp_x;
-					y = tmp_y;
 					tmp_pixel = bicubic_interpolation(src, tmp_x, tmp_y);
 					break;
 				}

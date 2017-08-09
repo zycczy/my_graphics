@@ -1,7 +1,7 @@
 /*author: charles cheng 2017-07-19*/
 #include "spatial_filtering.h"
 #define ENHANCE_FLITER
-static uint8_t get_median_value(uint8_t *array, uint32_t length)
+static uint8_t get_median_value(float *array, uint32_t length)
 {
 	uint32_t i, j;
 	uint8_t tmp;
@@ -17,7 +17,7 @@ static uint8_t get_median_value(uint8_t *array, uint32_t length)
 	return (length & 1)?array[(length+1)/2]:(array[length/2+1]+array[length/2]);
 }
 
-static uint8_t *median_filtering(HBMP_i_t *src, uint32_t x, uint32_t y)
+static uint8_t median_filtering(HBMP_i_t *src, uint32_t x, uint32_t y)
 {
 	uint32_t i, j;
 	uint8_t dst_y_value;
@@ -44,13 +44,16 @@ static float templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t x,
 
 	for(i=0;i<filter->filter_height;i++){
 		for(j=0;j<filter->filter_width;j++){
-			
+			#ifdef SPATIAL_FILTERING_RGB 
 			if(m == 0){
-			dst_value += (ARGB_PARSE_R(src->get_rgb_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)) * filter->filter_array[i*filter->filter_width+j]);
+				dst_value += (ARGB_PARSE_R(src->get_rgb_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)) * filter->filter_array[i*filter->filter_width+j]);
 			}else if(m == 1){
-			dst_value += (ARGB_PARSE_G(src->get_rgb_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)) * filter->filter_array[i*filter->filter_width+j]);			
+				dst_value += (ARGB_PARSE_G(src->get_rgb_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)) * filter->filter_array[i*filter->filter_width+j]);			
 			}
 			dst_value += (ARGB_PARSE_B(src->get_rgb_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)) * filter->filter_array[i*filter->filter_width+j]);
+			#else
+			dst_value += ((src->get_y_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)) * filter->filter_array[i*filter->filter_width+j]);
+			#endif
 		}
 	}
 	dst_value *= filter->filter_coef;
@@ -95,7 +98,11 @@ static FILTER_TEMPLATE *init_filter_array(SPATIAL_FILTER_METHOD filter_method)
 			return &sharpening_laplacian5;
 		}
 	}
+	return EPDK_FAIL;
 }
+#define WEIGHT_COEF 1.6
+
+#ifdef SPATIAL_FILTERING_RGB 
 int min_r = 65535;
 int max_r = 0;
 
@@ -105,7 +112,6 @@ int max_g = 0;
 int min_b = 65535;
 int max_b = 0;
 
-#define WEIGHT_COEF 3
 void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 {
 	uint32_t i, j;
@@ -121,7 +127,7 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 			#ifndef ENHANCE_FLITER
 			tmp[i*src->width+j] = templete_filter(src, filter, j, i);
 			#else
-			tmp_r[i*src->width+j] =  WEIGHT_COEF*ARGB_PARSE_R(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 0));
+			tmp_r[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_R(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 0));
 			tmp_g[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_G(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 1));
 			tmp_b[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_B(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 2));
 
@@ -189,3 +195,70 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 	//memcpy(src->rgb_buffer, tmp, src->rgb_size);
 	return ;
 }
+#else
+int min = 65535;
+int max = 0;
+
+void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
+{
+	uint32_t i, j;
+	
+	FILTER_TEMPLATE *filter = init_filter_array(filter_method);
+	int32_t *tmp = malloc(src->yuv_buffer.y_buffer.size);
+	memcpy(tmp, src->rgb_buffer, src->rgb_size);
+	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
+		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){	
+			#ifndef ENHANCE_FLITER
+			tmp[i*src->width+j] = templete_filter(src, filter, j, i);
+			#else
+			tmp[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_R(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 0));
+
+			if(tmp[i*src->width+j] > max){
+				max_r = tmp_r[i*src->width+j];
+			}
+			if(tmp[i*src->width+j] < min){
+				min_r = tmp_r[i*src->width+j];
+			}
+		
+			#endif
+		}
+	}
+	#ifdef ENHANCE_FLITER
+	int span_r = max_r - min_r;
+	int y;
+	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
+		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){
+			if(span_r > 0){
+				r = (tmp_r[i*src->width+j] - min_r)*255/span_r;
+			}else if(tmp_r[i*src->width+j] <= 255){
+				r = tmp_r[i*src->width+j];
+			}else{
+				r = 255;
+			}
+
+			if(span_g > 0){
+				g = (tmp_g[i*src->width+j] - min_g)*255/span_g;
+			}else if(tmp_g[i*src->width+j] <= 255){		
+				g = tmp_g[i*src->width+j];
+			}else{
+				g = 255;
+			}
+
+			if(span_b > 0){
+				b = (tmp_b[i*src->width+j] - min_b)*255/span_b;
+			}else if(tmp_b[i*src->width+j] <= 255){		
+				b = tmp_b[i*src->width+j];
+			}else{
+				b = 255;
+			}
+
+			src->rgb_buffer[i*src->width+j] = ARGB_SET_RGB(r, g, b);
+		}
+	}
+
+	#endif
+	//memcpy(src->rgb_buffer, tmp, src->rgb_size);
+	return ;
+}
+
+#endif

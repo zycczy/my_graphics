@@ -52,8 +52,7 @@ static inline void normal_gray_table(HISTOGRAM_DATA *histogram_data)
 
 static int histogram_matching(HISTOGRAM_DATA *src_histogram_data, HISTOGRAM_DATA *dst_histogram_data)
 {
-	uint8_t dst_max;
-	uint32_t i, j, t;
+	uint32_t i, t;
 	double tmp = 0;
 	uint32_t *dst_CDF_table = dst_histogram_data->CDF_table;
 	HBMP_i_t *dst = dst_histogram_data->src;

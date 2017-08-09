@@ -14,7 +14,7 @@ int catmapping(HBMP_i_t* src, HBMP_i_t *dst, uint32_t map_times)
 	int i, j, t;
 	uint32_t *tmp_buffer = malloc(src->rgb_size);
 	if(dst->rgb_buffer == NULL || src->rgb_buffer == NULL){
-		__wrn("rgb buffer is NULL! dst->rgb_buffer = 0x%x, src->rgb_buffer = 0x%x\n", (int)dst->rgb_buffer, (int)src->rgb_buffer);
+		__wrn("rgb buffer is NULL!\n");
 		return EPDK_FAIL;
 	}
 
