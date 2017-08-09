@@ -109,7 +109,7 @@ int main(int argc, char **argv)
 			case 'y':
 			{
 				//RGB->YUV
-				FILE *y_file, *u_file, *v_file;
+				FILE *y_file, *u_file, *v_file, *rgb_file;
 				hbmp_src->yuv_buffer.type = atoi(optarg);
 				show_para(hbmp_src->yuv_buffer.type);
 				rgb_tranform_to_yuv(hbmp_src);
@@ -118,9 +118,14 @@ int main(int argc, char **argv)
 				rgb_tranform_to_yuv(hbmp_dst);
 				//gamma_correct(hbmp_src, 2);
 				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
-				//spatial_filter(hbmp_src, TEMPLATE_SMOOTH_AVG);
+				spatial_filter(hbmp_src, TEMPLATE_LAPLACIAN5);
+				
+				rgb_file = fopen("rgb_file.bin","wb+");
+				fwrite(hbmp_src->rgb_buffer, 1, hbmp_src->rgb_size, rgb_file);
+				fclose(rgb_file);
+				
 				y_file = fopen("y_file.bin","wb+");
-				fwrite(hbmp_src->rgb_buffer, 1, hbmp_src->rgb_size, y_file);
+				fwrite(hbmp_src->yuv_buffer.y_buffer.buffer, 1, hbmp_src->yuv_buffer.y_buffer.size, y_file);
 				fclose(y_file);
 				u_file = fopen("u_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.u_buffer.buffer, 1, hbmp_src->yuv_buffer.u_buffer.size, u_file);

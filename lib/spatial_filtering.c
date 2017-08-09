@@ -1,6 +1,7 @@
 /*author: charles cheng 2017-07-19*/
 #include "spatial_filtering.h"
 #define ENHANCE_FLITER
+//#define SPATIAL_FILTERING_RGB
 static uint8_t get_median_value(float *array, uint32_t length)
 {
 	uint32_t i, j;
@@ -204,55 +205,39 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 	uint32_t i, j;
 	
 	FILTER_TEMPLATE *filter = init_filter_array(filter_method);
-	int32_t *tmp = malloc(src->yuv_buffer.y_buffer.size);
-	memcpy(tmp, src->rgb_buffer, src->rgb_size);
+	int32_t *tmp = malloc(src->yuv_buffer.y_buffer.size*4);
+	memcpy(tmp, src->yuv_buffer.y_buffer.buffer, src->yuv_buffer.y_buffer.size);
 	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
 		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){	
 			#ifndef ENHANCE_FLITER
 			tmp[i*src->width+j] = templete_filter(src, filter, j, i);
 			#else
-			tmp[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_R(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 0));
+			tmp[i*src->width+j] = WEIGHT_COEF*(src->yuv_buffer.y_buffer.buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 0));
 
 			if(tmp[i*src->width+j] > max){
-				max_r = tmp_r[i*src->width+j];
+				max = tmp[i*src->width+j];
 			}
 			if(tmp[i*src->width+j] < min){
-				min_r = tmp_r[i*src->width+j];
+				min = tmp[i*src->width+j];
 			}
 		
 			#endif
 		}
 	}
 	#ifdef ENHANCE_FLITER
-	int span_r = max_r - min_r;
+	int span = max - min;
 	int y;
 	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
 		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){
-			if(span_r > 0){
-				r = (tmp_r[i*src->width+j] - min_r)*255/span_r;
-			}else if(tmp_r[i*src->width+j] <= 255){
-				r = tmp_r[i*src->width+j];
+			if(span > 0){
+				y = (tmp[i*src->width+j] - min)*255/span;
+			}else if(tmp[i*src->width+j] <= 255){
+				y = tmp[i*src->width+j];
 			}else{
-				r = 255;
+				y = 255;
 			}
 
-			if(span_g > 0){
-				g = (tmp_g[i*src->width+j] - min_g)*255/span_g;
-			}else if(tmp_g[i*src->width+j] <= 255){		
-				g = tmp_g[i*src->width+j];
-			}else{
-				g = 255;
-			}
-
-			if(span_b > 0){
-				b = (tmp_b[i*src->width+j] - min_b)*255/span_b;
-			}else if(tmp_b[i*src->width+j] <= 255){		
-				b = tmp_b[i*src->width+j];
-			}else{
-				b = 255;
-			}
-
-			src->rgb_buffer[i*src->width+j] = ARGB_SET_RGB(r, g, b);
+			src->yuv_buffer.y_buffer.buffer[i*src->width+j] = y;
 		}
 	}
 
