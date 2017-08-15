@@ -1,7 +1,7 @@
 /*author: charles cheng 2017-07-19*/
 #include "spatial_filtering.h"
 #define ENHANCE_FLITER
-//#define SPATIAL_FILTERING_RGB
+#define SPATIAL_FILTERING_RGB
 static uint8_t get_median_value(float *array, uint32_t length)
 {
 	uint32_t i, j;
@@ -160,8 +160,8 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 	#ifdef ENHANCE_FLITER
 	int span_r = max_r - min_r;
 	int span_g = max_g - min_g;	
-	int span_b = max_b -min_b;
-	int r, g,b;
+	int span_b = max_b - min_b;
+	int r, g, b;
 	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
 		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){
 			if(span_r > 0){
