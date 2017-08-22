@@ -18,6 +18,8 @@
 #define ARGB_PARSE_B(rgb)	(rgb&0x000000ff)
 #define ARGB_SET_RGB(r, g, b)    (((r<<16) |(g<<8) |(b)) |0xff000000)
 
+
+
 typedef enum _SPATIAL_FILTER_METHOD
 {
 	TEMPLATE_SMOOTH_AVG = 0,
@@ -93,6 +95,19 @@ typedef enum _HISTOGRAM_OP
 	HISTOGRAM_MATCHING,
 }HISTOGRAM_OP;
 
+typedef struct _COMPLEX_NUMBER
+{
+	int real;
+	int imaginary;
+}COMPLEX_NUMBER;
+
+typedef struct _FFT_STRUCT
+{
+	HBMP_i_t *spectrum;
+	bool expand;
+	COMPLEX_NUMBER *freq_image;
+	char fill_color;
+}FFT_STRUCT;
 
 
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);

@@ -5,11 +5,7 @@
 #include "epdk_inc.h"
 #include "bmp.h"
 
-typedef struct _COMPRESS_NUMBER
-{
-	int real;
-	int imaginary;
-}COMPRESS_NUMBER;
+
 
 #endif
 

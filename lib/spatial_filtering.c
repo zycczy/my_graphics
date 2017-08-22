@@ -220,7 +220,6 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 			if(tmp[i*src->width+j] < min){
 				min = tmp[i*src->width+j];
 			}
-		
 			#endif
 		}
 	}
