@@ -142,7 +142,6 @@ int main(int argc, char **argv)
 				short y_dct[64];
 				maritx_file = fopen("maritx0_y.bin","wb+");
 				fread(y_buffer, 1, 64, maritx_file);
-				Forward_DCT(y_buffer, y_dct, NULL);
 				break;
 			}
 			default:

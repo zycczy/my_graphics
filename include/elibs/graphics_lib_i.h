@@ -97,16 +97,16 @@ typedef enum _HISTOGRAM_OP
 
 typedef struct _COMPLEX_NUMBER
 {
-	int real;
-	int imaginary;
+	int32_t real;
+	int32_t imaginary;
 }COMPLEX_NUMBER;
 
 typedef struct _FFT_STRUCT
 {
 	HBMP_i_t *spectrum;
-	bool expand;
+	int expand;
 	COMPLEX_NUMBER *freq_image;
-	char fill_color;
+	uint8_t fill_luma;
 }FFT_STRUCT;
 
 
@@ -119,7 +119,7 @@ int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
 void yuv_buffer_init(HBMP_i_t* hbmp);
 
 /*--------------------------------------------------------------------------------*/
-void Forward_DCT(char* src_data, short* dct_data, uint8_t* quantization_table);
+
 
 /*--------------------------------------------------------------------------------*/
 uint32_t gamma_correct(HBMP_i_t *hbmp_buf, float gamma);

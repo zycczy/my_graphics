@@ -58,16 +58,19 @@
 
 
 #define show_table(size0, size1, array_name)  {\
-                                               printf("\n");\
-	                                           printf(#array_name"\n");\
-	                                           int i, j;\
-                                               for(i=0;i<size0;i++){\
-	                                               for(j=0;j<size1;j++){\
-		                                               printf("0x%x, ", array_name[i*size0+j]);\
-	                                               }\
-	                                               printf("\\\n");\
-                                               }\
+                                              	printf("\n");\
+	                                           	printf(#array_name"\n");\
+	                                           	int i, j;\
+                                               	for(i=0;i<size0;i++){\
+	                                        		for(j=0;j<size1;j++){\
+		                                            	printf("0x%x, ", array_name[i*size0+j]);\
+	                                            	}\
+	                                               	printf("\\\n");\
+                                               	}\
                                               }
+
+#define MAX(a, b) (a>b?a:b)
+#define MIN(a, b) (a<b?a:b)
 
 
 

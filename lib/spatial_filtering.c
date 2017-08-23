@@ -132,28 +132,14 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 			tmp_g[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_G(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 1));
 			tmp_b[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_B(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 2));
 
-			if(tmp_r[i*src->width+j] > max_r){
-				max_r = tmp_r[i*src->width+j];
-			}
-			if(tmp_r[i*src->width+j] < min_r){
-				min_r = tmp_r[i*src->width+j];
-			}
+			max_r = MAX(max_r, tmp_r[i*src->width+j]);
+			min_r = MIN(min_r, tmp_r[i*src->width+j]);
 
-			
-			if(tmp_g[i*src->width+j] > max_g){
-				max_g = tmp_g[i*src->width+j];
-			}
-			if(tmp_g[i*src->width+j] < min_g){
-				min_g = tmp_g[i*src->width+j];
-			}
+			max_g = MAX(max_g, tmp_g[i*src->width+j]);
+			min_g = MIN(min_g, tmp_g[i*src->width+j]);
 
-			
-			if(tmp_b[i*src->width+j] > max_b){
-				max_b = tmp_b[i*src->width+j];
-			}
-			if(tmp_b[i*src->width+j] < min_b){
-				min_b = tmp_b[i*src->width+j];
-			}
+			max_b = MAX(max_b, tmp_b[i*src->width+j]);
+			min_b = MIN(min_b, tmp_b[i*src->width+j]);
 			#endif
 		}
 	}
@@ -214,12 +200,9 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 			#else
 			tmp[i*src->width+j] = WEIGHT_COEF*(src->yuv_buffer.y_buffer.buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 0));
 
-			if(tmp[i*src->width+j] > max){
-				max = tmp[i*src->width+j];
-			}
-			if(tmp[i*src->width+j] < min){
-				min = tmp[i*src->width+j];
-			}
+			max = MAX(max, tmp[i*src->width+j]);
+			min = MIN(min, tmp[i*src->width+j]);
+
 			#endif
 		}
 	}
