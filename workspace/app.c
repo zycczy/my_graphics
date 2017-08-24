@@ -118,10 +118,11 @@ int main(int argc, char **argv)
 				rgb_tranform_to_yuv(hbmp_dst);
 				//gamma_correct(hbmp_src, 2);
 				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
-				spatial_filter(hbmp_src, TEMPLATE_LAPLACIAN5);
-				
+				//spatial_filter(hbmp_src, TEMPLATE_LAPLACIAN5);
+				FFT_STRUCT fft_dst;
+				image_FFT(hbmp_src, &fft_dst);
 				rgb_file = fopen("rgb_file.bin","wb+");
-				fwrite(hbmp_src->rgb_buffer, 1, hbmp_src->rgb_size, rgb_file);
+				fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
 				fclose(rgb_file);
 				
 				y_file = fopen("y_file.bin","wb+");

@@ -34,6 +34,12 @@ static uint8_t get_y_value(HBMP_i_t* src, uint32_t x, uint32_t y)
 	return src->yuv_buffer.y_buffer.buffer[i];
 }
 
+static uint32_t set_rgb_value(HBMP_i_t* src, uint32_t x, uint32_t y, uint32_t value)
+{
+	return src->rgb_buffer[y*src->width+x] = value;
+}
+
+
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file)
 {
 	HBMP_i_t *hbmp_buf = malloc(sizeof(HBMP_i_t));

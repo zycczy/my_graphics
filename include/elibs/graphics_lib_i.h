@@ -78,6 +78,8 @@ typedef struct _HBMP_i_t
 	uint32_t   rgb_size;
 	uint32_t   row_size;
 	YUV_BUFFER yuv_buffer;
+	
+	uint32_t   (*set_rgb_value)(void*, uint32_t, uint32_t, uint32_t);	
 	uint32_t   (*get_rgb_value)(void*, uint32_t, uint32_t);	
 	uint8_t   (*get_y_value)(void*, uint32_t, uint32_t);  
 }HBMP_i_t;
@@ -120,6 +122,7 @@ void yuv_buffer_init(HBMP_i_t* hbmp);
 
 /*--------------------------------------------------------------------------------*/
 
+int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst);
 
 /*--------------------------------------------------------------------------------*/
 uint32_t gamma_correct(HBMP_i_t *hbmp_buf, float gamma);

@@ -1,2 +1,2 @@
----- laplacian_filter_array Matches (1 in 1 files) ----
-Spatial_filtering.h (d:\workspace\my_graphics\lib):int32_t laplacian_filter_array[9] = {-1, -2, -1, 
+---- Forward_DCT Matches (1 in 1 files) ----
+App.c (d:\workspace\my_graphics\workspace):				Forward_DCT(y_buffer, y_dct, NULL);
