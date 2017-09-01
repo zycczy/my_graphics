@@ -21,13 +21,14 @@ int FFT(COMPLEX_NUMBER *fft_src, COMPLEX_NUMBER *fft_dst, int iteration_times)
 	memcpy(x1, fft_src, sizeof(COMPLEX_NUMBER)*count);
 	for(k=0;k<iteration_times;k++){
 		for(j=0;j<(1<<k);j++){
-			p = j * bfsize;
+			bfsize = 1 << (iteration_times-k);
 			for(i=0;i<bfsize/2;i++){
 				p = j * bfsize;
 				x2[i+p].real = x1[i+p].real + x1[i+p+bfsize/2].real;
 				x2[i+p].imaginary = x1[i+p].imaginary + x1[i+p+bfsize/2].imaginary;
-				x2[i+p+bfsize].real = (x1[i+p].real - x1[i+p+bfsize/2].real) * w[i*(1<<k)].real;
-				x2[i+p+bfsize].imaginary = (x1[i+p].imaginary - x1[i+p+bfsize/2].imaginary) * w[i*(1<<k)].imaginary;
+				
+				x2[i+p+bfsize/2].real = (x1[i+p].real - x1[i+p+bfsize/2].real) * w[i*(1<<k)].real;
+				x2[i+p+bfsize/2].imaginary = (x1[i+p].imaginary - x1[i+p+bfsize/2].imaginary) * w[i*(1<<k)].imaginary;
 			}
 		}
 		x = x1;
@@ -44,6 +45,7 @@ int FFT(COMPLEX_NUMBER *fft_src, COMPLEX_NUMBER *fft_dst, int iteration_times)
 			fft_dst[j].imaginary = x1[p].imaginary;
 		}
 	}
+	show_para(fft_dst[j].real);
 	free(w);
 	free(x1);
 	free(x2);
@@ -113,7 +115,7 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	tmp_fft_output = malloc(sizeof(COMPLEX_NUMBER)*freq_width*freq_height);
 
 	for(i=0;i<freq_height;i++){
-		FFT(time_image, fft_dst->freq_image, width_iteration);
+		FFT(&(time_image[freq_width*i]), &(fft_dst->freq_image[freq_width*i]), width_iteration);
 	}
 
 	for(i=0;i<freq_height;i++){
@@ -124,7 +126,7 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	}
 	
 	for(i=0;i<freq_width;i++){
-		FFT(time_image, fft_dst->freq_image, height_iteration);
+		FFT(&(time_image[freq_height*i]), &(fft_dst->freq_image[freq_height*i]), height_iteration);
 	}
 	for(i=0;i<freq_height;i++){
 		for(j=0;j<freq_width;j++){
@@ -132,24 +134,24 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 			tmp_fft_output[i*freq_width+j].imaginary = fft_dst->freq_image[j*freq_height+i].imaginary;
 		}
 	}
-
+	
 	for(i=0;i<freq_height;i++){
 		for(j=0;j<freq_width;j++){
 			tmp = sqrt(fft_dst->freq_image[j*freq_height+i].real * fft_dst->freq_image[j*freq_height+i].real+
 					   fft_dst->freq_image[j*freq_height+i].imaginary * fft_dst->freq_image[j*freq_height+i].imaginary)/100;
+			printf("fft_dst->freq_image[j*freq_height+i].real = %lf\n", fft_dst->freq_image[j*freq_height+i].real);
 			tmp = log(1+tmp);
 			max = MAX(max, tmp);
 			min = MIN(min, tmp);
 		}
 	}
-
 	for(i=0;i<freq_height;i++){
 		for(j=0;j<freq_width;j++){
 			tmp = sqrt(fft_dst->freq_image[j*freq_height+i].real * fft_dst->freq_image[j*freq_height+i].real+
 					   fft_dst->freq_image[j*freq_height+i].imaginary * fft_dst->freq_image[j*freq_height+i].imaginary)/100;
+
 			tmp = log(1+tmp);
 			tmp = (tmp - min)/(max - min) * 255;
-			show_para(tmp);
 			fft_dst->spectrum->yuv_buffer.y_buffer.buffer[(j<freq_width/2?j+freq_width/2:j-freq_width/2) + fft_dst->spectrum->width * (i<freq_height/2?i+freq_height/2:i-freq_height/2)] = (uint8_t)tmp;
 			
 		}
