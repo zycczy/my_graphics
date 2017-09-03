@@ -45,7 +45,7 @@ int FFT(COMPLEX_NUMBER *fft_src, COMPLEX_NUMBER *fft_dst, int iteration_times)
 			fft_dst[j].imaginary = x1[p].imaginary;
 		}
 	}
-	show_para(fft_dst[j].real);
+	show_para(fft_dst[0].real);
 	free(w);
 	free(x1);
 	free(x2);
@@ -115,7 +115,7 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	tmp_fft_output = malloc(sizeof(COMPLEX_NUMBER)*freq_width*freq_height);
 
 	for(i=0;i<freq_height;i++){
-		FFT(&(time_image[freq_width*i]), &(fft_dst->freq_image[freq_width*i]), width_iteration);
+		FFT(time_image+freq_width*i, fft_dst->freq_image+freq_width*i, width_iteration);
 	}
 
 	for(i=0;i<freq_height;i++){
@@ -126,8 +126,11 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	}
 	
 	for(i=0;i<freq_width;i++){
-		FFT(&(time_image[freq_height*i]), &(fft_dst->freq_image[freq_height*i]), height_iteration);
-	}
+		FFT(time_image+freq_height*i, fft_dst->freq_image+freq_height*i, height_iteration);
+		show_para(fft_dst->freq_image[freq_width*i].real);
+		show_para(freq_width*i);
+			
+	} 
 	for(i=0;i<freq_height;i++){
 		for(j=0;j<freq_width;j++){
 			tmp_fft_output[i*freq_width+j].real = fft_dst->freq_image[j*freq_height+i].real;			
@@ -137,9 +140,8 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	
 	for(i=0;i<freq_height;i++){
 		for(j=0;j<freq_width;j++){
-			tmp = sqrt(fft_dst->freq_image[j*freq_height+i].real * fft_dst->freq_image[j*freq_height+i].real+
+			tmp = (double)sqrt(fft_dst->freq_image[j*freq_height+i].real * fft_dst->freq_image[j*freq_height+i].real+
 					   fft_dst->freq_image[j*freq_height+i].imaginary * fft_dst->freq_image[j*freq_height+i].imaginary)/100;
-			printf("fft_dst->freq_image[j*freq_height+i].real = %lf\n", fft_dst->freq_image[j*freq_height+i].real);
 			tmp = log(1+tmp);
 			max = MAX(max, tmp);
 			min = MIN(min, tmp);
@@ -147,7 +149,7 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	}
 	for(i=0;i<freq_height;i++){
 		for(j=0;j<freq_width;j++){
-			tmp = sqrt(fft_dst->freq_image[j*freq_height+i].real * fft_dst->freq_image[j*freq_height+i].real+
+			tmp = (double)sqrt(fft_dst->freq_image[j*freq_height+i].real * fft_dst->freq_image[j*freq_height+i].real+
 					   fft_dst->freq_image[j*freq_height+i].imaginary * fft_dst->freq_image[j*freq_height+i].imaginary)/100;
 
 			tmp = log(1+tmp);
