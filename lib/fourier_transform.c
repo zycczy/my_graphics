@@ -1,6 +1,6 @@
 #include "fourier_transform.h"
 
-int FFT(COMPLEX_NUMBER *fft_src, COMPLEX_NUMBER *fft_dst, int iteration_times)
+int FFT(COMPLEX_NUMBER *fft_time, COMPLEX_NUMBER *fft_freq, int iteration_times)
 {
 	long count;
 	uint32_t i, j, k;
@@ -18,7 +18,7 @@ int FFT(COMPLEX_NUMBER *fft_src, COMPLEX_NUMBER *fft_dst, int iteration_times)
 		w[i].imaginary = sin(angle);
 	}
 
-	memcpy(x1, fft_src, sizeof(COMPLEX_NUMBER)*count);
+	memcpy(x1, fft_time, sizeof(COMPLEX_NUMBER)*count);
 	for(k=0;k<iteration_times;k++){
 		for(j=0;j<(1<<k);j++){
 			bfsize = 1 << (iteration_times-k);
@@ -41,16 +41,40 @@ int FFT(COMPLEX_NUMBER *fft_src, COMPLEX_NUMBER *fft_dst, int iteration_times)
 			if(j&(1<<i)){
 				p+=1<<(iteration_times-i-1);
 			}
-			fft_dst[j].real = x1[p].real;			
-			fft_dst[j].imaginary = x1[p].imaginary;
+			fft_freq[j].real = x1[p].real;			
+			fft_freq[j].imaginary = x1[p].imaginary;
 		}
 	}
-	show_para(fft_dst[0].real);
 	free(w);
 	free(x1);
 	free(x2);
 	return 0;
 }
+
+void IFFT(COMPLEX_NUMBER *fft_time, COMPLEX_NUMBER *fft_freq, int iteration_times)
+{
+	long count;
+	uint32_t i;
+	COMPLEX_NUMBER *x;
+
+	count = 1 << iteration_times;
+	x = (COMPLEX_NUMBER *)malloc(sizeof(COMPLEX_NUMBER)*count);	
+
+	memcpy(x, fft_freq, sizeof(COMPLEX_NUMBER)*count);
+	for(i=0;i<count;i++){
+		x[i].imaginary *= -1;
+	}
+
+	FFT(x, fft_time, iteration_times);
+
+	for(i=0;i<count;i++){
+		fft_time[i].real /= count;		
+		fft_time[i].imaginary /= count;
+	}
+	free(x);
+	return ;
+}
+
 
 #define DEFAULT_FILL_LUMA 255
 int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
@@ -58,8 +82,8 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	double tmp;
 	COMPLEX_NUMBER *tmp_fft_output;
 	uint32_t i, j;
-	uint32_t freq_width = 1;
-	uint32_t freq_height = 1;
+	uint32_t fft_width = 1;
+	uint32_t fft_height = 1;
 	uint32_t width_iteration = 0;
 	uint32_t height_iteration = 0;
 	COMPLEX_NUMBER *time_image;
@@ -68,27 +92,27 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	fft_dst->fill_luma = DEFAULT_FILL_LUMA;
 	fft_dst->spectrum = malloc(sizeof(HBMP_i_t));
 	memcpy(fft_dst->spectrum, src, sizeof(HBMP_i_t));
-	while(freq_width*2 <= src->width){
-		freq_width *= 2;
+	while(fft_width*2 <= src->width){
+		fft_width *= 2;
 		width_iteration++;
 	}
 
-	while(freq_height*2 <= src->height){
-		freq_height *= 2;
+	while(fft_height*2 <= src->height){
+		fft_height *= 2;
 		height_iteration++;
 	}
-	if(fft_dst->expand && (freq_width != src->width) && (freq_height != src->height)){
-		freq_width *= 2;
+	if(fft_dst->expand && (fft_width != src->width) && (fft_height != src->height)){
+		fft_width *= 2;
 		width_iteration++;
-		freq_height *= 2;
+		fft_height *= 2;
 		height_iteration;
 	}
 
-	time_image = (COMPLEX_NUMBER *)malloc(sizeof(COMPLEX_NUMBER)*freq_width*freq_height);
-	fft_dst->freq_image = (COMPLEX_NUMBER *)malloc(sizeof(COMPLEX_NUMBER)*freq_width*freq_height);
+	time_image = (COMPLEX_NUMBER *)malloc(sizeof(COMPLEX_NUMBER)*fft_width*fft_height);
+	fft_dst->freq_image = (COMPLEX_NUMBER *)malloc(sizeof(COMPLEX_NUMBER)*fft_width*fft_height);
 
-	for(i=0;i<freq_height;i++){
-		for(j=0;j<freq_width;j++){
+	for(i=0;i<fft_height;i++){
+		for(j=0;j<fft_width;j++){
 			if(fft_dst->expand){
 				if((j<src->height) && (i<src->width)){
 					time_image[i*src->width+j].real = src->get_y_value(src, j, i);
@@ -103,61 +127,124 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 			}
 		}
 	}
-	fft_dst->spectrum->height = freq_height;
-	fft_dst->spectrum->width = freq_width;
+	fft_dst->spectrum->height = fft_height;
+	fft_dst->spectrum->width = fft_width;
 	//yuv_buffer_init(fft_dst->spectrum);
 	fft_dst->spectrum->rgb_size = fft_dst->spectrum->height * fft_dst->spectrum->width * 4;
-	show_para(fft_dst->spectrum->height);
-	
-	show_para(fft_dst->spectrum->width);
 	yuv_buffer_init(fft_dst->spectrum);
 	fft_dst->spectrum->rgb_buffer = (uint32_t *)malloc(fft_dst->spectrum->rgb_size);
-	tmp_fft_output = malloc(sizeof(COMPLEX_NUMBER)*freq_width*freq_height);
+	tmp_fft_output = malloc(sizeof(COMPLEX_NUMBER)*fft_width*fft_height);
 
-	for(i=0;i<freq_height;i++){
-		FFT(time_image+freq_width*i, fft_dst->freq_image+freq_width*i, width_iteration);
+	for(i=0;i<fft_height;i++){
+		FFT(time_image+fft_width*i, fft_dst->freq_image+fft_width*i, width_iteration);
 	}
 
-	for(i=0;i<freq_height;i++){
-		for(j=0;j<freq_width;j++){
-			time_image[j*freq_height+i].real = fft_dst->freq_image[i*freq_width+j].real;			
-			time_image[j*freq_height+i].imaginary = fft_dst->freq_image[i*freq_width+j].imaginary;
+	for(i=0;i<fft_height;i++){
+		for(j=0;j<fft_width;j++){
+			time_image[j*fft_height+i].real = fft_dst->freq_image[i*fft_width+j].real;			
+			time_image[j*fft_height+i].imaginary = fft_dst->freq_image[i*fft_width+j].imaginary;
 		}
 	}
 	
-	for(i=0;i<freq_width;i++){
-		FFT(time_image+freq_height*i, fft_dst->freq_image+freq_height*i, height_iteration);
-		show_para(fft_dst->freq_image[freq_width*i].real);
-		show_para(freq_width*i);
+	for(i=0;i<fft_width;i++){
+		FFT(time_image+fft_height*i, fft_dst->freq_image+fft_height*i, height_iteration);
 			
 	} 
-	for(i=0;i<freq_height;i++){
-		for(j=0;j<freq_width;j++){
-			tmp_fft_output[i*freq_width+j].real = fft_dst->freq_image[j*freq_height+i].real;			
-			tmp_fft_output[i*freq_width+j].imaginary = fft_dst->freq_image[j*freq_height+i].imaginary;
+	for(i=0;i<fft_height;i++){
+		for(j=0;j<fft_width;j++){
+			tmp_fft_output[i*fft_width+j].real = fft_dst->freq_image[j*fft_height+i].real;			
+			tmp_fft_output[i*fft_width+j].imaginary = fft_dst->freq_image[j*fft_height+i].imaginary;
 		}
 	}
 	
-	for(i=0;i<freq_height;i++){
-		for(j=0;j<freq_width;j++){
-			tmp = (double)sqrt(fft_dst->freq_image[j*freq_height+i].real * fft_dst->freq_image[j*freq_height+i].real+
-					   fft_dst->freq_image[j*freq_height+i].imaginary * fft_dst->freq_image[j*freq_height+i].imaginary)/100;
+	for(i=0;i<fft_height;i++){
+		for(j=0;j<fft_width;j++){
+			tmp = (double)sqrt(fft_dst->freq_image[j*fft_height+i].real * fft_dst->freq_image[j*fft_height+i].real+
+					   fft_dst->freq_image[j*fft_height+i].imaginary * fft_dst->freq_image[j*fft_height+i].imaginary)/100;
 			tmp = log(1+tmp);
 			max = MAX(max, tmp);
 			min = MIN(min, tmp);
 		}
 	}
-	for(i=0;i<freq_height;i++){
-		for(j=0;j<freq_width;j++){
-			tmp = (double)sqrt(fft_dst->freq_image[j*freq_height+i].real * fft_dst->freq_image[j*freq_height+i].real+
-					   fft_dst->freq_image[j*freq_height+i].imaginary * fft_dst->freq_image[j*freq_height+i].imaginary)/100;
+	for(i=0;i<fft_height;i++){
+		for(j=0;j<fft_width;j++){
+			tmp = (double)sqrt(fft_dst->freq_image[j*fft_height+i].real * fft_dst->freq_image[j*fft_height+i].real+
+					   fft_dst->freq_image[j*fft_height+i].imaginary * fft_dst->freq_image[j*fft_height+i].imaginary)/100;
 
 			tmp = log(1+tmp);
 			tmp = (tmp - min)/(max - min) * 255;
-			fft_dst->spectrum->yuv_buffer.y_buffer.buffer[(j<freq_width/2?j+freq_width/2:j-freq_width/2) + fft_dst->spectrum->width * (i<freq_height/2?i+freq_height/2:i-freq_height/2)] = (uint8_t)tmp;
+			fft_dst->spectrum->yuv_buffer.y_buffer.buffer[(j<fft_width/2?j+fft_width/2:j-fft_width/2) + fft_dst->spectrum->width * (i<fft_height/2?i+fft_height/2:i-fft_height/2)] = (uint8_t)tmp;
 			
 		}
 	}
+	show_para(fft_dst->freq_image[512].real);
+	return EPDK_OK;
+}
+
+int image_IFFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
+{
+	double tmp;
+	uint32_t i, j;
+	uint32_t ifft_width = 1, ifft_height = 1;
+	uint32_t width_iteration = 0, height_iteration = 0;
+	COMPLEX_NUMBER *time_image;
+	COMPLEX_NUMBER *freq_image;
+	while(ifft_width*2 <= src->width){
+		ifft_width *= 2;
+		width_iteration++;
+	}
+
+	while(ifft_height*2 <= src->width){
+		ifft_height *= 2;
+		height_iteration++;
+	}
+	show_para(width_iteration);	
+
+	time_image = (COMPLEX_NUMBER *)malloc(sizeof(COMPLEX_NUMBER)*ifft_width*ifft_height);
+	freq_image = (COMPLEX_NUMBER *)malloc(sizeof(COMPLEX_NUMBER)*ifft_width*ifft_height);
+	
+	memcpy(freq_image, fft_dst->freq_image, sizeof(COMPLEX_NUMBER)*ifft_width*ifft_width);
+	
+	show_para(freq_image[512].real);
+	for(i=0;i<ifft_height;i++){
+		IFFT(time_image+ifft_width*i, fft_dst->freq_image+ifft_width*i, width_iteration);
+	}
+
+	for(i=0;i<ifft_height;i++){
+		for(j=0;j<ifft_width;j++){
+			freq_image[i+ifft_height*j].real = time_image[j+i*ifft_width].real;			
+			freq_image[i+ifft_height*j].imaginary= time_image[j+i*ifft_width].imaginary;
+		}
+	}
+
+	for(i=0;i<ifft_width;i++){
+		IFFT(time_image+ifft_height*i, fft_dst->freq_image+ifft_height*i, height_iteration);
+	}
+
+	double max = 0, min = 0xffffffff;
 
 	
+	for(i=0;i<src->height;i++){
+		for(j=0;j<src->width;j++){
+			tmp = (double)sqrt(time_image[j*ifft_height+i].real * time_image[j*ifft_height+i].real+
+					   time_image[j*ifft_height+i].imaginary * time_image[j*ifft_height+i].imaginary);
+			max = MAX(max, tmp);
+			min = MIN(min, tmp);
+		}
+	}
+	printf("max = %lf", max);	
+	printf("min = %lf", min);
+	for(i=0;i<src->height;i++){
+		for(j=0;j<src->width;j++){
+			tmp = (double)sqrt(time_image[j*ifft_height+i].real * time_image[j*ifft_height+i].real+
+					   time_image[j*ifft_height+i].imaginary * time_image[j*ifft_height+i].imaginary)*100;
+
+			tmp = (tmp - min)/(max - min) * 255;
+			printf("min = %lf\n", tmp);
+			src->yuv_buffer.y_buffer.buffer[j+src->width*i] = (uint8_t)tmp;
+			
+		}
+	}
+	return EPDK_OK;
 }
+

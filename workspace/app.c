@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 				rgb_file = fopen("rgb_file.bin","wb+");
 				fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
 				fclose(rgb_file);
-				
+				image_IFFT(hbmp_src, &fft_dst);
 				y_file = fopen("y_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.y_buffer.buffer, 1, hbmp_src->yuv_buffer.y_buffer.size, y_file);
 				fclose(y_file);

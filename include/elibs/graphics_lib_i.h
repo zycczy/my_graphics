@@ -123,6 +123,7 @@ void yuv_buffer_init(HBMP_i_t* hbmp);
 /*--------------------------------------------------------------------------------*/
 
 int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst);
+int image_IFFT(HBMP_i_t *src, FFT_STRUCT *fft_dst);
 
 /*--------------------------------------------------------------------------------*/
 uint32_t gamma_correct(HBMP_i_t *hbmp_buf, float gamma);
