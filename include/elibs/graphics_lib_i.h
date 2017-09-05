@@ -99,8 +99,8 @@ typedef enum _HISTOGRAM_OP
 
 typedef struct _COMPLEX_NUMBER
 {
-	int32_t real;
-	int32_t imaginary;
+	double real;
+	double imaginary;
 }COMPLEX_NUMBER;
 
 typedef struct _FFT_STRUCT
