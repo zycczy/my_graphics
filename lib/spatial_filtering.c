@@ -1,7 +1,7 @@
 /*author: charles cheng 2017-07-19*/
 #include "spatial_filtering.h"
 #define ENHANCE_FLITER
-#define SPATIAL_FILTERING_RGB
+//#define SPATIAL_FILTERING_RGB
 static uint8_t get_median_value(float *array, uint32_t length)
 {
 	uint32_t i, j;

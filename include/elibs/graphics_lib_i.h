@@ -103,11 +103,21 @@ typedef struct _COMPLEX_NUMBER
 	double imaginary;
 }COMPLEX_NUMBER;
 
+typedef struct _Complex_{  
+    double real;  
+    double imagin;  
+}Complex;  
+#ifndef M_PI  
+#define M_PI 3.14159265358979323846  
+#endif  
+#define SIZE 1024*16  
+#define VALUE_MAX 1000  
+
 typedef struct _FFT_STRUCT
 {
 	HBMP_i_t *spectrum;
 	int expand;
-	COMPLEX_NUMBER *freq_image;
+	Complex *freq_image;
 	uint8_t fill_luma;
 }FFT_STRUCT;
 

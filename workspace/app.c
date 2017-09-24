@@ -113,12 +113,13 @@ int main(int argc, char **argv)
 				hbmp_src->yuv_buffer.type = atoi(optarg);
 				show_para(hbmp_src->yuv_buffer.type);
 				rgb_tranform_to_yuv(hbmp_src);
-				hbmp_dst = bmp_parser("dst.bmp", "dst.bin");
+				hbmp_dst = bmp_parser("src.bmp", "dst.bin");
 				hbmp_dst->yuv_buffer.type = hbmp_src->yuv_buffer.type;
 				rgb_tranform_to_yuv(hbmp_dst);
 				//gamma_correct(hbmp_src, 2);
 				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
-				//spatial_filter(hbmp_src, TEMPLATE_LAPLACIAN5);
+				//spatial_filter(hbmp_src, TEMPLATE_HSOBLE);
+				//spatial_filter(hbmp_src, TEMPLATE_VSOBLE);
 				FFT_STRUCT fft_dst;
 				image_FFT(hbmp_src, &fft_dst);
 				rgb_file = fopen("rgb_file.bin","wb+");
