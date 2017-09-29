@@ -1,14 +1,4 @@
 #include "fourier_transform.h"
-//
-//  1D.c
-//  Fourer
-//
-//  Created by \u8c2d\u5347 on 14/11/25.
-//  Copyright (c) 2014\u5e74 \u8c2d\u5347. All rights reserved.
-//
-
-
-
 
 int isBase2(int size_n){
     int k=size_n;
@@ -22,9 +12,7 @@ int isBase2(int size_n){
     else
         return k;
 }
-////////////////////////////////////////////////////////////////////
-//\u590d\u6570\u57fa\u672c\u8fd0\u7b97
-///////////////////////////////////////////////////////////////////
+
 void Add_Complex(Complex * src1,Complex *src2,Complex *dst){
     dst->imagin=src1->imagin+src2->imagin;
     dst->real=src1->real+src2->real;
@@ -69,17 +57,13 @@ void Show_Complex(Complex * src,int size_n){
 
 
 }
-////////////////////////////////////////////////////////////////////
-//\u8ba1\u7b97WN
-///////////////////////////////////////////////////////////////////
+
 void getWN(double n,double size_n,Complex * dst){
     double x=2.0*M_PI*n/size_n;
     dst->imagin=-sin(x);
     dst->real=cos(x);
 }
-////////////////////////////////////////////////////////////////////
-//\u968f\u673a\u521d\u59cb\u5316\u8f93\u5165
-///////////////////////////////////////////////////////////////////
+
 void setInput(double * data,int  n){
     printf("Setinput signal:\n");
     srand((int)time(0));
@@ -89,9 +73,7 @@ void setInput(double * data,int  n){
     }
     
 }
-////////////////////////////////////////////////////////////////////
-//\u6807\u51c6DFT
-///////////////////////////////////////////////////////////////////
+
 void DFT(double * src,Complex * dst,int size){
 
     for(int m=0;m<size;m++){
@@ -108,9 +90,7 @@ void DFT(double * src,Complex * dst,int size){
         
     }
 }
-////////////////////////////////////////////////////////////////////
-//IDT\uff0c\u590d\u539f\u5085\u91cc\u53f6
-///////////////////////////////////////////////////////////////////
+
 void IDFT(Complex *src,Complex *dst,int size){
     for(int m=0;m<size;m++){
         double real=0.0;
@@ -131,9 +111,7 @@ void IDFT(Complex *src,Complex *dst,int size){
     
     
 }
-////////////////////////////////////////////////////////////////////
-//FFT\u524d\uff0c\u5bf9\u8f93\u5165\u6570\u636e\u91cd\u65b0\u6392\u5e8f
-///////////////////////////////////////////////////////////////////
+
 int FFTReal_remap(double * src,int size_n){
     
     if(size_n==1)
@@ -172,9 +150,7 @@ int FFTComplex_remap(Complex * src,int size_n){
     
     
 }
-////////////////////////////////////////////////////////////////////
-//FFT\u516c\u5f0f
-///////////////////////////////////////////////////////////////////
+
 void FFT(Complex * src,Complex * dst,int size_n){
     
     int k=size_n;
@@ -269,9 +245,6 @@ void RealFFT(double * src,Complex * dst,int size_n){
     
 }
 
-////////////////////////////////////////////////////////////////////
-//IFFT\u5b9e\u73b0
-////////////////////////////////////////////////////////////////////
 void IFFT(Complex * src,Complex * dst,int size_n){
     for(int i=0;i<size_n;i++)
         src[i].imagin=-src[i].imagin;
@@ -310,18 +283,6 @@ void IFFT(Complex * src,Complex * dst,int size_n){
     
 }
 
-//
-//  2D.c
-//  Fourer
-//
-//  Created by \u8c2d\u5347 on 14/11/25.
-//  Copyright (c) 2014\u5e74 \u8c2d\u5347. All rights reserved.
-//
-
-/*
- 
- 
- */
 int DFT2D(double *src,Complex *dst,int size_w,int size_h){
     for(int u=0;u<size_w;u++){
         for(int v=0;v<size_h;v++){
@@ -344,9 +305,7 @@ int DFT2D(double *src,Complex *dst,int size_w,int size_h){
     }
     return 0;
 }
-/*
- 
- */
+
 int IDFT2D(Complex *src,Complex *dst,int size_w,int size_h){
     for(int i=0;i<size_w;i++){
         for(int j=0;j<size_h;j++){
@@ -369,26 +328,19 @@ int IDFT2D(Complex *src,Complex *dst,int size_w,int size_h){
     }
     return 0;
 }
-/*
- 
- 
- 
- */
+
 void ColumnVector(Complex * src,Complex * dst,int size_w,int size_h){
     for(int i=0;i<size_h;i++)
         Copy_Complex(&src[size_w*i], &dst[i]);
     
 }
-/*
- 
- */
+
 void IColumnVector(Complex * src,Complex * dst,int size_w,int size_h){
     for(int i=0;i<size_h;i++)
         Copy_Complex(&src[i],&dst[size_w*i]);
     
 }
-/*
- */
+
 int FFT2D(double *src,Complex *dst,int size_w,int size_h){
     if(isBase2(size_w)==-1||isBase2(size_h)==-1)
         exit(0);
@@ -417,8 +369,7 @@ int FFT2D(double *src,Complex *dst,int size_w,int size_h){
     free(Column);
     return 0;
 }
-/*
- */
+
 int IFFT2D(Complex *src,Complex *dst,int size_w,int size_h){
     
     if(isBase2(size_w)==-1||isBase2(size_h)==-1)
@@ -452,23 +403,6 @@ int IFFT2D(Complex *src,Complex *dst,int size_w,int size_h){
     return 0;
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if 0
 int FFT(COMPLEX_NUMBER *fft_time, COMPLEX_NUMBER *fft_freq, int iteration_times)

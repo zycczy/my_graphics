@@ -1,42 +1,4 @@
----- rgb_size Matches (43 in 8 files) ----
-App.c (d:\workspace\my_graphics\workspace):				hbmp_dst->rgb_buffer = (uint32_t*)malloc(hbmp_dst->rgb_size); 
-App.c (d:\workspace\my_graphics\workspace):				fwrite(hbmp_src->rgb_buffer, 1, hbmp_src->rgb_size, file);
-App.c (d:\workspace\my_graphics\workspace):					dst[i]->rgb_size = separate_size*4;
-App.c (d:\workspace\my_graphics\workspace):					dst[i]->rgb_buffer = malloc(dst[i]->rgb_size); 
-App.c (d:\workspace\my_graphics\workspace):					fwrite(dst[0]->rgb_buffer, 1, dst[0]->rgb_size, maritx_file);		
-App.c (d:\workspace\my_graphics\workspace):					fwrite(dst[0]->rgb_buffer, 1, dst[0]->rgb_size, maritx_file);		
-App.c (d:\workspace\my_graphics\workspace):				fwrite(hbmp_src->rgb_buffer, 1, hbmp_src->rgb_size, rgb_file);
-Bmp.c (d:\workspace\my_graphics\lib):	q = (uint8_t *)buf + hbmp->rgb_size - 1;
-Bmp.c (d:\workspace\my_graphics\lib):	for(i=0;i<hbmp->rgb_size;i++){
-Bmp.c (d:\workspace\my_graphics\lib):		hbmp_hdl_buf->rgb_size = hbmp_hdl_buf->row_size * hbmp_hdl_buf->height*sizeof(int);
-Bmp.c (d:\workspace\my_graphics\lib):		hbmp_hdl_buf->rgb_buffer = malloc(hbmp_hdl_buf->rgb_size);		
-Bmp.c (d:\workspace\my_graphics\lib):		__dbg("biBitCount = 32, rgb_size = %d\n", hbmp_hdl_buf->rgb_size);
-Bmp.c (d:\workspace\my_graphics\lib):		hbmp_hdl_buf->rgb_size = alignment_up(hbmp_hdl_buf->width * hbmp_hdl_buf->height, 8)/8;	
-Bmp.c (d:\workspace\my_graphics\lib):		__dbg("biBitCount = 1, rgb_size = %d\n", hbmp_hdl_buf->rgb_size);
-Bmp.c (d:\workspace\my_graphics\lib):		hbmp_hdl_buf->rgb_buffer = malloc(hbmp_hdl_buf->rgb_size);		
-Fourier_transform.c (d:\workspace\my_graphics\lib):	fft_dst->spectrum->rgb_size =  
-Geometric_transformation.c (d:\workspace\my_graphics\lib):	uint32_t* tmp = malloc(src->rgb_size);
-Geometric_transformation.c (d:\workspace\my_graphics\lib):	memset(tmp, BLACK_32BIT, src->rgb_size);
-Geometric_transformation.c (d:\workspace\my_graphics\lib):	memcpy(src->rgb_buffer, tmp, src->rgb_size);
-Geometric_transformation.c (d:\workspace\my_graphics\lib):	uint32_t* tmp = malloc(src->rgb_size);
-Geometric_transformation.c (d:\workspace\my_graphics\lib):	memcpy(src->rgb_buffer, tmp, src->rgb_size);
-Geometric_transformation.c (d:\workspace\my_graphics\lib):	uint32_t* tmp = malloc(src->rgb_size);
-Geometric_transformation.c (d:\workspace\my_graphics\lib):	memcpy(src->rgb_buffer, tmp, src->rgb_size);
-Graphics_lib.c (d:\workspace\my_graphics\lib):	if(hbmp_buf->rgb_size != 0 && hbmp_buf->rgb_buffer != NULL){
-Graphics_lib.c (d:\workspace\my_graphics\lib):		for(i=0;i<hbmp_buf->rgb_size;i++){
-Graphics_lib.c (d:\workspace\my_graphics\lib):		if(hbmp_buf->rgb_size != 0 && hbmp_buf->rgb_buffer != NULL){	
-Graphics_lib.c (d:\workspace\my_graphics\lib):			fwrite(hbmp_buf->rgb_buffer, 1, hbmp_buf->rgb_size, file);
-Graphics_lib.c (d:\workspace\my_graphics\lib):		hbmp_buf->rgb_size *= 32;
-Graphics_lib.c (d:\workspace\my_graphics\lib):		hbmp_buf->rgb_buffer = (uint32_t*)malloc(hbmp_buf->rgb_size);
-Graphics_lib.c (d:\workspace\my_graphics\lib):		fread(hbmp_buf->rgb_buffer, 1, hbmp_buf->rgb_size, file);
-Graphics_lib_i.h (d:\workspace\my_graphics\include\elibs):	uint32_t   rgb_size;
-Spatial_filtering.c (d:\workspace\my_graphics\lib):	int32_t *tmp = malloc(src->rgb_size);
-Spatial_filtering.c (d:\workspace\my_graphics\lib):	int32_t *tmp_r = malloc(src->rgb_size);
-Spatial_filtering.c (d:\workspace\my_graphics\lib):	int32_t *tmp_g = malloc(src->rgb_size);	
-Spatial_filtering.c (d:\workspace\my_graphics\lib):	int32_t *tmp_b = malloc(src->rgb_size);
-Spatial_filtering.c (d:\workspace\my_graphics\lib):	memcpy(tmp, src->rgb_buffer, src->rgb_size);
-Spatial_filtering.c (d:\workspace\my_graphics\lib):	//memcpy(src->rgb_buffer, tmp, src->rgb_size);
-Spatial_filtering.c (d:\workspace\my_graphics\lib):	//memcpy(src->rgb_buffer, tmp, src->rgb_size);
-Watermark.c (d:\workspace\my_graphics\lib):	uint32_t *tmp_buffer = malloc(src->rgb_size);
-Watermark.c (d:\workspace\my_graphics\lib):	memcpy(tmp_buffer, src->rgb_buffer, src->rgb_size);
-Watermark.c (d:\workspace\my_graphics\lib):		memcpy(tmp_buffer, dst->rgb_buffer, src->rgb_size);
+---- RealFFT Matches (2 in 1 files) ----
+
+Fourier_transform.c (d:\workspace\my_graphics\lib):void RealFFT(double * src,Complex * dst,int size_n){
+Fourier_transform.c (d:\workspace\my_graphics\lib):        RealFFT(&src[size_w*i], &temp[size_w*i], size_w);
