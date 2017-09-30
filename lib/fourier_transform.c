@@ -156,6 +156,7 @@ void FFT(Complex *src,Complex *dst,int size_n)
 	Complex *tmp_even = (Complex *)malloc(size_n/2);
 	Complex *tmp_odd = (Complex *)malloc(size_n/2);
 	Complex *tmp_Wn = (Complex *)malloc(size_n/2);
+	Complex tmp_value;
 	if(size_n > 2){
 		for(i=0;i<size_n;i++){			
 			if(i%2==0){
@@ -166,7 +167,16 @@ void FFT(Complex *src,Complex *dst,int size_n)
 		}
 		for(i=0;i<size_n/2;i++){
 			getWN(i, size_n, &tmp_Wn[i]);
+			FFT(src, tmp_even, size_n/2);			
+			FFT(src, tmp_odd, size_n/2);
+			
+			//dst[i] = tmp_even[i]+tmp_Wn[i]*tmp_odd[i];			
+			Multy_Complex(&tmp_Wn[i], &tmp_odd[i], &tmp_value);
+			Add_Complex(tmp_even[i], &tmp_value, &dst[i]);
+			
+			//dst[i+size_n/2] = tmp_even[i]-tmp_Wn[i]*tmp_odd[i];
 		}
+
 	}
 }
 
