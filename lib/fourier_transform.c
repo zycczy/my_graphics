@@ -150,7 +150,27 @@ int FFTComplex_remap(Complex * src,int size_n){
     
     
 }
+void FFT(Complex *src,Complex *dst,int size_n)
+{
+	int i;
+	Complex *tmp_even = (Complex *)malloc(size_n/2);
+	Complex *tmp_odd = (Complex *)malloc(size_n/2);
+	Complex *tmp_Wn = (Complex *)malloc(size_n/2);
+	if(size_n > 2){
+		for(i=0;i<size_n;i++){			
+			if(i%2==0){
+				Copy_Complex(&src[i], &tmp_even[i/2]);
+			}else{
+				Copy_Complex(&src[i], &tmp_even[(i-1)/2]);
+			}
+		}
+		for(i=0;i<size_n/2;i++){
+			getWN(i, size_n, &tmp_Wn[i]);
+		}
+	}
+}
 
+#if 0
 void FFT(Complex * src,Complex * dst,int size_n){
     
     int k=size_n;
@@ -244,7 +264,7 @@ void RealFFT(double * src,Complex * dst,int size_n){
     free(src_com);
     
 }
-
+#endif
 void IFFT(Complex * src,Complex * dst,int size_n){
     for(int i=0;i<size_n;i++)
         src[i].imagin=-src[i].imagin;
