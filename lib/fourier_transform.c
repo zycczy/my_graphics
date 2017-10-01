@@ -97,9 +97,9 @@ void IFFT(Complex *src,Complex *dst,int size_n)
 	Complex *tmp_Wn = (Complex *)malloc(size_n/2*sizeof(Complex));
 	Complex tmp_value;
 	
-    for(i=0;i<size_n;i++)
+    for(i=0;i<size_n;i++){
         src[i].imagin=-src[i].imagin;
-	
+    }
 	if(size_n > 2){
 		for(i=0;i<size_n;i++){	
 			
