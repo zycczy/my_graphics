@@ -1,6 +1,6 @@
 #include "fourier_transform.h"
 
-int isBase2(int size_n){
+int is_base2(int size_n){
     int k = size_n;
     int z = 0;
     while (k/=2) {
@@ -13,15 +13,15 @@ int isBase2(int size_n){
         return k;
 }
 
-void Add_Complex(Complex * src1,Complex *src2,Complex *dst){
+void add_complex(Complex * src1,Complex *src2,Complex *dst){
     dst->imagin = src1->imagin+src2->imagin;
     dst->real = src1->real+src2->real;
 }
-void Sub_Complex(Complex * src1,Complex *src2,Complex *dst){
+void sub_complex(Complex * src1,Complex *src2,Complex *dst){
     dst->imagin = src1->imagin-src2->imagin;
     dst->real = src1->real-src2->real;
 }
-void Multy_Complex(Complex * src1,Complex *src2,Complex *dst){
+void multy_complex(Complex * src1,Complex *src2,Complex *dst){
     double r1=0.0,r2=0.0;
     double i1=0.0,i2=0.0;
     r1 = src1->real;
@@ -31,7 +31,7 @@ void Multy_Complex(Complex * src1,Complex *src2,Complex *dst){
     dst->imagin = r1*i2+r2*i1;
     dst->real = r1*r2-i1*i2;
 }
-void Copy_Complex(Complex * src,Complex *dst){
+void copy_complex(Complex * src,Complex *dst){
     dst->real = src->real;
     dst->imagin = src->imagin;
 }
@@ -57,9 +57,9 @@ void FFT(Complex *src,Complex *dst,int size_n)
 	if(size_n > 2){
 		for(i=0;i<size_n;i++){	
 			if(i%2==0){
-				Copy_Complex(&src[i], &tmp_even[i/2]);
+				copy_complex(&src[i], &tmp_even[i/2]);
 			}else{
-				Copy_Complex(&src[i], &tmp_odd[(i-1)/2]);
+				copy_complex(&src[i], &tmp_odd[(i-1)/2]);
 			}
 		}
 		
@@ -69,18 +69,18 @@ void FFT(Complex *src,Complex *dst,int size_n)
 			getWN(i, size_n, &tmp_Wn[i]);
 			
 			//dst[i] = tmp_even[i]+tmp_Wn[i]*tmp_odd[i];			
-			Multy_Complex(&tmp_Wn[i], &tmp_odd_fft[i], &tmp_value);
-			Add_Complex(&tmp_even_fft[i], &tmp_value, &dst[i]);
+			multy_complex(&tmp_Wn[i], &tmp_odd_fft[i], &tmp_value);
+			add_complex(&tmp_even_fft[i], &tmp_value, &dst[i]);
 			
 			//dst[i+size_n/2] = tmp_even[i]-tmp_Wn[i]*tmp_odd[i];
-			Multy_Complex(&tmp_Wn[i], &tmp_odd_fft[i], &tmp_value);
-			Sub_Complex(&tmp_even_fft[i], &tmp_value, &dst[i+size_n/2]);
+			multy_complex(&tmp_Wn[i], &tmp_odd_fft[i], &tmp_value);
+			sub_complex(&tmp_even_fft[i], &tmp_value, &dst[i+size_n/2]);
 		}
 
 	}else{		
-		Add_Complex(&src[0], &src[1], &dst[0]);
+		add_complex(&src[0], &src[1], &dst[0]);
 		
-		Sub_Complex(&src[0], &src[1], &dst[1]);
+		sub_complex(&src[0], &src[1], &dst[1]);
 	}
 }
 
@@ -104,9 +104,9 @@ void IFFT(Complex *src,Complex *dst,int size_n)
 		for(i=0;i<size_n;i++){	
 			
 			if(i%2==0){
-				Copy_Complex(&src[i], &tmp_even[i/2]);
+				copy_complex(&src[i], &tmp_even[i/2]);
 			}else{
-				Copy_Complex(&src[i], &tmp_odd[(i-1)/2]);
+				copy_complex(&src[i], &tmp_odd[(i-1)/2]);
 			}
 		}
 		
@@ -116,22 +116,22 @@ void IFFT(Complex *src,Complex *dst,int size_n)
 			getWN(i, size_n, &tmp_Wn[i]);
 			
 			//dst[i] = tmp_even[i]+tmp_Wn[i]*tmp_odd[i];			
-			Multy_Complex(&tmp_Wn[i], &tmp_odd_fft[i], &tmp_value);
-			Add_Complex(&tmp_even_fft[i], &tmp_value, &dst[i]);
+			multy_complex(&tmp_Wn[i], &tmp_odd_fft[i], &tmp_value);
+			add_complex(&tmp_even_fft[i], &tmp_value, &dst[i]);
 			dst[i].imagin *= (1./size_n);			
 			dst[i].real*= (1./size_n);
 			//dst[i+size_n/2] = tmp_even[i]-tmp_Wn[i]*tmp_odd[i];
-			Multy_Complex(&tmp_Wn[i], &tmp_odd_fft[i], &tmp_value);
-			Sub_Complex(&tmp_even_fft[i], &tmp_value, &dst[i+size_n/2]);
+			multy_complex(&tmp_Wn[i], &tmp_odd_fft[i], &tmp_value);
+			sub_complex(&tmp_even_fft[i], &tmp_value, &dst[i+size_n/2]);
 			dst[i+size_n/2].imagin *= (1./size_n);			
 			dst[i+size_n/2].real *= (1./size_n);
 		}
 
 	}else{		
-		Add_Complex(&src[0], &src[1], &dst[0]);
+		add_complex(&src[0], &src[1], &dst[0]);
 		dst[0].imagin *= 0.5;
 		dst[0].real *= 0.5;
-		Sub_Complex(&src[0], &src[1], &dst[1]);		
+		sub_complex(&src[0], &src[1], &dst[1]);		
 		dst[1].imagin *= 0.5;
 		dst[0].real *= 0.5;
 	}
@@ -140,26 +140,28 @@ void IFFT(Complex *src,Complex *dst,int size_n)
 
 
 
-void ColumnVector(Complex * src,Complex * dst,int size_w,int size_h){
+void column_vector(Complex * src,Complex * dst,int size_w,int size_h){
     for(int i=0;i<size_h;i++)
-        Copy_Complex(&src[size_w*i], &dst[i]);
+        copy_complex(&src[size_w*i], &dst[i]);
     
 }
 
-void IColumnVector(Complex * src,Complex * dst,int size_w,int size_h){
+void Icolumn_vector(Complex * src,Complex * dst,int size_w,int size_h){
     for(int i=0;i<size_h;i++)
-        Copy_Complex(&src[i],&dst[size_w*i]);
+        copy_complex(&src[i],&dst[size_w*i]);
     
 }
 
 int FFT2D(Complex *src,Complex *dst,int size_w,int size_h)
 {
 	int i;
-    if(isBase2(size_w)==-1||isBase2(size_h)==-1)
+    if(is_base2(size_w)==-1||is_base2(size_h)==-1){
         exit(0);
+    }
     Complex *temp=(Complex *)malloc(sizeof(Complex)*size_h*size_w);
-    if(temp==NULL)
+    if(temp==NULL){
         return -1;
+    }
     for(int i=0;i<size_h;i++){
         FFT(&src[size_w*i], &temp[size_w*i], size_w);
     }
@@ -167,19 +169,20 @@ int FFT2D(Complex *src,Complex *dst,int size_w,int size_h)
     Complex *Column=(Complex *)malloc(sizeof(Complex)*size_h);
 	
     Complex *Column_tmp=(Complex *)malloc(sizeof(Complex)*size_h);
-    if(Column==NULL)
+    if(Column==NULL){
         return -1;
+    }
     for(i=0;i<size_w;i++){
-        ColumnVector(&temp[i], Column, size_w, size_h);
+        column_vector(&temp[i], Column, size_w, size_h);
         FFT(Column, Column_tmp, size_h);
-        IColumnVector(Column_tmp, &temp[i], size_w, size_h);
+        Icolumn_vector(Column_tmp, &temp[i], size_w, size_h);
         
     }
     
     
     
     for(i=0;i<size_h*size_w;i++)
-        Copy_Complex(&temp[i], &dst[i]);
+        copy_complex(&temp[i], &dst[i]);
     free(temp);
     free(Column);
 	
@@ -190,24 +193,25 @@ int FFT2D(Complex *src,Complex *dst,int size_w,int size_h)
 int IFFT2D(Complex *src,Complex *dst,int size_w,int size_h)
 {
  	int i;   
-    if(isBase2(size_w)==-1||isBase2(size_h)==-1)
+    if(is_base2(size_w) == -1 || is_base2(size_h) == -1){
         exit(0);
-    
+    }
     Complex *temp=(Complex *)malloc(sizeof(Complex)*size_h*size_w);
-    if(temp==NULL)
+    if(temp==NULL){
         return -1;
+    }
     Complex *Column=(Complex *)malloc(sizeof(Complex)*size_h);
-    if(Column==NULL)
+    if(Column==NULL){
         return -1;
-    
+    }
     Complex *Column_tmp=(Complex *)malloc(sizeof(Complex)*size_h);
-    if(Column==NULL)
+    if(Column==NULL){
         return -1;
-	
+    }
     for(i=0;i<size_w;i++){
-        ColumnVector(&src[i], Column, size_w, size_h);
+        column_vector(&src[i], Column, size_w, size_h);
         IFFT(Column, Column_tmp, size_h);
-        IColumnVector(Column_tmp, &src[i], size_w, size_h);
+        Icolumn_vector(Column_tmp, &src[i], size_w, size_h);
         
     }
 	
@@ -222,11 +226,10 @@ int IFFT2D(Complex *src,Complex *dst,int size_w,int size_h)
     
     
     for(i=0;i<size_h*size_w;i++)
-        Copy_Complex(&temp[i], &dst[i]);
+        copy_complex(&temp[i], &dst[i]);
     free(temp);
     free(Column);
     return 0;
-    
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -328,7 +331,8 @@ int image_IFFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	uint32_t ifft_width = 1, ifft_height = 1;
 	uint32_t width_iteration = 0, height_iteration = 0;
 	Complex *time_image;
-	Complex *freq_image;
+	Complex *freq_image;	
+	double max = 0, min = 0xffffffff;
 	while(ifft_width*2 <= src->width){
 		ifft_width *= 2;
 		width_iteration++;
@@ -344,7 +348,6 @@ int image_IFFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	freq_image = (COMPLEX_NUMBER *)malloc(sizeof(COMPLEX_NUMBER)*ifft_width*ifft_height);
 	
 	memcpy(freq_image, fft_dst->freq_image, sizeof(COMPLEX_NUMBER)*ifft_width*ifft_height);
-	double max = 0, min = 0xffffffff;
 	IFFT2D(freq_image,time_image, ifft_width, ifft_height);
 	
 	for(i=0;i<src->height;i++){

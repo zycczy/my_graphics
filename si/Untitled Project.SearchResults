@@ -1,4 +1,2 @@
----- RealFFT Matches (2 in 1 files) ----
-
-Fourier_transform.c (d:\workspace\my_graphics\lib):void RealFFT(double * src,Complex * dst,int size_n){
-Fourier_transform.c (d:\workspace\my_graphics\lib):        RealFFT(&src[size_w*i], &temp[size_w*i], size_w);
+---- DFT2D Matches (1 in 1 files) ----
+Fourier_transform.c (d:\workspace\my_graphics\lib):int DFT2D(double *src,Complex *dst,int size_w,int size_h){

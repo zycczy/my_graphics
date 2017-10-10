@@ -7,7 +7,7 @@
 static const char *short_options = "f:y:c:s:j";
 static struct option long_options[] = {	
 	{"catmap",	   HAS_ARG, 0, 'c'},
-	{"rgb32->yuv", HAS_ARG,  0, 'y'},
+	{"rgb32->yuv", HAS_ARG, 0, 'y'},
 	{"separate",   HAS_ARG, 0, 's'},
 
 };
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 				//spatial_filter(hbmp_src, TEMPLATE_VSOBLE);
 				FFT_STRUCT fft_dst;
 				image_FFT(hbmp_src, &fft_dst);
-				rgb_file = fopen("rgb_file.bin","wb+");
+				rgb_file = fopen("fft_file.bin","wb+");
 				fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
 				fclose(rgb_file);
 				image_IFFT(hbmp_src, &fft_dst);
