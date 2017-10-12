@@ -67,6 +67,8 @@ typedef struct _YUV_BUFFER
 	EPDK_BUFFER     v_buffer;
 	YUV_STORE_TYPE  type;
 }YUV_BUFFER;
+
+
 typedef struct _HBMP_i_t 
 {
 	uint32_t   byte_count;
@@ -78,11 +80,19 @@ typedef struct _HBMP_i_t
 	uint32_t   rgb_size;
 	uint32_t   row_size;
 	YUV_BUFFER yuv_buffer;
-	
 	uint32_t   (*set_rgb_value)(void*, uint32_t, uint32_t, uint32_t);	
 	uint32_t   (*get_rgb_value)(void*, uint32_t, uint32_t);	
 	uint8_t   (*get_y_value)(void*, uint32_t, uint32_t);  
 }HBMP_i_t;
+typedef struct _FFT_STRUCT
+{
+	HBMP_i_t *spectrum;	
+	HBMP_i_t *src;
+	int expand;
+	Complex *freq_image;
+	double *freq_filter;
+	uint8_t fill_luma;
+}FFT_STRUCT;
 
 typedef struct _MARITX_HBMP
 {
@@ -103,23 +113,10 @@ typedef struct _COMPLEX_NUMBER
 	double imaginary;
 }COMPLEX_NUMBER;
 
-typedef struct _Complex_{  
-    double real;  
-    double imagin;  
-}Complex;  
-#ifndef M_PI  
-#define M_PI 3.14159265358979323846  
-#endif  
-#define SIZE 1024*16  
-#define VALUE_MAX 1000  
+  
+ 
 
-typedef struct _FFT_STRUCT
-{
-	HBMP_i_t *spectrum;
-	int expand;
-	Complex *freq_image;
-	uint8_t fill_luma;
-}FFT_STRUCT;
+
 
 
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);
@@ -131,9 +128,14 @@ int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
 void yuv_buffer_init(HBMP_i_t* hbmp);
 
 /*--------------------------------------------------------------------------------*/
+void add_complex(Complex * src1,Complex *src2,Complex *dst);
+void sub_complex(Complex * src1,Complex *src2,Complex *dst);
+void multy_complex(Complex * src1,Complex *src2,Complex *dst);
+void copy_complex(Complex * src,Complex *dst);
+/*--------------------------------------------------------------------------------*/
 
-int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst);
-int image_IFFT(HBMP_i_t *src, FFT_STRUCT *fft_dst);
+int image_FFT(FFT_STRUCT *fft_dst);
+int image_IFFT(FFT_STRUCT *fft_dst);
 
 /*--------------------------------------------------------------------------------*/
 uint32_t gamma_correct(HBMP_i_t *hbmp_buf, float gamma);

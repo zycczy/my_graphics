@@ -8,7 +8,7 @@
 #define NO_ARG 0
 #define HAS_ARG 1
 
-#define PI 3.1415926
+#define PI 3.14159265358979323846
 typedef struct _EPDK_BUFFER
 {
 	union{
@@ -17,4 +17,12 @@ typedef struct _EPDK_BUFFER
 	};
 	uint32_t size;
 }EPDK_BUFFER;
+
+typedef struct _Complex_{  
+    double real;  
+    double imagin;  
+}Complex;
+
+
+
 #endif

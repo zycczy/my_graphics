@@ -1,3 +1,4 @@
+/*author: charles cheng 2017-08-16*/
 #include "fourier_transform.h"
 
 int is_base2(int size_n){
@@ -13,32 +14,10 @@ int is_base2(int size_n){
         return k;
 }
 
-void add_complex(Complex * src1,Complex *src2,Complex *dst){
-    dst->imagin = src1->imagin+src2->imagin;
-    dst->real = src1->real+src2->real;
-}
-void sub_complex(Complex * src1,Complex *src2,Complex *dst){
-    dst->imagin = src1->imagin-src2->imagin;
-    dst->real = src1->real-src2->real;
-}
-void multy_complex(Complex * src1,Complex *src2,Complex *dst){
-    double r1=0.0,r2=0.0;
-    double i1=0.0,i2=0.0;
-    r1 = src1->real;
-    r2 = src2->real;
-    i1 = src1->imagin;
-    i2 = src2->imagin;
-    dst->imagin = r1*i2+r2*i1;
-    dst->real = r1*r2-i1*i2;
-}
-void copy_complex(Complex * src,Complex *dst){
-    dst->real = src->real;
-    dst->imagin = src->imagin;
-}
 
 
 void getWN(double n,double size_n,Complex * dst){
-    double x = 2.0*M_PI*n/size_n;
+    double x = 2.0*PI*n/size_n;
     dst->imagin = -sin(x);
     dst->real = cos(x);
 }
@@ -234,7 +213,7 @@ int IFFT2D(Complex *src,Complex *dst,int size_w,int size_h)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define DEFAULT_FILL_LUMA 255
-int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
+int image_FFT(FFT_STRUCT *fft_dst)
 {
 	double tmp;
 	double *fft_src;
@@ -246,7 +225,8 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	uint32_t height_iteration = 0;
 	Complex *time_image;
 	double max = 0;
-	double min = 0xffffffff;
+	double min = 0xffffffff;	
+	HBMP_i_t *src = fft_dst->src;
 	fft_dst->fill_luma = DEFAULT_FILL_LUMA;
 	fft_dst->spectrum = malloc(sizeof(HBMP_i_t));
 	memcpy(fft_dst->spectrum, src, sizeof(HBMP_i_t));
@@ -324,7 +304,7 @@ int image_FFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	
 	return EPDK_OK;
 }
-int image_IFFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
+int image_IFFT(FFT_STRUCT *fft_dst)
 {
 	double tmp;
 	uint32_t i, j;
@@ -332,6 +312,7 @@ int image_IFFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	uint32_t width_iteration = 0, height_iteration = 0;
 	Complex *time_image;
 	Complex *freq_image;	
+	HBMP_i_t *src = fft_dst->src;
 	double max = 0, min = 0xffffffff;
 	while(ifft_width*2 <= src->width){
 		ifft_width *= 2;
@@ -348,12 +329,12 @@ int image_IFFT(HBMP_i_t *src, FFT_STRUCT *fft_dst)
 	freq_image = (COMPLEX_NUMBER *)malloc(sizeof(COMPLEX_NUMBER)*ifft_width*ifft_height);
 	
 	memcpy(freq_image, fft_dst->freq_image, sizeof(COMPLEX_NUMBER)*ifft_width*ifft_height);
-	IFFT2D(freq_image,time_image, ifft_width, ifft_height);
+	IFFT2D(freq_image, time_image, ifft_width, ifft_height);
 	
 	for(i=0;i<src->height;i++){
 		for(j=0;j<src->width;j++){
 			tmp = (double)sqrt(time_image[i*ifft_width+j].real * time_image[i*ifft_width+j].real+
-					   time_image[i*ifft_width+j].imagin * time_image[i*ifft_width+j].imagin);
+					   		   time_image[i*ifft_width+j].imagin * time_image[i*ifft_width+j].imagin);
 			max = MAX(max, tmp);
 			min = MIN(min, tmp);
 		}

@@ -151,6 +151,28 @@ void yuv_buffer_init(HBMP_i_t* hbmp)
 	}
 	return ;
 }
+void add_complex(Complex * src1,Complex *src2,Complex *dst){
+    dst->imagin = src1->imagin+src2->imagin;
+    dst->real = src1->real+src2->real;
+}
+void sub_complex(Complex * src1,Complex *src2,Complex *dst){
+    dst->imagin = src1->imagin-src2->imagin;
+    dst->real = src1->real-src2->real;
+}
+void multy_complex(Complex * src1,Complex *src2,Complex *dst){
+    double r1=0.0,r2=0.0;
+    double i1=0.0,i2=0.0;
+    r1 = src1->real;
+    r2 = src2->real;
+    i1 = src1->imagin;
+    i2 = src2->imagin;
+    dst->imagin = r1*i2+r2*i1;
+    dst->real = r1*r2-i1*i2;
+}
+void copy_complex(Complex * src,Complex *dst){
+    dst->real = src->real;
+    dst->imagin = src->imagin;
+}
 
 
 /*

@@ -1,2 +1,4 @@
----- DFT2D Matches (1 in 1 files) ----
-Fourier_transform.c (d:\workspace\my_graphics\lib):int DFT2D(double *src,Complex *dst,int size_w,int size_h){
+---- M_PI Matches (3 in 2 files) ----
+Fourier_transform.c (d:\workspace\my_graphics\lib\freq):    double x = 2.0*M_PI*n/size_n;
+Graphics_lib_i.h (d:\workspace\my_graphics\include\elibs):#ifndef M_PI  
+Graphics_lib_i.h (d:\workspace\my_graphics\include\elibs):#define M_PI 3.14159265358979323846  
