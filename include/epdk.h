@@ -25,25 +25,25 @@
 #define DEBUG_LEVEL_GATE 3
 #if (DEBUG_LEVEL_GATE == 3)
 	#define __dbg(...) printf("[debug]L%d(%s):", __LINE__, __FILE__);\
-					   printf(__VA_ARGS__)           //__LINE__, __FILE__ÎªÏÔÊ¾ËùÔÚÐÐºÍËùÔÚÎÄ¼þ£¬ __VA_ARGS__ Îª¿É±ä²ÎÊý
+			   printf(__VA_ARGS__)           //__LINE__, __FILE__ show the line number and the file nameï¼Œ __VA_ARGS__ is the arg you want to print.
 					   
 	#define __msg(...) printf("[message]");\
-		               printf(__VA_ARGS__) 
+		           printf(__VA_ARGS__) 
 	
 	#define __wrn(...) printf("[warning]L%d(%s):", __LINE__, __FILE__);\
-		               printf(__VA_ARGS__) 
+			   printf(__VA_ARGS__) 
 #elif(DEBUG_LEVEL_GATE == 2)
 	#define __dbg(...) 
-    #define __msg(...) printf("[message]");\
-		               printf(__VA_ARGS__) 
+	#define __msg(...) printf("[message]");\
+		           printf(__VA_ARGS__) 
 	
 	#define __wrn(...) printf("[warning]L%d(%s):", __LINE__, __FILE__);\
-		               printf(__VA_ARGS__) 
+		           printf(__VA_ARGS__) 
 #elif(DEBUG_LEVEL_GATE == 1)
 	#define __dbg(...)	
 	#define __msg(...)	
 	#define __wrn(...) printf("[warning]L%d(%s):", __LINE__, __FILE__);\
-		               printf(__VA_ARGS__) 
+		           printf(__VA_ARGS__) 
 #elif(DEBUG_LEVEL_GATE == 0)
 	#define __dbg(...)	
 	#define __msg(...)	
