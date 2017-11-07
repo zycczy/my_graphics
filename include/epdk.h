@@ -25,7 +25,7 @@
 #define DEBUG_LEVEL_GATE 3
 #if (DEBUG_LEVEL_GATE == 3)
 	#define __dbg(...) printf("[debug]L%d(%s):", __LINE__, __FILE__);\
-			   printf(__VA_ARGS__)           //__LINE__, __FILE__ show the line number and the file name， __VA_ARGS__ is the arg you want to print.
+			   printf(__VA_ARGS__)           //__LINE__, __FILE__ show the line number and the file name, __VA_ARGS__ is the arg you want to print.
 					   
 	#define __msg(...) printf("[message]");\
 		           printf(__VA_ARGS__) 
