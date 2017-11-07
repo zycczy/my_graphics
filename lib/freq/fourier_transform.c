@@ -77,8 +77,9 @@ void IFFT(Complex *src,Complex *dst,int size_n)
 	Complex tmp_value;
 	
     for(i=0;i<size_n;i++){
-        src[i].imagin=-src[i].imagin;
+    	src[i].imagin=-src[i].imagin;
     }
+
 	if(size_n > 2){
 		for(i=0;i<size_n;i++){	
 			
@@ -120,8 +121,9 @@ void IFFT(Complex *src,Complex *dst,int size_n)
 
 
 void column_vector(Complex * src,Complex * dst,int size_w,int size_h){
-    for(int i=0;i<size_h;i++)
+    for(int i=0;i<size_h;i++){
         copy_complex(&src[size_w*i], &dst[i]);
+    }
     
 }
 
@@ -133,7 +135,7 @@ void Icolumn_vector(Complex * src,Complex * dst,int size_w,int size_h){
 
 int FFT2D(Complex *src,Complex *dst,int size_w,int size_h)
 {
-	int i;
+    int i;
     if(is_base2(size_w)==-1||is_base2(size_h)==-1){
         exit(0);
     }
@@ -141,7 +143,7 @@ int FFT2D(Complex *src,Complex *dst,int size_w,int size_h)
     if(temp==NULL){
         return -1;
     }
-    for(int i=0;i<size_h;i++){
+    for(i=0;i<size_h;i++){
         FFT(&src[size_w*i], &temp[size_w*i], size_w);
     }
 
@@ -298,10 +300,9 @@ int image_FFT(FFT_STRUCT *fft_dst)
 
 			tmp = (double)log(1+tmp);
 			tmp = (tmp - min)/(max - min) * 255;
-			fft_dst->spectrum->yuv_buffer.y_buffer.buffer[(j<fft_width/2?j+fft_width/2:j-fft_width/2) + fft_dst->spectrum->width * (i<fft_height/2?i+fft_height/2:i-fft_height/2)] = (uint8_t)tmp;
+			fft_dst->spectrum->yuv_buffer.y_buffer.buffer[FFT_SHIFT(j, i, fft_width, fft_height)] = (uint8_t)tmp;
 		}
 	}
-	
 	return EPDK_OK;
 }
 int image_IFFT(FFT_STRUCT *fft_dst)

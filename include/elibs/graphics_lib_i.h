@@ -17,7 +17,7 @@
 #define ARGB_PARSE_G(rgb)	((rgb&0x0000ff00)>>8)
 #define ARGB_PARSE_B(rgb)	(rgb&0x000000ff)
 #define ARGB_SET_RGB(r, g, b)    (((r<<16) |(g<<8) |(b)) |0xff000000)
-
+#define FFT_SHIFT(w, h, fft_width, fft_height)   ((w<fft_width/2?w+fft_width/2:w-fft_width/2) + fft_width * (h<fft_height/2?h+fft_height/2:h-fft_height/2))
 
 
 typedef enum _SPATIAL_FILTER_METHOD
@@ -31,6 +31,13 @@ typedef enum _SPATIAL_FILTER_METHOD
 	TEMPLATE_LAPLACIAN2,	
 	TEMPLATE_LAPLACIAN5,
 }SPATIAL_FILTER_METHOD;
+
+
+typedef enum _FREQ_FILTER_METHOD
+{
+	FREQ_IDEAL_LFP = 0,
+
+}FREQ_FILTER_METHOD;
 
 //int set_pixel(int x, int y);
 typedef enum _YUV_STORE_TYPE
@@ -136,6 +143,8 @@ void copy_complex(Complex * src,Complex *dst);
 
 int image_FFT(FFT_STRUCT *fft_dst);
 int image_IFFT(FFT_STRUCT *fft_dst);
+void freq_filter(FFT_STRUCT *fft_src, FREQ_FILTER_METHOD method, int arg);
+
 
 /*--------------------------------------------------------------------------------*/
 uint32_t gamma_correct(HBMP_i_t *hbmp_buf, float gamma);
