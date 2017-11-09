@@ -35,7 +35,9 @@ typedef enum _SPATIAL_FILTER_METHOD
 
 typedef enum _FREQ_FILTER_METHOD
 {
-	FREQ_IDEAL_LFP = 0,
+	NONE_FILTER = 0,
+	FREQ_IDEAL_LFP,	
+	FREQ_GUASS_LFP,
 
 }FREQ_FILTER_METHOD;
 
@@ -144,6 +146,7 @@ void copy_complex(Complex * src,Complex *dst);
 int image_FFT(FFT_STRUCT *fft_dst);
 int image_IFFT(FFT_STRUCT *fft_dst);
 void freq_filter(FFT_STRUCT *fft_src, FREQ_FILTER_METHOD method, int arg);
+void image_FFT_save(FFT_STRUCT *fft_dst);
 
 
 /*--------------------------------------------------------------------------------*/

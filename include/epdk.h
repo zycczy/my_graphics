@@ -50,11 +50,8 @@
 	#define __wrn(...) 
 #endif
 
-#if (DEBUG_LEVEL_GATE > 0)
-	#define show_para(a) __dbg(#a" = %d\n", a)
-#else
-	#define show_para(a) __dbg(#a" = %d\n", a)
-#endif
+#define show_para(a) __dbg(#a" = %d\n", a)
+#define show_para_double(a) __dbg(#a" = %lf\n", a)
 
 
 #define show_table(size0, size1, array_name)  {\
