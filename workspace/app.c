@@ -116,14 +116,14 @@ int main(int argc, char **argv)
 				hbmp_dst = bmp_parser("src.bmp", "dst.bin");
 				hbmp_dst->yuv_buffer.type = hbmp_src->yuv_buffer.type;
 				rgb_tranform_to_yuv(hbmp_dst);
-				//gamma_correct(hbmp_src, 2);
+				gamma_correct(hbmp_src, 0.9);
 				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
 				//spatial_filter(hbmp_src, TEMPLATE_HSOBLE);
 				//spatial_filter(hbmp_src, TEMPLATE_VSOBLE);
 				FFT_STRUCT fft_dst;
 				fft_dst.src = hbmp_src;
 				
-				freq_filter(&fft_dst, FREQ_GUASS_LFP, 60);
+				freq_filter(&fft_dst, NONE_FILTER, 14);
 				//image_FFT(&fft_dst);
 				rgb_file = fopen("fft_file.bin","wb+");
 				fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
