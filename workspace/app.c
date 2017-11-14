@@ -123,7 +123,7 @@ int main(int argc, char **argv)
 				FFT_STRUCT fft_dst;
 				fft_dst.src = hbmp_src;
 				
-				freq_filter(&fft_dst, NONE_FILTER, 14);
+				freq_filter(&fft_dst, FREQ_LAPLACE_FLITER, 14);
 				//image_FFT(&fft_dst);
 				rgb_file = fopen("fft_file.bin","wb+");
 				fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
