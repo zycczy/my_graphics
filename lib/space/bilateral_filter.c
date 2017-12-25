@@ -1,4 +1,5 @@
 /*author: charles cheng 2017-12-25*/
+#include "bilateral_filter.h"
 //default using odd length of array side, minimum 3 and maximum 9
 static double *guass_distances_array_init(uint32_t side_length)
 {

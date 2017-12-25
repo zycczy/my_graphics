@@ -192,7 +192,7 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 			#ifndef ENHANCE_FLITER
 			tmp[i*src->width+j] = templete_filter(src, filter, j, i, NULL);
 			#else
-			tmp[i*src->width+j] = WEIGHT_COEF*(src->yuv_buffer.y_buffer.buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, NULL));
+			tmp[i*src->width+j] = WEIGHT_COEF*(src->yuv_buffer.y_buffer.buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 0));
 
 			max = MAX(max, tmp[i*src->width+j]);
 			min = MIN(min, tmp[i*src->width+j]);
