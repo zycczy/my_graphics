@@ -28,8 +28,6 @@ static int histogram_equalization(HISTOGRAM_DATA *histogram_data)
 	uint8_t max = histogram_data->max;
 	uint32_t *CDF_table = histogram_data->CDF_table;
 	HBMP_i_t *src = histogram_data->src;
-
-	
 	for(i=0;i<src->height;i++){
 		for(j=0;j<src->width;j++){
 			for(t=0;t<src->yuv_buffer.y_buffer.buffer[i*src->width+j];t++){

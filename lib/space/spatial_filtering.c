@@ -38,7 +38,7 @@ static uint8_t median_filtering(HBMP_i_t *src, uint32_t x, uint32_t y)
 }
 
 
-static float templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t x, uint32_t y, int m)
+static float templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t x, uint32_t y, RGB_CHANNEL m)
 {
 	uint32_t i, j;	
 	float dst_value = 0;
@@ -46,12 +46,13 @@ static float templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t x,
 	for(i=0;i<filter->filter_height;i++){
 		for(j=0;j<filter->filter_width;j++){
 			#ifdef SPATIAL_FILTERING_RGB 
-			if(m == 0){
+			if(m == R_CHANNEL){
 				dst_value += (ARGB_PARSE_R(src->get_rgb_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)) * filter->filter_array[i*filter->filter_width+j]);
-			}else if(m == 1){
+			}else if(m == G_CHANNEL){
 				dst_value += (ARGB_PARSE_G(src->get_rgb_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)) * filter->filter_array[i*filter->filter_width+j]);			
+			}else if(m == B_CHANNEL){
+				dst_value += (ARGB_PARSE_B(src->get_rgb_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)) * filter->filter_array[i*filter->filter_width+j]);
 			}
-			dst_value += (ARGB_PARSE_B(src->get_rgb_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)) * filter->filter_array[i*filter->filter_width+j]);
 			#else
 			dst_value += ((src->get_y_value(src, x-filter->filter_kernel_location+j, y-filter->filter_kernel_location+i)) * filter->filter_array[i*filter->filter_width+j]);
 			#endif
@@ -125,12 +126,9 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 	memcpy(tmp, src->rgb_buffer, src->rgb_size);
 	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
 		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){	
-			#ifndef ENHANCE_FLITER
-			tmp[i*src->width+j] = templete_filter(src, filter, j, i);
-			#else
-			tmp_r[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_R(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 0));
-			tmp_g[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_G(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 1));
-			tmp_b[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_B(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 2));
+			tmp_r[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_R(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, R_CHANNEL));
+			tmp_g[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_G(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, G_CHANNEL));
+			tmp_b[i*src->width+j] = WEIGHT_COEF*ARGB_PARSE_B(src->rgb_buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, B_CHANNEL));
 
 			max_r = MAX(max_r, tmp_r[i*src->width+j]);
 			min_r = MIN(min_r, tmp_r[i*src->width+j]);
@@ -140,10 +138,8 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 
 			max_b = MAX(max_b, tmp_b[i*src->width+j]);
 			min_b = MIN(min_b, tmp_b[i*src->width+j]);
-			#endif
 		}
 	}
-	#ifdef ENHANCE_FLITER
 	int span_r = max_r - min_r;
 	int span_g = max_g - min_g;	
 	int span_b = max_b - min_b;
@@ -178,8 +174,6 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 		}
 	}
 
-	#endif
-	//memcpy(src->rgb_buffer, tmp, src->rgb_size);
 	return ;
 }
 #else
@@ -196,9 +190,9 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
 		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){	
 			#ifndef ENHANCE_FLITER
-			tmp[i*src->width+j] = templete_filter(src, filter, j, i);
+			tmp[i*src->width+j] = templete_filter(src, filter, j, i, NULL);
 			#else
-			tmp[i*src->width+j] = WEIGHT_COEF*(src->yuv_buffer.y_buffer.buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 0));
+			tmp[i*src->width+j] = WEIGHT_COEF*(src->yuv_buffer.y_buffer.buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, NULL));
 
 			max = MAX(max, tmp[i*src->width+j]);
 			min = MIN(min, tmp[i*src->width+j]);
@@ -224,7 +218,6 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 	}
 
 	#endif
-	//memcpy(src->rgb_buffer, tmp, src->rgb_size);
 	return ;
 }
 

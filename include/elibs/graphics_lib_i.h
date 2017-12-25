@@ -19,6 +19,12 @@
 #define ARGB_SET_RGB(r, g, b)    (((r<<16) |(g<<8) |(b)) |0xff000000)
 #define FFT_SHIFT(w, h, fft_width, fft_height)   ((w<fft_width/2?w+fft_width/2:w-fft_width/2) + fft_width * (h<fft_height/2?h+fft_height/2:h-fft_height/2))
 
+typedef enum _RGB_CHANNEL
+{
+	R_CHANNEL = 0,
+	G_CHANNEL,
+	B_CHANNEL,
+}RGB_CHANNEL;
 
 typedef enum _SPATIAL_FILTER_METHOD
 {
@@ -30,6 +36,7 @@ typedef enum _SPATIAL_FILTER_METHOD
 	TEMPLATE_LAPLACIAN1,
 	TEMPLATE_LAPLACIAN2,	
 	TEMPLATE_LAPLACIAN5,
+	TEMPLATE_BILATERAL,
 }SPATIAL_FILTER_METHOD;
 
 
