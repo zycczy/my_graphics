@@ -1,6 +1,14 @@
 /*author: charles cheng 2017-12-25*/
 #include "bilateral_filter.h"
-//default using odd length of array side, minimum 3 and maximum 9
+/*
+The bilateral filter output dst_pixel(i, j) depends on neighbour pixels value and the weight
+	g(i, j) = E<k, l>[f(k, l)*w(i, j, k, l)] / E<k, l>[w(i, j, k, l)]
+and the weight w(i, j, k, l) depends on distance core d(i, j, k, l) and value core r(i, j, k, l)
+	d(i, j, k, l)=exp()
+Default using odd length of array side, minimum 3 and maximum 9
+
+*/
+
 static double *guass_distances_array_init(uint32_t side_length)
 {
 	int center_location;	
