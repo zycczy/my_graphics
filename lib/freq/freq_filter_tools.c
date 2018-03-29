@@ -153,5 +153,6 @@ void freq_filter(FFT_STRUCT *fft_src, FREQ_FILTER_METHOD method, int arg)
 	}
 	image_FFT_save(fft_src);
 	image_IFFT(fft_src);
+	free(fft_src->freq_filter);
 }
 
