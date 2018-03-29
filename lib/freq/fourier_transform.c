@@ -121,15 +121,17 @@ void IFFT(Complex *src,Complex *dst,int size_n)
 
 
 void column_vector(Complex * src,Complex * dst,int size_w,int size_h){
-    for(int i=0;i<size_h;i++){
+	int i;
+	for(i=0;i<size_h;i++){
         copy_complex(&src[size_w*i], &dst[i]);
     }
     
 }
 
 void Icolumn_vector(Complex * src,Complex * dst,int size_w,int size_h){
-    for(int i=0;i<size_h;i++)
-        copy_complex(&src[i],&dst[size_w*i]);
+	int i;
+	for(i=0;i<size_h;i++)
+        copy_complex(&src[i], &dst[size_w*i]);
     
 }
 
@@ -199,10 +201,7 @@ int IFFT2D(Complex *src,Complex *dst,int size_w,int size_h)
     for(i=0;i<size_w*size_h;i++)
         src[i].imagin=-src[i].imagin;
     for(i=0;i<size_h;i++){
-		
         IFFT(&src[size_w*i], &temp[size_w*i], size_w);
-		
-        
     }
     
     
@@ -300,15 +299,6 @@ int image_FFT(FFT_STRUCT *fft_dst)
 	fft_dst->spectrum->width = fft_width;
 	fft_dst->spectrum->rgb_size = fft_dst->spectrum->height * fft_dst->spectrum->width * 4;
 	yuv_buffer_init(fft_dst->spectrum);
-	tmp_fft_output = malloc(sizeof(Complex)*fft_width*fft_height);
-	fft_src = (double *)malloc(sizeof(double)*fft_height*fft_width);
-
-	for(i=0;i<fft_height;i++){
-		for(j=0;j<fft_width;j++){
-			fft_src[i*fft_width+j] =  time_image[i*fft_width+j].real;
-		}
-	}
-
 
 	FFT2D(time_image, fft_dst->freq_image, fft_width, fft_height);
 

@@ -109,26 +109,27 @@ int main(int argc, char **argv)
 			case 'y':
 			{
 				//RGB->YUV
-				FILE *y_file, *u_file, *v_file, *rgb_file;
+				FILE *y_file, *u_file, *v_file, *rgb_file;				
+				FFT_STRUCT fft_dst;
+				
 				hbmp_src->yuv_buffer.type = atoi(optarg);
 				show_para(hbmp_src->yuv_buffer.type);
 				rgb_tranform_to_yuv(hbmp_src);
 				hbmp_dst = bmp_parser("src.bmp", "dst.bin");
 				hbmp_dst->yuv_buffer.type = hbmp_src->yuv_buffer.type;
 				rgb_tranform_to_yuv(hbmp_dst);
+				
 				gamma_correct(hbmp_src, 0.9);
 				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
 				//spatial_filter(hbmp_src, TEMPLATE_HSOBLE);
 				//spatial_filter(hbmp_src, TEMPLATE_VSOBLE);
-				FFT_STRUCT fft_dst;
 				fft_dst.src = hbmp_src;
-				
-				freq_filter(&fft_dst, FREQ_LAPLACE_FLITER, 14);
-				//image_FFT(&fft_dst);
+
+				freq_filter(&fft_dst, NONE_FILTER, NULL);
+				show_para(fft_dst.spectrum->yuv_buffer.y_buffer.size);
 				rgb_file = fopen("fft_file.bin","wb+");
 				fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
 				fclose(rgb_file);
-				//image_IFFT(&fft_dst);
 				y_file = fopen("y_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.y_buffer.buffer, 1, hbmp_src->yuv_buffer.y_buffer.size, y_file);
 				fclose(y_file);
