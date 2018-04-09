@@ -1,28 +1,20 @@
 /*author: charles cheng 2017-12-25*/
 #include "bilateral_filter.h"
 /*
+Discrete
 The bilateral filter output dst_pixel(i, j) depends on neighbour pixels value and the weight
 	g(i, j) = E<k, l>[f(k, l)*w(i, j, k, l)] / E<k, l>[w(i, j, k, l)]
-and the weight w(i, j, k, l) depends on distance core d(i, j, k, l) and value core r(i, j, k, l)
-	d(i, j, k, l)=exp()
-Default using odd length of array side, minimum 3 and maximum 9
-
+and the weight w(i, j, k, l) depends on distance core d(i, j, k, l) and color value core r(i, j, k, l)
+	d(i, j, k, l) = exp[ (-(i-k)^2 + (j-l)^2) /2*sig_d^2 ]
+	r(i, j, k, l) = exp[ (-(f(i, j) - f(k, l))^2) /2*sig_r^2 ]
+Default using odd length of array side, minimum 3 and maximum 9, so we can use look-up table to get d(i, j, k, l) and r(i, j, k, l).
 */
-
-static double *guass_distances_array_init(uint32_t side_length)
+#define MAX_MOD_LEN 5
+static double *guass_distances_table_init(void)
 {
-	int center_location;	
-	double *distance_array;
-	if(side_length<3){
-		side_length = 3;
-	}else if(side_length>9){
-		side_length = 9;
-	}
-	if(side_length%2 == 0){
-		side_length -= 1; 
-	}
-	distance_array = malloc(side_length*side_length*sizeof(double));
-	center_location = (side_length-1)/2;
+	int abs_len = (MAX_MOD_LEN - 1) / 2;
+	int *distances_table = malloc(sizeof(int)*abs_len);
+	
 	
 	
 }
