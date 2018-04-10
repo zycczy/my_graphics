@@ -60,7 +60,7 @@ static void freq_Gauss_LPF(FFT_STRUCT *fft_src, int sigma)
 
 static void freq_Gauss_HPF(FFT_STRUCT *fft_src, int sigma)
 {
-	int fft_width = fft_src->spectrum->width;	
+	int fft_width = fft_src->spectrum->width;
 	int fft_height = fft_src->spectrum->height;
 	int i, j;
 	

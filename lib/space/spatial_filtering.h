@@ -27,18 +27,32 @@ FILTER_TEMPLATE smooth_avg =
 	.filter_kernel_location = 1,
 	.filter_coef = (float)1/9,
 };
-
-
-float smooth_gauss_filter_array[9] = {1, 2, 1, 
-									  	2, 4, 2,
-									  	1, 2, 1};
+/*
+  *for(int i=0;i<size;i++){
+  *	for(int j=0;j<size;j++){  
+  *        gaus[i][j]=(1/(2*PI*sigma*sigma))*exp(-((i-center)*(i-center)+(j-center)*(j-center))/(2*sigma*sigma));  
+  *        sum+=gaus[i][j];
+  *	}
+  *}
+*/
+#ifdef smooth_gauss_3
+float smooth_gauss_filter_array[9] = {0.0751136, 0.123841, 0.0751136,
+									  	0.123841, 0.20418, 0.123841,
+									  	0.0751136, 0.123841, 0.0751136};
+#else
+float smooth_gauss_filter_array[25] = {0.00296902, 0.0133062, 0.0219382, 0.0133062, 0.00296902,
+									  	0.0133062, 0.0596343, 0.0983203, 0.0596343, 0.0133062,
+									  	0.0219382, 0.0983203, 0.162103, 0.0983203, 0.0219382,
+									  	0.0133062, 0.0596343, 0.0983203, 0.0596343, 0.0133062,
+									  	0.00296902, 0.0133062, 0.0219382, 0.0133062, 0.00296902};
+#endif
 FILTER_TEMPLATE smooth_gauss = 
 {
 	.filter_array = smooth_gauss_filter_array,
-	.filter_width = 3,
-	.filter_height = 3,
+	.filter_width = 5,
+	.filter_height = 5,
 	.filter_kernel_location = 1,
-	.filter_coef =(float)1/16,
+	.filter_coef =(float)1,
 };
 
 float hsobel_filter_array[9] = {-1, 0, 1, 

@@ -1,6 +1,6 @@
 /*author: charles cheng 2017-07-19*/
 #include "spatial_filtering.h"
-#define ENHANCE_FLITER
+//#define ENHANCE_FLITER
 //#define SPATIAL_FILTERING_RGB
 static uint8_t get_median_value(float *array, uint32_t length)
 {
@@ -190,7 +190,7 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
 		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){	
 			#ifndef ENHANCE_FLITER
-			tmp[i*src->width+j] = templete_filter(src, filter, j, i, NULL);
+			tmp[i*src->width+j] = templete_filter(src, filter, j, i, 0);
 			#else
 			tmp[i*src->width+j] = WEIGHT_COEF*(src->yuv_buffer.y_buffer.buffer[i*src->width+j]) + (templete_filter(src, filter, j, i, 0));
 
@@ -200,24 +200,22 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 			#endif
 		}
 	}
-	#ifdef ENHANCE_FLITER
 	int span = max - min;
 	int y;
-	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){
-		for(j=filter->filter_kernel_location;j<src->width-filter->filter_kernel_location*2;j++){
+	for(i=filter->filter_kernel_location;i<src->height - filter->filter_kernel_location*2;i++){
+		for(j=filter->filter_kernel_location;j<src->width - filter->filter_kernel_location*2;j++){
 			if(span > 0){
 				y = (tmp[i*src->width+j] - min)*255/span;
 			}else if(tmp[i*src->width+j] <= 255){
 				y = tmp[i*src->width+j];
 			}else{
-				y = 255;
+				y = 0;
 			}
 
 			src->yuv_buffer.y_buffer.buffer[i*src->width+j] = y;
 		}
 	}
 
-	#endif
 	return ;
 }
 

@@ -1,4 +1,4 @@
-/*author: charles cheng 2016-010-22*/
+/*author: charles cheng 2016-10-22*/
 
 #include "epdk.h"
 #include <getopt.h>
@@ -122,14 +122,14 @@ int main(int argc, char **argv)
 				gamma_correct(hbmp_src, 0.9);
 				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
 				//spatial_filter(hbmp_src, TEMPLATE_HSOBLE);
-				//spatial_filter(hbmp_src, TEMPLATE_VSOBLE);
+				spatial_filter(hbmp_src, TEMPLATE_SMOOTH_GAUSS);
 				fft_dst.src = hbmp_src;
 
-				freq_filter(&fft_dst, NONE_FILTER, NULL);
-				show_para(fft_dst.spectrum->yuv_buffer.y_buffer.size);
-				rgb_file = fopen("fft_file.bin","wb+");
-				fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
-				fclose(rgb_file);
+				//freq_filter(&fft_dst, NONE_FILTER, NULL);
+				//show_para(fft_dst.spectrum->yuv_buffer.y_buffer.size);
+				//rgb_file = fopen("fft_file.bin","wb+");
+				//fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
+				//fclose(rgb_file);
 				y_file = fopen("y_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.y_buffer.buffer, 1, hbmp_src->yuv_buffer.y_buffer.size, y_file);
 				fclose(y_file);

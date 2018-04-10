@@ -40,6 +40,15 @@ static uint32_t set_rgb_value(HBMP_i_t* src, uint32_t x, uint32_t y, uint32_t va
 	return src->rgb_buffer[y*src->width+x] = value;
 }
 
+static uint32_t hbmp_new(HBMP_i_t* src, HBMP_i_t* dst)
+{
+}
+
+static uint32_t hbmp_copy(HBMP_i_t* src, HBMP_i_t* dst)
+{
+	memcpy(dst, src, sizeof(HBMP_i_t));
+	
+}
 
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file)
 {
@@ -280,22 +289,22 @@ static inline void table_init()
 YUV444 storage mode:
 Y:				U:				V:
 -----------		-----------		-----------
-|               |		|               |		|               |
+|			|		|			|		|			|
 -----------		-----------		-----------
 <---h*w--->      <---h*w--->       <---h*w--->
 
 YUV422 storage mode:
 Y:				U:				V:
 -----------       ------			------
-|               |       |       |			|       |
+|			|	|		|		|		|
 -----------       ------			------
 <---h*w--->     <h*w/2>     	      <h*w/2>
 
 YUV420 storage mode:
 Y:				U:				V:
------------	     ------			------
-|               |       ------			------
------------		<h/2*w/2>		<h/2*w/2>		
+-----------	------			------
+|			|		------			------
+-----------	<h/2*w/2>		<h/2*w/2>		
 <---h*w--->          	
 */
 int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp)

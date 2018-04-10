@@ -45,9 +45,6 @@ int image_mirror(HBMP_i_t *src, TYPE_OF_MIRROR type)
 	return EPDK_OK;
 }
 
-
-
-
 int image_transpose(HBMP_i_t *src, WAY_OF_TRANSPOSE transpose_way, uint32_t arg)
 {
 	uint32_t* tmp = malloc(src->rgb_size);
