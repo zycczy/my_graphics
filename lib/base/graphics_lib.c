@@ -45,15 +45,15 @@ static uint32_t hbmp_new(HBMP_i_t* src, HBMP_i_t* dst)
 	return EPDK_OK;
 }
 
-static uint32_t hbmp_copy(HBMP_i_t* src, HBMP_i_t* dst)
+uint32_t hbmp_copy(HBMP_i_t* src, HBMP_i_t* dst)
 {
-	if (dst == NULL) {
-		dst = malloc(sizeof(HBMP_i_t));
-	}
 	memcpy(dst, src, sizeof(HBMP_i_t));	
 	dst->rgb_buffer = malloc(dst->rgb_size);
 	memcpy(dst->rgb_buffer, src->rgb_buffer, src->rgb_size);
 	yuv_buffer_init(dst);
+	memcpy(dst->yuv_buffer.y_buffer.buffer, src->yuv_buffer.y_buffer.buffer, src->yuv_buffer.y_buffer.size);
+	memcpy(dst->yuv_buffer.u_buffer.buffer, src->yuv_buffer.u_buffer.buffer, src->yuv_buffer.u_buffer.size);
+	memcpy(dst->yuv_buffer.v_buffer.buffer, src->yuv_buffer.v_buffer.buffer, src->yuv_buffer.v_buffer.size);
 
 	return EPDK_OK;
 }

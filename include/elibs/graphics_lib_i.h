@@ -18,7 +18,7 @@
 #define ARGB_PARSE_B(rgb)	(rgb&0x000000ff)
 #define ARGB_SET_RGB(r, g, b)    (((r<<16) |(g<<8) |(b)) |0xff000000)
 #define FFT_SHIFT(w, h, fft_width, fft_height)   ((w<fft_width/2?w+fft_width/2:w-fft_width/2) + fft_width * (h<fft_height/2?h+fft_height/2:h-fft_height/2))
-
+#define CAL_MOUDLE(x, y)	sqrt(x*x + y*y)
 typedef enum _RGB_CHANNEL
 {
 	R_CHANNEL = 0,
@@ -146,6 +146,8 @@ uint32_t separate_maritx(HBMP_i_t* hbmp, HBMP_i_t **dst, TYPE_OF_MARITX type);
 /*--------------------------------------------------------------------------------*/
 int32_t rgb_tranform_to_yuv(HBMP_i_t* hbmp);
 void yuv_buffer_init(HBMP_i_t* hbmp);
+uint32_t hbmp_copy(HBMP_i_t* src, HBMP_i_t* dst);
+
 
 /*--------------------------------------------------------------------------------*/
 void add_complex(Complex * src1,Complex *src2,Complex *dst);
@@ -174,5 +176,8 @@ uint32_t bilinear_interpolation(HBMP_i_t *src, double x, double y);
 uint32_t bicubic_interpolation(HBMP_i_t *src, double x, double y);
 
 void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method);
+
+int canny(HBMP_i_t *hbmp_src);
+
 
 #endif

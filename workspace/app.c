@@ -122,7 +122,8 @@ int main(int argc, char **argv)
 				gamma_correct(hbmp_src, 0.9);
 				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
 				//spatial_filter(hbmp_src, TEMPLATE_HSOBLE);
-				spatial_filter(hbmp_src, TEMPLATE_SMOOTH_GAUSS);
+				//spatial_filter(hbmp_src, TEMPLATE_SMOOTH_GAUSS);
+				canny(hbmp_src);
 				fft_dst.src = hbmp_src;
 
 				//freq_filter(&fft_dst, NONE_FILTER, NULL);
