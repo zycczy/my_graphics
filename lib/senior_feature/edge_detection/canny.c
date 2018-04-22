@@ -22,7 +22,7 @@ static void grad_xy(HBMP_i_t *sobel_x, HBMP_i_t *sobel_y, double **point_drectio
 {	
 	int i, j;
 	int k = 0;
-	point_drection = malloc(sizeof(double)*(sobel_x->width-1)*(sobel_x->height-1));
+	*point_drection = malloc(sizeof(double)*(sobel_x->width-1)*(sobel_x->height-1));
 	for(i=1; i<sobel_x->width-1; i++){
 		for(j=1;j<sobel_x->height-1;j++){
 			(*point_drection)[k] = atan(sobel_y->get_y_value(sobel_y, i, j)/
@@ -35,25 +35,79 @@ static void local_max_value(HBMP_i_t *hbmp_src, double *point_drection)
 {
 	int i, j;
 	int k = 0;
-	int value[3][3] = {{0, 0}};
 	for(i=1; i<hbmp_src->width-1; i++){
 		for(j=1;j<hbmp_src->height-1;j++){
-			value[0][0] = hbmp_src->get_y_value(hbmp_src, i-1, j-1);
-			value[0][1] = hbmp_src->get_y_value(hbmp_src, i, j-1);
-			value[0][2] = hbmp_src->get_y_value(hbmp_src, i+1, j-1);
+			int value00 = hbmp_src->get_y_value(hbmp_src, i-1, j-1);
+			int value01 = hbmp_src->get_y_value(hbmp_src, i, j-1);
+			int value02 = hbmp_src->get_y_value(hbmp_src, i+1, j-1);
 			
-			value[1][0] = hbmp_src->get_y_value(hbmp_src, i-1, j);
-			value[1][1] = hbmp_src->get_y_value(hbmp_src, i, j);
-			value[1][2] = hbmp_src->get_y_value(hbmp_src, i+1, j);
+			int value10 = hbmp_src->get_y_value(hbmp_src, i-1, j);
+			int value11 = hbmp_src->get_y_value(hbmp_src, i, j);
+			int value12 = hbmp_src->get_y_value(hbmp_src, i+1, j);
 
-			value[2][0] = hbmp_src->get_y_value(hbmp_src, i-1, j+1);
-			value[2][1] = hbmp_src->get_y_value(hbmp_src, i, j+1);
-			value[2][2] = hbmp_src->get_y_value(hbmp_src, i+1, j+1);
+			int value20 = hbmp_src->get_y_value(hbmp_src, i-1, j+1);
+			int value21 = hbmp_src->get_y_value(hbmp_src, i, j+1);
+			int value22 = hbmp_src->get_y_value(hbmp_src, i+1, j+1);
 
-			if (point_drection[k])
+			if (point_drection[k] > 0 && point_drection[k] < 45) {
+				if (value11<=(value12+(value02-value12)*tan(point_drection[j*hbmp_src->width + i]))||
+					value11<=(value10+(value20-value10)*tan(point_drection[j*hbmp_src->width + i]))) {
+					hbmp_src->yuv_buffer.y_buffer.buffer[j*hbmp_src->width + i] = 0;
+					
+				}
+			} else if (point_drection[k] > 45 && point_drection[k] < 90) {
+				if(value11<=(value01+(value02-value01)*tan(point_drection[j*hbmp_src->width + i]))||
+					value11<=(value21+(value20-value21)*tan(point_drection[j*hbmp_src->width + i]))) {
+					hbmp_src->yuv_buffer.y_buffer.buffer[j*hbmp_src->width + i] = 0;
+				}
+			} else if (point_drection[k] > 90 && point_drection[k] < 135) {
+				if(value11<=(value01+(value00-value01)*tan(180-point_drection[j*hbmp_src->width + i]))||
+					value11<=(value21+(value22-value21)*tan(180-point_drection[j*hbmp_src->width + i]))) {
+					hbmp_src->yuv_buffer.y_buffer.buffer[j*hbmp_src->width + i] = 0;
+				}
+			} else if (point_drection[k] > 135 && point_drection[k] < 180) {
+				if(value11<=(value10+(value00-value10)*tan(180-point_drection[j*hbmp_src->width + i]))||
+					value11<=(value12+(value22-value11)*tan(180-point_drection[j*hbmp_src->width + i]))) {
+					hbmp_src->yuv_buffer.y_buffer.buffer[j*hbmp_src->width + i] = 0;
+				}
+			}
 		}
 	}
 }
+
+static void double_threshold(HBMP_i_t *hbmp_src, double low, double high)
+{
+	int i, j;
+	for (i=1; i<hbmp_src->width-1; i++) {
+		for (j=1;j<hbmp_src->height-1;j++) {
+			if (hbmp_src->get_y_value(hbmp_src, i, j) > high)
+				hbmp_src->yuv_buffer.y_buffer.buffer[j*hbmp_src->width + i] = 255;
+			if (hbmp_src->get_y_value(hbmp_src, i, j) < low)	
+				hbmp_src->yuv_buffer.y_buffer.buffer[j*hbmp_src->width + i] = 0;
+		}
+	}
+}
+
+static void double_threshold_link(HBMP_i_t *hbmp_src, double low, double high)
+{
+	int i, j;
+	for (i=1; i<hbmp_src->width-1; i++) {
+		for (j=1;j<hbmp_src->height-1;j++) {
+			if (hbmp_src->get_y_value(hbmp_src, i,j)>low && hbmp_src->get_y_value(hbmp_src, i,j)<255) {  
+				if (hbmp_src->get_y_value(hbmp_src, i-1,j-1)==255||hbmp_src->get_y_value(hbmp_src, i-1,j)==255||hbmp_src->get_y_value(hbmp_src, i-1,j+1)==255||  
+					hbmp_src->get_y_value(hbmp_src, i,j-1)==255||hbmp_src->get_y_value(hbmp_src, i,j)==255||hbmp_src->get_y_value(hbmp_src, i,j+1)==255||  
+					hbmp_src->get_y_value(hbmp_src, i+1,j-1)==255||hbmp_src->get_y_value(hbmp_src, i+1,j)==255||hbmp_src->get_y_value(hbmp_src, i+1,j+1)==255)
+				{
+					hbmp_src->yuv_buffer.y_buffer.buffer[j*hbmp_src->width + i] = 255;	
+					double_threshold_link(hbmp_src, low, high); 	
+				} else {
+					hbmp_src->yuv_buffer.y_buffer.buffer[j*hbmp_src->width + i] = 0;  
+				}				  
+			}		 
+		}
+	}
+}
+
 
 int canny(HBMP_i_t *hbmp_src)
 {
@@ -69,7 +123,9 @@ int canny(HBMP_i_t *hbmp_src)
 	hbmp_copy(hbmp_src, &sobel_ampXY);
 	grad_xy(&sobel_x, &sobel_y, &point_drection);
 	sobel_amplitude(&sobel_x, &sobel_y, &sobel_ampXY);
-	
+	local_max_value(&sobel_ampXY, point_drection);
+	double_threshold(&sobel_ampXY, 20, 25);
+	double_threshold_link(&sobel_ampXY, 20, 25);
 	sobel_amplitude_file = fopen("sobel_amplitude_file.bin","wb+");
 	fwrite(sobel_ampXY.yuv_buffer.y_buffer.buffer, 1, sobel_ampXY.yuv_buffer.y_buffer.size, sobel_amplitude_file);
 	fclose(sobel_amplitude_file);
