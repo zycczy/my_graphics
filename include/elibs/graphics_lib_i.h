@@ -177,7 +177,8 @@ uint32_t bicubic_interpolation(HBMP_i_t *src, double x, double y);
 
 void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method);
 
-int canny(HBMP_i_t *hbmp_src);
+void canny(HBMP_i_t *hbmp_src, HBMP_i_t *sobel_ampXY);
 
+void hough(HBMP_i_t *hbmp_src);
 
 #endif
