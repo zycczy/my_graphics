@@ -118,12 +118,13 @@ void canny(HBMP_i_t *hbmp_src, HBMP_i_t *sobel_ampXY)
 	HBMP_i_t sobel_x, sobel_y;
 	FILE *sobel_amplitude_file;
 	double *point_drection;
-	spatial_filter(hbmp_src, TEMPLATE_SMOOTH_GAUSS);
+	spatial_filter(hbmp_src, TEMPLATE_SMOOTH_GAUSS, 1);
+	gamma_correct(hbmp_src, 0.7);
 
 	hbmp_copy(hbmp_src, &sobel_x);
-	spatial_filter(&sobel_x, TEMPLATE_VSOBLE);
+	spatial_filter(&sobel_x, TEMPLATE_VSOBLE, 0);
 	hbmp_copy(hbmp_src, &sobel_y);
-	spatial_filter(&sobel_y, TEMPLATE_HSOBLE);
+	spatial_filter(&sobel_y, TEMPLATE_HSOBLE, 0);
 	hbmp_copy(hbmp_src, sobel_ampXY);
 	grad_xy(&sobel_x, &sobel_y, &point_drection);
 	sobel_amplitude(&sobel_x, &sobel_y, sobel_ampXY);

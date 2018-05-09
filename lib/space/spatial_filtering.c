@@ -71,7 +71,7 @@ static float templete_filter(HBMP_i_t *src, FILTER_TEMPLATE *filter, uint32_t x,
 	return dst_value;
 }
 
-static FILTER_TEMPLATE *init_filter_array(SPATIAL_FILTER_METHOD filter_method)
+static FILTER_TEMPLATE *init_filter_array(SPATIAL_FILTER_METHOD filter_method, int arg)
 {
 	switch(filter_method)
 	{
@@ -81,6 +81,26 @@ static FILTER_TEMPLATE *init_filter_array(SPATIAL_FILTER_METHOD filter_method)
 		}
 		case TEMPLATE_SMOOTH_GAUSS:
 		{
+			int i, j;
+			float sum;
+			float smooth_gauss_filter_array[25];
+			double sigma = (double)arg;
+			for(i=0;i<5;i++){
+				for(j=0;j<5;j++){  
+					smooth_gauss_filter_array[i*5+j] = (1/(2*PI*sigma*sigma))*exp(-((i-2)*(i-2)+(j-2)*(j-2))/(2*sigma*sigma));  
+					sum += smooth_gauss_filter_array[i*5+j];
+				}
+			}
+			for(i=0;i<5;i++){
+				for(j=0;j<5;j++){  
+					smooth_gauss_filter_array[i*5+j] /= sum;
+				}
+			}
+			smooth_gauss.filter_array = smooth_gauss_filter_array;
+			smooth_gauss.filter_width = 5;
+			smooth_gauss.filter_height = 5;
+			smooth_gauss.filter_kernel_location = 1;
+			smooth_gauss.filter_coef =(float)arg;
 			return &smooth_gauss;
 		}
 		case TEMPLATE_HSOBLE:
@@ -114,11 +134,11 @@ int max_g = 0;
 int min_b = 65535;
 int max_b = 0;
 
-void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
+void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method, int arg)
 {
 	uint32_t i, j;
 	
-	FILTER_TEMPLATE *filter = init_filter_array(filter_method);
+	FILTER_TEMPLATE *filter = init_filter_array(filter_method, arg);
 	int32_t *tmp = malloc(src->rgb_size);
 	int32_t *tmp_r = malloc(src->rgb_size);
 	int32_t *tmp_g = malloc(src->rgb_size);	
@@ -180,11 +200,11 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
 int min = 65535;
 int max = 0;
 
-void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method)
+void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method, int arg)
 {
 	uint32_t i, j;
 	
-	FILTER_TEMPLATE *filter = init_filter_array(filter_method);
+	FILTER_TEMPLATE *filter = init_filter_array(filter_method, arg);
 	int32_t *tmp = malloc(src->yuv_buffer.y_buffer.size*4);
 	memcpy(tmp, src->yuv_buffer.y_buffer.buffer, src->yuv_buffer.y_buffer.size);
 	for(i=filter->filter_kernel_location;i<src->height-filter->filter_kernel_location*2;i++){

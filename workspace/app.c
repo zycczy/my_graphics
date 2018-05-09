@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 				hbmp_dst->yuv_buffer.type = hbmp_src->yuv_buffer.type;
 				rgb_tranform_to_yuv(hbmp_dst);
 				
-				gamma_correct(hbmp_src, 0.7);
+				//gamma_correct(hbmp_src, 0.7);
 				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
 				//spatial_filter(hbmp_src, TEMPLATE_HSOBLE);
 				//spatial_filter(hbmp_src, TEMPLATE_SMOOTH_GAUSS);
