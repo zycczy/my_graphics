@@ -7,7 +7,9 @@
 
 typedef struct _HOUGH
 {
-	
+	int *x;
+	int *y;
+	int count;
 }HOUGH;
 
 #endif
