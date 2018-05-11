@@ -100,14 +100,7 @@ void bmp_open(const char *bmp_file, HBMP_i_t *hbmp_hdl_buf)
 	}
 	
 	/* get bmp information head */	
-    	memcpy(&info_head, (char*)pbuf+sizeof(file_head), sizeof(info_head));
-#if 0
-	__msg("bfType0: %x\n",file_head.bfType[0]);
-	__msg("bfType1: %x\n",file_head.bfType[1]);
-	__msg("bfSize: %x\n",file_head.bfSize);
-	__msg("bfReserved: %x\n",file_head.bfReserved);
-	__msg("bfOffBits: %x\n",file_head.bfOffBits);
-#endif
+    memcpy(&info_head, (char*)pbuf+sizeof(file_head), sizeof(info_head));
 	__msg("width: %d\n",info_head.biWidth);
 	__msg("height: %d\n",info_head.biHeight);
 

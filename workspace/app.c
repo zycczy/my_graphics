@@ -9,7 +9,7 @@ static struct option long_options[] = {
 	{"catmap",	   HAS_ARG, 0, 'c'},
 	{"rgb32->yuv", HAS_ARG, 0, 'y'},
 	{"separate",   HAS_ARG, 0, 's'},
-
+	{"FFT",        HAS_ARG, 0, 'f'},
 };
 
 int main(int argc, char **argv)
@@ -119,20 +119,36 @@ int main(int argc, char **argv)
 				hbmp_dst->yuv_buffer.type = hbmp_src->yuv_buffer.type;
 				rgb_tranform_to_yuv(hbmp_dst);
 				
+				HBMP_i_t hbmp_canny;
+				canny(hbmp_src, &hbmp_canny);
+				hough(&hbmp_canny);
+				break;
+			}
+			case 'f':
+			{
+				//RGB->YUV
+				FILE *y_file, *u_file, *v_file, *rgb_file;				
+				FFT_STRUCT fft_dst;
+				int arg;
+				
+				arg = atoi(optarg);
+				hbmp_src->yuv_buffer.type = YUV444;
+				show_para(hbmp_src->yuv_buffer.type);
+				rgb_tranform_to_yuv(hbmp_src);
+				hbmp_dst = bmp_parser("src.bmp", "dst.bin");
+				hbmp_dst->yuv_buffer.type = hbmp_src->yuv_buffer.type;
+				rgb_tranform_to_yuv(hbmp_dst);
+				
 				//gamma_correct(hbmp_src, 0.7);
 				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
 				//spatial_filter(hbmp_src, TEMPLATE_HSOBLE);
 				//spatial_filter(hbmp_src, TEMPLATE_SMOOTH_GAUSS);
-				HBMP_i_t hbmp_canny;
-				canny(hbmp_src, &hbmp_canny);
-				hough(&hbmp_canny);
 				fft_dst.src = hbmp_src;
 
-				//freq_filter(&fft_dst, NONE_FILTER, NULL);
-				//show_para(fft_dst.spectrum->yuv_buffer.y_buffer.size);
-				//rgb_file = fopen("fft_file.bin","wb+");
-				//fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
-				//fclose(rgb_file);
+				freq_filter(&fft_dst, FREQ_GUASS_LFP, arg);
+				rgb_file = fopen("fft_file.bin","wb+");
+				fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
+				fclose(rgb_file);
 				y_file = fopen("y_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.y_buffer.buffer, 1, hbmp_src->yuv_buffer.y_buffer.size, y_file);
 				fclose(y_file);
