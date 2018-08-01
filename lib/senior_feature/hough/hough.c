@@ -49,7 +49,7 @@ void hough(HBMP_i_t *hbmp_src)
 		}
 	}
 	
-	for(t=0;t<max;t++){
+	for(t=0; t<max; t++){
 		hbmp_src->yuv_buffer.y_buffer.buffer[hough_table[max_index].y[t]*hbmp_src->width+hough_table[max_index].x[t]] = 255;
 	}
 	hough_file = fopen("hough.bin","wb+");

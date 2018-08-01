@@ -34,10 +34,19 @@ static uint8_t get_y_value(HBMP_i_t* src, uint32_t x, uint32_t y)
 	return src->yuv_buffer.y_buffer.buffer[i];
 }
 
+static uint8_t set_y_value(HBMP_i_t* src, uint32_t x, uint32_t y, uint32_t value)
+{
+	src->yuv_buffer.y_buffer.buffer[y*src->width+x] = value;
+
+	return EPDK_OK;
+}
+
 //need fix
 static uint32_t set_rgb_value(HBMP_i_t* src, uint32_t x, uint32_t y, uint32_t value)
 {
-	return src->rgb_buffer[y*src->width+x] = value;
+	src->rgb_buffer[y*src->width+x] = value;
+	
+	return EPDK_OK;
 }
 
 static uint32_t hbmp_new(HBMP_i_t* src, HBMP_i_t* dst)

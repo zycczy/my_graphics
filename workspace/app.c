@@ -4,12 +4,13 @@
 #include <getopt.h>
 #define SEPARATE_HEIGHT 8
 #define SEPARATE_WIDTH  8
-static const char *short_options = "f:y:c:s:j";
+static const char *short_options = "f:y:c:s:h:";
 static struct option long_options[] = {	
 	{"catmap",	   HAS_ARG, 0, 'c'},
 	{"rgb32->yuv", HAS_ARG, 0, 'y'},
 	{"separate",   HAS_ARG, 0, 's'},
 	{"FFT",        HAS_ARG, 0, 'f'},
+	{"haze removal", HAS_ARG, 0, 'h'},
 };
 
 int main(int argc, char **argv)
@@ -38,9 +39,9 @@ int main(int argc, char **argv)
 				catmapping(hbmp_src, hbmp_dst, map_count);
 				//image_transformation(hbmp_src,-120,-200);
 				//image_mirror(hbmp_src, VERTICAL);
-				image_transpose(hbmp_src, BICUBIC_INTERPOLATION, 40);
+				//image_transpose(hbmp_src, BICUBIC_INTERPOLATION, 40);
 				file = fopen("dst_map.bin","wb+");
-				fwrite(hbmp_src->rgb_buffer, 1, hbmp_src->rgb_size, file);
+				fwrite(hbmp_dst->rgb_buffer, 1, hbmp_dst->rgb_size, file);
 				free(hbmp_dst);
 				fclose(file);
 				break;
@@ -97,7 +98,7 @@ int main(int argc, char **argv)
 					fwrite(dst[0]->rgb_buffer, 1, dst[0]->rgb_size, maritx_file);		
 					fclose(maritx_file);
 				}else if(!strcmp(argv[2], "-R1")){			
-					separate_maritx(hbmp_src, dst, RGB1BIT);	
+					separate_maritx(hbmp_src, dst, RGB1BIT);
 					maritx_file = fopen("maritx0.bin","wb+");
 					fwrite(dst[0]->rgb_buffer, 1, dst[0]->rgb_size, maritx_file);		
 					fclose(maritx_file);
@@ -141,14 +142,15 @@ int main(int argc, char **argv)
 				
 				//gamma_correct(hbmp_src, 0.7);
 				//histogram_operation(hbmp_src, HISTOGRAM_MATCHING, hbmp_dst);
-				//spatial_filter(hbmp_src, TEMPLATE_HSOBLE);
+				//spatial_filter(hbmp_src, TEMPLATE_LAPLACIAN5, 0);
+				//spatial_filter(hbmp_src, TEMPLATE_HSOBLE, 0);
 				//spatial_filter(hbmp_src, TEMPLATE_SMOOTH_GAUSS);
 				fft_dst.src = hbmp_src;
 
-				freq_filter(&fft_dst, FREQ_GUASS_LFP, arg);
-				rgb_file = fopen("fft_file.bin","wb+");
-				fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
-				fclose(rgb_file);
+				//freq_filter(&fft_dst, FREQ_GUASS_LFP, arg);
+				//rgb_file = fopen("fft_file.bin","wb+");
+				//fwrite(fft_dst.spectrum->yuv_buffer.y_buffer.buffer, 1, fft_dst.spectrum->yuv_buffer.y_buffer.size, rgb_file);
+				//fclose(rgb_file);
 				y_file = fopen("y_file.bin","wb+");
 				fwrite(hbmp_src->yuv_buffer.y_buffer.buffer, 1, hbmp_src->yuv_buffer.y_buffer.size, y_file);
 				fclose(y_file);
@@ -167,6 +169,22 @@ int main(int argc, char **argv)
 				short y_dct[64];
 				maritx_file = fopen("maritx0_y.bin","wb+");
 				fread(y_buffer, 1, 64, maritx_file);
+				break;
+			}
+			case 'h':
+			{
+				//RGB->YUV
+				FILE *y_file, *u_file, *v_file, *rgb_file;
+				HBMP_i_t haze_dst;
+
+				hbmp_src->yuv_buffer.type = atoi(optarg);
+				show_para(hbmp_src->yuv_buffer.type);
+				rgb_tranform_to_yuv(hbmp_src);
+				haze_removal(hbmp_src, &haze_dst);
+				
+				y_file = fopen("y_file.bin","wb+");
+				fwrite(haze_dst.yuv_buffer.y_buffer.buffer, 1, haze_dst.yuv_buffer.y_buffer.size, y_file);
+				fclose(y_file);
 				break;
 			}
 			default:

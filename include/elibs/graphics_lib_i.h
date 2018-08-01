@@ -103,6 +103,7 @@ typedef struct _HBMP_i_t
 	uint32_t   (*set_rgb_value)(void*, uint32_t, uint32_t, uint32_t);	
 	uint32_t   (*get_rgb_value)(void*, uint32_t, uint32_t);	
 	uint8_t   (*get_y_value)(void*, uint32_t, uint32_t);  
+	uint8_t   (*set_y_value)(void*, uint32_t, uint32_t, uint32_t);  
 }HBMP_i_t;
 typedef struct _FFT_STRUCT
 {
@@ -132,11 +133,6 @@ typedef struct _COMPLEX_NUMBER
 	double real;
 	double imaginary;
 }COMPLEX_NUMBER;
-
-  
- 
-
-
 
 
 HBMP_i_t* bmp_parser(char *scr_file, char *dst_file);
@@ -180,5 +176,8 @@ void spatial_filter(HBMP_i_t *src, SPATIAL_FILTER_METHOD filter_method, int arg)
 void canny(HBMP_i_t *hbmp_src, HBMP_i_t *sobel_ampXY);
 
 void hough(HBMP_i_t *hbmp_src);
+
+int  haze_removal(HBMP_i_t *src, HBMP_i_t *dst);
+
 
 #endif
