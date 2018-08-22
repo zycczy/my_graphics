@@ -69,7 +69,42 @@
 #define MAX(a, b) (a>b?a:b)
 #define MIN(a, b) (a<b?a:b)
 
+#define create_list_link(value_type) \
+struct _link{\
+	void *next;\
+	value_type *value;\
+};\
+struct _list{\
+	struct _link *head;\
+	int count;\
+};
+#define init_list(list_name, head_name, head_value) \
+	struct _list *list_name;\
+	struct _link *head_name;\
+	head_name = (struct _link*)malloc(sizeof(struct _link));\
+	list_name = (struct _list*)malloc(sizeof(struct _list));\
+	list_name->head = head_name;\
+	list_name->count = 1;\
+	head_name->next = NULL;\
+	head_name->value = head_value;
 
+#define init_link(link_name, link_value) \
+	struct _link *link_name;\
+	link_name = (struct _link*)malloc(sizeof(struct _link));\
+	link_name->value = link_value;
+
+#define insert_link(list , pre_link, link) {\
+	link->next = pre_link->next;\
+	pre_link->next = link;\
+	list->count++;\
+}
+#define show_list(list) {\
+	struct _link *cur = list->head;\
+	while(cur != NULL){\
+		printf("%d\n", *(cur->value));\
+		cur = cur->next;\
+	}\
+}
 
 
 #endif
